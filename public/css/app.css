@@ -1656,6 +1656,9 @@ select {
 .justify-between {
 	justify-content: space-between;
 }
+.justify-items-center {
+	justify-items: center;
+}
 .gap-6 {
 	gap: 1.5rem;
 }
@@ -1852,6 +1855,10 @@ select {
 .border-green-300 {
 	--tw-border-opacity: 1;
 	border-color: rgba(110, 231, 183, var(--tw-border-opacity));
+}
+.border-black {
+	--tw-border-opacity: 1;
+	border-color: rgba(0, 0, 0, var(--tw-border-opacity));
 }
 .bg-white {
 	--tw-bg-opacity: 1;

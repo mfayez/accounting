@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 			$item->type = mt_rand(1,100) > 150 ? "B" : "I";
 			$item->name = "Customer " . $i;
 			$item->registration_number = $i+5;
-			$item->address_country = 'Address '. $i;
+			$item->address_country = 'Egypt';
 			$item->address_governate = 'Tanta';
 			$item->address_regionCity = 'Tanta City Center';
 			$item->address_street = 'Big Stree ' . $i;

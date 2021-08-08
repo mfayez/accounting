@@ -42,10 +42,17 @@ class CustomerController extends Controller
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
                 'name' => 'Name',
-                'registration_number' => 'Registration Number',
+                'registration_number' => 'Tax Registration ID/National ID',
+//				'address_governate' => 'Governate',
+//				'address_regionCity' => 'City',
             ])->addColumns([
                 'name' => 'Name',
-                'registration_number' => 'Registration Number',
+                'registration_number' => 'Customer Identifier',
+				'address_country' => 'Country',
+				'address_governate' => 'Governate',
+				'address_regionCity' => 'City',
+				'address_street' => 'Street',
+				'address_building_number' => 'Building Number'
             ]);
         });
     }
@@ -57,7 +64,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+		return Inertia::render('Items/Create');;        
     }
 
     /**
@@ -68,7 +75,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request);
     }
 
     /**
