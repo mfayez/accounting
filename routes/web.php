@@ -4,6 +4,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\CustomerController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,15 +29,27 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+	Route::get('/dashboard', function () {
+		//Session()->flash('flash.banner', 'Yay it works!');
+		//Session()->flash('flash.bannerStyle', 'danger');
+    	return Inertia::render('Dashboard');
+	})->name('dashboard');
+	
+	Route::get('/dashboard2', function () {
+		return Inertia::render('index');
+	})->name('dashboard2');
+	
+	Route::get('/dashboard3', function () {
+    	return Inertia::render('Main');
+	})->name('dashboard3');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard2', function () {
-    return Inertia::render('Admin/Index');
-})->name('dashboard2');
-
-
+	Route::resources([
+		'invoices' => InvoiceController::class,
+		'customers' => CustomerController::class,
+		'items' => ItemController::class,
+	]);
+});
 
 Route::get('/language/{language}', function ($language) {
     Session()->put('locale', $language);
