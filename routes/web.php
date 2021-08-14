@@ -19,6 +19,8 @@ use App\Http\Controllers\CustomerController;
 |
 */
 
+//Route::get('/generate/models', '\\Jimbolino\\Laravel\\ModelBuilder\\ModelGenerator5@start');
+
 Route::get('/', function () {
     //return Inertia::render('Welcome', [
     return Inertia::render('Auth/Login', [

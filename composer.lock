@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c447252632d97b211bea1f1888f5b24",
+    "content-hash": "96b0e2671f90a8f6578fab8f9e142010",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1163,6 +1163,44 @@
                 }
             ],
             "time": "2020-06-13T08:05:20+00:00"
+        },
+        {
+            "name": "jimbolino/laravel-model-builder",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jimbolino/laravel-model-builder.git",
+                "reference": "70f5e7a96344107bc1c9014ff2107eae73e32603"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jimbolino/laravel-model-builder/zipball/70f5e7a96344107bc1c9014ff2107eae73e32603",
+                "reference": "70f5e7a96344107bc1c9014ff2107eae73e32603",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jimbolino\\Laravel\\ModelBuilder\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0+"
+            ],
+            "description": "builds eloquent models based on the tables and relations found in your mysql database",
+            "keywords": [
+                "builder",
+                "eloquent",
+                "laravel",
+                "models"
+            ],
+            "support": {
+                "issues": "https://github.com/Jimbolino/laravel-model-builder/issues",
+                "source": "https://github.com/Jimbolino/laravel-model-builder/tree/master"
+            },
+            "time": "2021-02-10T09:16:15+00:00"
         },
         {
             "name": "laravel/fortify",
@@ -8259,7 +8297,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "jimbolino/laravel-model-builder": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

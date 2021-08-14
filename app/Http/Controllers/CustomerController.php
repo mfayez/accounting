@@ -8,12 +8,21 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-use App\Models\Customer;
+use App\Models\Address;
+use App\Models\Delivery;
+use App\Models\Discount;
+use App\Models\InvoiceLine;
 use App\Models\Invoice;
-use App\Models\Item;
-use App\Models\InvoiceTaxItem;
-use App\Models\InvoiceItem;
+use App\Models\Issuer;
+use App\Models\Membership;
+use App\Models\Payment;
+use App\Models\Receiver;
+use App\Models\TaxableItem;
+use App\Models\TaxTotal;
+use App\Models\TeamInvitation;
+use App\Models\Team;
 use App\Models\User;
+use App\Models\Value;
 
 class CustomerController extends Controller
 {
@@ -26,33 +35,28 @@ class CustomerController extends Controller
     {
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
-                $query->where('name', 'LIKE', "%{$value}%")->orWhere('registration_number', 'LIKE', "%{$value}%");
+                $query->where('name', 'LIKE', "%{$value}%")->orWhere('receiver_id', 'LIKE', "%{$value}%");
             });
         });
 
-        $customrs = QueryBuilder::for(Customer::class)
-            ->defaultSort('name')
-            ->allowedSorts(['name', 'registration_number'])
-            ->allowedFilters(['name', 'registration_number', $globalSearch])
+        $customers = QueryBuilder::for(Receiver::class)
+			->with('address')
+        	->defaultSort('name')
+            ->allowedSorts(['name', 'receiver_id', 'type'])
+            ->allowedFilters(['name', 'receiver_id', 'type', $globalSearch])
             ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('Customers/Index', [
-            'customers' => $customrs,
+            'customers' => $customers,
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
                 'name' => 'Name',
-                'registration_number' => 'Tax Registration ID/National ID',
-//				'address_governate' => 'Governate',
-//				'address_regionCity' => 'City',
+                'receiver_id' => 'Tax Registration ID/National ID',
             ])->addColumns([
                 'name' => 'Name',
-                'registration_number' => 'Customer Identifier',
-				'address_country' => 'Country',
-				'address_governate' => 'Governate',
-				'address_regionCity' => 'City',
-				'address_street' => 'Street',
-				'address_building_number' => 'Building Number'
+                'receiver_id' => 'Customer Identifier',
+				'type' => 'Customer Type'
             ]);
         });
     }
@@ -64,7 +68,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-		return Inertia::render('Items/Create');;        
+		//return Inertia::render('Items/Create');;        
     }
 
     /**
