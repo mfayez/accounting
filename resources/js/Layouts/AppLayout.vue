@@ -1,6 +1,7 @@
 <template>
     <div>
         <jet-banner />
+		<new-customer-dialog ref="dlg1"/>
 
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -89,7 +90,7 @@
                                     </template>
 
                                     <template #content>
-                                        <jet-dropdown-link :href="route('customers.create')">
+                                        <jet-dropdown-link as="a" @click.prevent="openDlg1()" :href="route('customers.create')">
                                             {{ __('Add New Customer') }}
                                         </jet-dropdown-link>
 										
@@ -242,9 +243,11 @@
     import JetNavLink from '@/Jetstream/NavLink'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
 	import LanguageSelector from '@/Language/LanguageSelector'
+	import NewCustomerDialog from '@/Pages/Customers/Edit'
 
     export default {
         components: {
+			NewCustomerDialog,
             JetApplicationMark,
             JetBanner,
             JetDropdown,
@@ -261,6 +264,9 @@
         },
 
         methods: {
+			openDlg1() {
+				this.$refs.dlg1.ShowDialog();
+			},
             logout() {
                 this.$inertia.post(route('logout'));
             },
