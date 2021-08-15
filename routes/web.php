@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\BranchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::resources([
 		'invoices' => InvoiceController::class,
 		'customers' => CustomerController::class,
+		'branches' => BranchController::class,
 		'items' => ItemController::class,
 	]);
 });

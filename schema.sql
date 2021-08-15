@@ -197,9 +197,31 @@ create table Invoice (
     totalAmount decimal(9,3) NOT NULL,
     extraDiscountAmount decimal(9,3) NOT NULL,
     totalItemsDiscountAmount decimal(9,3) NOT NULL,
+	`created_at` timestamp NULL DEFAULT NULL,
+	`updated_at` timestamp NULL DEFAULT NULL,
 CONSTRAINT PK_Invoice PRIMARY KEY CLUSTERED
    (
       Id asc
+   )
+)
+;
+create table Item (
+    Id int AUTO_INCREMENT NOT NULL,
+    [codeType] [varchar](50) NULL,
+    [parentCode] [varchar](50) NULL,
+    [itemCode] [varchar](50) NULL,
+    [codeName] [varchar](50) NULL,
+    [codeNameAr] [varchar](50) NULL,
+    [activeFrom] [datetime],
+    [activeTo] [datetime],
+    [description] [varchar](50) NULL,
+    [descriptionAr] [varchar](50) NULL,
+    [requestReason] [varchar](50) NULL,
+	`created_at` timestamp NULL DEFAULT NULL,
+	`updated_at` timestamp NULL DEFAULT NULL,
+CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED
+   (
+      [Id] asc
    )
 )
 ;

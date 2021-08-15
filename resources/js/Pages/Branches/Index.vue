@@ -8,7 +8,7 @@
 						:search="queryBuilderProps.search"
 						:columns="queryBuilderProps.columns"
 						:on-update="setQueryBuilder"
-						:meta="customers"
+						:meta="branches"
 				  	>
 						<template #head>
 						  	<tr>
@@ -21,10 +21,10 @@
 						</template>
 
 						<template #body>
-					  		<tr v-for="customer in customers.data" :key="customer.id">
-									<td v-show="showColumn('name')">{{ customer.name }}</td>
-									<td v-show="showColumn('receiver_id')">{{ customer.receiver_id }}</td>
-									<td v-show="showColumn('type')">{{ customer.type == 'B' ? 'Business' : 'Individual'  }}</td>
+					  		<tr v-for="branch in branches.data" :key="branch.id">
+									<td v-show="showColumn('name')">{{ branch.name }}</td>
+									<td v-show="showColumn('receiver_id')">{{ branch.receiver_id }}</td>
+									<td v-show="showColumn('type')">{{ branch.type == 'B' ? 'Business' : 'Individual'  }}</td>
 									<td>
 										
 									</td>
@@ -49,7 +49,7 @@
 			Table: Tailwind2.Table,
         },
 		props: {
-			customers: Object
+			branches: Object
   		},
     }
 </script>
