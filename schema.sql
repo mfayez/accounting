@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `Receiver`;
 DROP TABLE IF EXISTS `TaxTotal`;
 DROP TABLE IF EXISTS `TaxableItem`;
 DROP TABLE IF EXISTS `Value`;
+DROP TABLE IF EXISTS `Item`;
 
 create table Address (
     Id int AUTO_INCREMENT NOT NULL,
@@ -24,7 +25,7 @@ create table Address (
     landmark varchar(50) NULL,
     additionalInformation varchar(50) NULL,
 	`created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+	`updated_at` timestamp NULL DEFAULT NULL,
 CONSTRAINT PK_Address PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -207,22 +208,23 @@ CONSTRAINT PK_Invoice PRIMARY KEY CLUSTERED
 ;
 create table Item (
     Id int AUTO_INCREMENT NOT NULL,
-    [codeType] [varchar](50) NULL,
-    [parentCode] [varchar](50) NULL,
-    [itemCode] [varchar](50) NULL,
-    [codeName] [varchar](50) NULL,
-    [codeNameAr] [varchar](50) NULL,
-    [activeFrom] [datetime],
-    [activeTo] [datetime],
-    [description] [varchar](50) NULL,
-    [descriptionAr] [varchar](50) NULL,
-    [requestReason] [varchar](50) NULL,
+    codeType varchar(50) NULL,
+    parentCode varchar(50) NULL,
+    itemCode varchar(50) NOT NULL,
+    codeName varchar(50) NULL,
+    codeNameAr varchar(50) NULL,
+    activeFrom datetime,
+    activeTo datetime,
+    description varchar(50) NULL,
+    descriptionAr varchar(50) NULL,
+    requestReason varchar(50) NULL,
 	`created_at` timestamp NULL DEFAULT NULL,
 	`updated_at` timestamp NULL DEFAULT NULL,
-CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED
+CONSTRAINT PK_Item PRIMARY KEY CLUSTERED
    (
-      [Id] asc
-   )
+      Id asc
+   ),
+	CONSTRAINT CODE_ITEM_IDX UNIQUE INDEX (itemCode)
 )
 ;
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_issuer_id FOREIGN KEY (issuer_id) REFERENCES Issuer(id);
