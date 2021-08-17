@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 use App\Models\Address;
 use App\Models\Delivery;
@@ -79,7 +81,38 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+		$request->validate([
+            'name' 							=> ['required', 'string', 'max:255'],
+            'issuer_id' 					=> ['required', 'integer'],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
+            'address.branchId' 				=> ['required', 'integer'],
+			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
+			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza'])],
+			'address.regionCity' 			=> ['required', 'string'],
+			'address.street' 				=> ['required', 'string'],
+			'address.buildingNumber' 		=> ['required', 'integer'],
+			'address.postalCode' 			=> ['required', 'integer'],
+			'address.additionalInformation' => ['nullable', 'string'],
+        ]);
+
+		
+        $item2 = new Address();
+		$item2->branchId = $request->input('address.branchId');
+        $item2->country = $request->input('address.country');
+        $item2->governate = $request->input('address.governate');
+        $item2->regionCity = $request->input('address.regionCity');
+        $item2->street = $request->input('address.street');
+        $item2->buildingNumber = $request->input('address.buildingNumber');
+		$item2->postalCode = $request->input('address.postalCode');
+		$item2->additionalInformation = $request->input('address.additionalInformation');
+        $item2->save();
+        $item = new Issuer();
+        $item->type = $request->input('type');
+        $item->name = $request->input('name');
+		$item->issuer_id = $request->input('issuer_id');
+        $item2->issuer()->save($item);
+
+        return $item;
     }
 
     /**

@@ -110,6 +110,7 @@
 
         data() {
             return {
+				errors: [],
                 form: this.$inertia.form({
                     name: '',
                     issuer_id: '',
@@ -138,12 +139,22 @@
 				this.addingNew = false;
 			},
 			SaveNewBranch() {
-				this.addingNew = false;
+                axios.post(route('branches.store'), this.form)
+				.then(response => {
+                    this.processing = false;
+                    this.$nextTick(() => this.$emit('dataUpdated'));
+					this.form.reset();
+					this.form.processing = false;
+					this.addingNew = false;
+                }).catch(error => {
+                    this.form.processing = false;
+					this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;//.password[0];
+                    //this.$refs.password.focus()
+                });
 			},
             submit() {
-                this.form.post(this.route('register'), {
-                    onFinish: () => this.form.reset('password', 'password_confirmation'),
-                })
+				SaveNewBranch();
             }
         },
     }
