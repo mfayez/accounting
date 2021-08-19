@@ -3,6 +3,7 @@
         <jet-banner />
 		<new-customer-dialog ref="dlg1"/>
 		<new-branch-dialog ref="dlg2"/>
+		<load-items-dialog ref="dlg3"/>
 
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -122,7 +123,7 @@
                                     </template>
 
                                     <template #content>
-                                        <jet-dropdown-link as="a" @click.prevent="openDlg2()" :href="route('branches.create')">
+                                        <jet-dropdown-link as="a" @click.prevent="openDlg2()" href="#">
                                             {{ __('Add New Branch') }}
                                         </jet-dropdown-link>
 										
@@ -199,6 +200,9 @@
 										
 										<jet-dropdown-link as="a" :href="route('items.index')">
                                             {{ __('Show Items') }}
+                                        </jet-dropdown-link>
+                                        <jet-dropdown-link as="a" @click.prevent="openDlg3()" href="#">
+                                            {{ __('Load from ETA') }}
                                         </jet-dropdown-link>
 										
                                     </template>
@@ -278,11 +282,13 @@
 	import LanguageSelector from '@/Language/LanguageSelector'
 	import NewCustomerDialog from '@/Pages/Customers/Edit'
 	import NewBranchDialog from '@/Pages/Branches/Edit'
+	import LoadItemsDialog from '@/Pages/Items/Load'
 
     export default {
         components: {
 			NewCustomerDialog,
 			NewBranchDialog,
+			LoadItemsDialog,
             JetApplicationMark,
             JetBanner,
             JetDropdown,
@@ -304,6 +310,9 @@
 			},
 			openDlg2() {
 				this.$refs.dlg2.ShowDialog();
+			},
+			openDlg3() {
+				this.$refs.dlg3.ShowDialog();
 			},
             logout() {
                 this.$inertia.post(route('logout'));

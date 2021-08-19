@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS `TaxTotal`;
 DROP TABLE IF EXISTS `TaxableItem`;
 DROP TABLE IF EXISTS `Value`;
 DROP TABLE IF EXISTS `Item`;
+DROP TABLE IF EXISTS ETAItems;
 
 create table Address (
     Id int AUTO_INCREMENT NOT NULL,
@@ -225,6 +226,49 @@ CONSTRAINT PK_Item PRIMARY KEY CLUSTERED
       Id asc
    ),
 	CONSTRAINT CODE_ITEM_IDX UNIQUE INDEX (itemCode)
+)
+;
+CREATE TABLE ETAItems(
+  Id int AUTO_INCREMENT NOT NULL PRIMARY KEY
+  ,codeUsageRequestID               INTEGER  NOT NULL 
+  ,codeTypeName                     VARCHAR(3) NOT NULL
+  ,codeID                           INTEGER  NOT NULL
+  ,itemCode                         VARCHAR(20) NOT NULL
+  ,codeNamePrimaryLang              VARCHAR(24) NOT NULL
+  ,codeNameSecondaryLang            VARCHAR(24) NOT NULL
+  ,descriptionPrimaryLang           VARCHAR(24) NOT NULL
+  ,descriptionSecondaryLang         VARCHAR(24) NOT NULL
+  ,parentCodeID                     INTEGER  NOT NULL
+  ,parentItemCode                   INTEGER  NOT NULL
+  ,parentCodeNamePrimaryLang        VARCHAR(32) NOT NULL
+  ,parentCodeNameSecondaryLang      VARCHAR(30) NOT NULL
+  ,parentLevelName                  VARCHAR(25) NOT NULL
+  ,levelName                        VARCHAR(17) NOT NULL
+  ,requestCreationDateTimeUtc       VARCHAR(28) NOT NULL
+  ,codeCreationDateTimeUtc          VARCHAR(28) NOT NULL
+  ,activeFrom                       VARCHAR(20) NOT NULL
+  ,activeTo                         VARCHAR(30)
+  ,active                           VARCHAR(4) NOT NULL
+  ,status                           VARCHAR(8) NOT NULL
+  ,statusReason                     VARCHAR(30)
+  ,ownerTaxpayerrin                 INTEGER  NOT NULL
+  ,ownerTaxpayername                VARCHAR(30) NOT NULL
+  ,ownerTaxpayernameAr              VARCHAR(30) NOT NULL
+  ,requesterTaxpayerrin             INTEGER  NOT NULL
+  ,requesterTaxpayername            VARCHAR(30) NOT NULL
+  ,requesterTaxpayernameAr          VARCHAR(30) NOT NULL
+  ,codeCategorizationlevel1id       INTEGER  NOT NULL
+  ,codeCategorizationlevel1name     VARCHAR(21) NOT NULL
+  ,codeCategorizationlevel1nameAr   VARCHAR(23) NOT NULL
+  ,codeCategorizationlevel2id       INTEGER  NOT NULL
+  ,codeCategorizationlevel2name     VARCHAR(26) NOT NULL
+  ,codeCategorizationlevel2nameAr   VARCHAR(14) NOT NULL
+  ,codeCategorizationlevel3id       INTEGER  NOT NULL
+  ,codeCategorizationlevel3name     VARCHAR(51) NOT NULL
+  ,codeCategorizationlevel3nameAr   VARCHAR(40) NOT NULL
+  ,codeCategorizationlevel4id       INTEGER  NOT NULL
+  ,codeCategorizationlevel4name     VARCHAR(32) NOT NULL
+  ,codeCategorizationlevel4nameAr   VARCHAR(30) NOT NULL
 )
 ;
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_issuer_id FOREIGN KEY (issuer_id) REFERENCES Issuer(id);

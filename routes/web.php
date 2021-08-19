@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\ETAController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,7 @@ use App\Http\Controllers\BranchController;
 |
 */
 
-//Route::get('/generate/models', '\\Jimbolino\\Laravel\\ModelBuilder\\ModelGenerator5@start');
+Route::get('/generate/models', '\\Jimbolino\\Laravel\\ModelBuilder\\ModelGenerator5@start');
 
 Route::get('/', function () {
     //return Inertia::render('Welcome', [
@@ -53,6 +54,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 		'branches' => BranchController::class,
 		'items' => ItemController::class,
 	]);
+	
+	Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");
 });
 
 Route::get('/language/{language}', function ($language) {
