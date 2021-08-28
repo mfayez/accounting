@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\ETAItem;
 
 class ETAController extends Controller
@@ -61,6 +67,27 @@ class ETAController extends Controller
 		return $response['metadata'];
 	}
 
+	public function AddItem(Request $request)
+	{
+		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
+		$request->validate([
+			'codeType'		=> ['required', 'string', Rule::in(['EGS', 'GS1'])],
+			'parentCode'	=> ['required', 'integer'],
+			'itemCode'		=> ['required', 'regex:EGS-[0-9]+-[0-9]+'],
+			'codeName'		=> ['required', 'string', 'max:255'],
+			'codeNameAr'	=> ['required', 'string', 'max:255'],
+			'activeFrom'	=> ['required', 'date'],
+			'activeTo'		=> ['required', 'date'],
+			'description'	=> ['required', 'string', 'max:255'],
+			'descriptionAr'	=> ['required', 'string', 'max:255'],
+			'requestReason'	=> ['required', 'string', 'max:255']
+        ]);
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->post($url, ["items" => array($request->validated())]);
+		dd($response);
+		return $response;
+	}
+
 	private function AuthenticateETA(Request $request)
 	{
 		$this->token = $request->session()->get('eta_token', null);
@@ -82,4 +109,72 @@ class ETAController extends Controller
 		else {
 		}
 	}
+
+    public function indexItems()
+    {
+		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                $query->where('itemCode', 'LIKE', "%{$value}%")
+                    ->orWhere('codeNamePrimaryLang', 'LIKE', "%{$value}%")
+                    ->orWhere('codeNameSecondaryLang', 'LIKE', "%{$value}%")
+                    ->orWhere('descriptionPrimaryLang', 'LIKE', "%{$value}%")
+					->orWhere('descriptionSecondaryLang', 'LIKE', "%{$value}%")
+					->orWhere('parentCodeID', '=', "{$value}")
+					->orWhere('parentItemCode', '=', "{$value}")
+					->orWhere('parentLevelName', 'LIKE', "%{$value}%")
+					->orWhere('levelName', 'LIKE', "%{$value}%")
+					->orWhere('requestCreationDateTimeUtc', '>', "{$value}")
+					->orWhere('codeCreationDateTimeUtc', '>', "{$value}")
+					->orWhere('activeFrom', '>', "{$value}")
+					->orWhere('activeTo', '>', "{$value}")
+					->orWhere('active', '=', "{$value}")
+					->orWhere('status', '=', "{$value}")
+					->orWhere('statusReason', 'LIKE', "%{$value}%");
+					
+            });
+        });
+
+		$items = QueryBuilder::for(ETAItem::class)
+            ->defaultSort('id')
+            ->allowedSorts(['codeTypeName', 'codeID', 'itemCode', 'codeNamePrimaryLang', 'codeNameSecondaryLang', 'descriptionPrimaryLang',     
+							  'descriptionSecondaryLang', 'parentCodeID', 'parentItemCode', 'parentCodeNamePrimaryLang', 'parentCodeNameSecondaryLang',
+							  'parentLevelName', 'levelName', 'requestCreationDateTimeUtc', 'codeCreationDateTimeUtc', 'activeFrom',
+							  'activeTo', 'active', 'status', 'statusReason'])
+            ->allowedFilters(['global', 'codeTypeName', 'codeID', 'itemCode', 'codeNamePrimaryLang', 'codeNameSecondaryLang', 'descriptionPrimaryLang',     
+							  'descriptionSecondaryLang', 'parentCodeID', 'parentItemCode', 'parentCodeNamePrimaryLang', 'parentCodeNameSecondaryLang',
+							  'parentLevelName', 'levelName', 'requestCreationDateTimeUtc', 'codeCreationDateTimeUtc', 'activeFrom',
+							  'activeTo', 'active', 'status', 'statusReason'])
+            ->paginate(20)
+            ->withQueryString();
+
+        return Inertia::render('ETA/Items/Index', [
+            'items' => $items,
+        ])->table(function (InertiaTable $table) {
+            $table->addSearchRows([
+				'codeID'	=>	'Code ID'
+			])->addColumns([
+                'codeTypeName'	=>	'codeTypeName'	,
+				'codeID'	=>	'codeID'	,
+				'itemCode'	=>	'itemCode'	,
+				'codeNamePrimaryLang'	=>	'codeNamePrimaryLang'	,
+				'codeNameSecondaryLang'	=>	'codeNameSecondaryLang'	,
+				'descriptionPrimaryLang'	=>	'descriptionPrimaryLang'	,
+				'descriptionSecondaryLang'	=>	'descriptionSecondaryLang'	,
+				'parentCodeID'	=>	'parentCodeID'	,
+				'parentItemCode'	=>	'parentItemCode'	,
+				'parentCodeNamePrimaryLang'	=>	'parentCodeNamePrimaryLang'	,
+				'parentCodeNameSecondaryLang'	=>	'parentCodeNameSecondaryLang'	,
+				'parentLevelName'	=>	'parentLevelName'	,
+				'levelName'	=>	'levelName'	,
+				'requestCreationDateTimeUtc'	=>	'requestCreationDateTimeUtc'	,
+				'codeCreationDateTimeUtc'	=>	'codeCreationDateTimeUtc'	,
+				'activeFrom'	=>	'activeFrom'	,
+				'activeTo'	=>	'activeTo'	,
+				'active'	=>	'active'	,
+				'status'	=>	'status'	,
+				'statusReason'	=>	'statusReason'	,
+            ]);
+        });
+    }
+
 }

@@ -56,6 +56,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	]);
 	
 	Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");
+	Route::post('/ETA/Items/Add' , [ETAController::class, 'AddItem'])->name("eta.items.store");
+	Route::get ('/ETA/Items'     , [ETAController::class, 'indexItems'])->name("eta.items.index");
 });
 
 Route::get('/language/{language}', function ($language) {
