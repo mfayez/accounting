@@ -2,7 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use App\Models\Invoice;
 
 class InvoiceController extends Controller
 {
@@ -13,7 +23,6 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -23,7 +32,8 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Invoices/Add', [
+        ]);
     }
 
     /**

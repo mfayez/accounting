@@ -156,7 +156,7 @@
                                     </template>
 
                                     <template #content>
-                                        <jet-dropdown-link :href="route('invoices.create')">
+                                        <jet-dropdown-link as="a" :href="route('invoices.create')">
                                             {{ __('Add New Invoice') }}
                                         </jet-dropdown-link>
 										
