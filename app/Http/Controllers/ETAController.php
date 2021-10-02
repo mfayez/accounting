@@ -70,10 +70,10 @@ class ETAController extends Controller
 	public function AddItem(Request $request)
 	{
 		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
-		$request->validate([
+		$data = $request->validate([
 			'codeType'		=> ['required', 'string', Rule::in(['EGS', 'GS1'])],
 			'parentCode'	=> ['required', 'integer'],
-			'itemCode'		=> ['required', 'regex:EGS-[0-9]+-[0-9]+'],
+			'itemCode'		=> ['required', 'regex:/EG-[0-9]+-[0-9]+/'],
 			'codeName'		=> ['required', 'string', 'max:255'],
 			'codeNameAr'	=> ['required', 'string', 'max:255'],
 			'activeFrom'	=> ['required', 'date'],
@@ -83,8 +83,7 @@ class ETAController extends Controller
 			'requestReason'	=> ['required', 'string', 'max:255']
         ]);
 		$this->AuthenticateETA($request);
-		$response = Http::withToken($this->token)->post($url, ["items" => array($request->validated())]);
-		dd($response);
+		$response = Http::withToken($this->token)->post($url, ["items" => array($data)]);
 		return $response;
 	}
 
@@ -177,4 +176,8 @@ class ETAController extends Controller
         });
     }
 
+    public function indexItems_json()
+    {
+		return ETAItem::all()->toArray();
+	}
 }

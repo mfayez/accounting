@@ -1,271 +1,236 @@
 <template>
     <app-layout>
         <div class="py-4">
+			<dialog-invoice-line v-model="currentItem" ref="dlg1" @update:model-value="onClose"/>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-					<SchemaForm :schema="mySchema" :modelValue="myForm" />		
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 pb-4 pt-0">
+					<div class="flex items-center ml-0 mb-4 border-b border-gray-200">
+						<jet-button @click="tab_idx=1" :disabled="tab_idx==1" :isRounded="false">
+							Invoice Summary
+						</jet-button>
+						<jet-button @click="tab_idx=2" :disabled="tab_idx==2" :isRounded="false">
+							Optional Data (PO, SO)
+						</jet-button>
+						<jet-button @click="tab_idx=3" :disabled="tab_idx==3" :isRounded="false">
+							Invoice Items
+						</jet-button>
+					</div>
+					<!--First Tab-->
+					<div v-show="tab_idx==1" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
+						<div>
+							<jet-label value="Branch" />
+							<multiselect v-model="form.issuer"   label="name" :options="branches" placeholder="Select branch" />
+						</div>
+						<div>
+							<jet-label value="Customer" />
+							<multiselect v-model="form.receiver" label="name" :options="customers" placeholder="Select customer" />
+						</div>
+						<div class="lg:col-span-2">
+							<jet-label value="Branch Activity" />
+							<multiselect v-model="form.taxpayerActivityCode" label="Desc_ar" :options="activities" placeholder="Select activity" />
+						</div>
+						<TextField v-model="form.dateTimeIssued" itemType="datetime-local" itemLabel="Invoice Date" />
+						<TextField v-model="form.internalID" itemType="text" itemLabel="Internal Invoice ID" />
+						<TextField v-model="form.totalSalesAmount" itemType="number" itemLabel="Total Sales Amount" />
+						<TextField v-model="form.totalDiscountAmount" itemType="number" itemLabel="Total Discount Amount" />
+						<TextField v-model="form.netAmount" itemType="number" itemLabel="Net Amount" />
+						<TextField v-model="form.totalAmount" itemType="number" itemLabel="Total Amount" />
+						<TextField v-model="form.extraDiscountAmount" itemType="number" itemLabel="Extra Discount Amount" />
+						<TextField v-model="form.totalItemsDiscountAmount" itemType="number" itemLabel="Total Items Discount Amount" />
+					</div>
+					<!--second tab-->
+					<div v-show="tab_idx==2" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
+						<TextField v-model="form.purchaseOrderReference" itemType="text" itemLabel="Purchase Order" />
+						<TextField v-model="form.purchaseOrderDescription" itemType="text" itemLabel="Purchase Order Description" />
+						<TextField v-model="form.salesOrderReference" itemType="text" itemLabel="Sales Order" />
+						<TextField v-model="form.salesOrderDescription" itemType="text" itemLabel="Sales Order Description" />
+						<TextField v-model="form.purchaseOrderReference" itemType="text" itemLabel="Purchase Order Reference" />
+						<TextField v-model="form.proformaInvoiceNumber" itemType="text" itemLabel="Proforma Invoice Number" />
+					</div>
+					<!--third tab-->
+					<div v-show="tab_idx==3">
+						<div class="grid grid-cols-10 gap-0 mt-2">
+							<div class="bg-gray-200 col-span-3">Item</div>
+							<div class="bg-gray-200 col-span-1">Unit Price</div>
+							<div class="bg-gray-200 col-span-1">Quantity</div>
+							<div class="bg-gray-200 col-span-1">Sales Total</div>
+							<div class="bg-gray-200 col-span-1">Net Total</div>
+							<div class="bg-gray-200 col-span-1">Tax Items</div>
+							<div class="bg-gray-200 col-span-1"></div>
+							<div class="bg-gray-200 col-span-1"></div>
+							<template v-for="(item, idx1) in form.invoiceLines">
+								<jet-label class="mt-2 col-span-3">{{item.item.codeNamePrimaryLang}}</jet-label>
+								<jet-label class="mt-2 col-span-1">{{item.unitValue}}</jet-label>
+								<jet-label class="mt-2 col-span-1">{{item.quantity}}</jet-label>
+								<jet-label class="mt-2 col-span-1">{{item.salesTotal}}</jet-label>
+								<jet-label class="mt-2 col-span-1">{{item.netTotal}}</jet-label>
+								<div class="grid grid-cols-2 gap-1">
+									<template v-for="(taxitem, idx1) in item.taxItems" :key="taxitem.key">
+										<jet-label class="mt-2 col-span-2">{{taxitem.taxType.Code}}({{taxitem.taxSubtype.Code}})</jet-label>
+										<jet-label class="mt-2 col-span-2">{{taxitem.value}}({{taxitem.percentage}}%)</jet-label>
+									</template>
+								</div>
+								<jet-secondary-button @click="EditItem(item, idx1)" class="mt-2 ml-2">
+									Edit
+								</jet-secondary-button>				
+								<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="mt-2 ml-2">
+									Delete
+								</jet-danger-button>				
+							</template>
+							<jet-label class="col-span-8" v-if="!form.invoiceLines.length">
+								Please Add tax items if applicable
+							</jet-label>
+						</div>
+						<div class="flex items-center justify-end mt-4">
+							<jet-button class="ml-2" @click="AddItem()">
+								Add New Item
+							</jet-button>
+						</div>
+						<div v-for="(item, idx1) in form.invoiceLines" class="border border-black">
+							<!--<pre>{{item}}</pre>-->
+						</div>
+					</div>
+					<div class="flex items-center justify-end mt-20">
+			    		<jet-secondary-button @click="onCancel()">
+   							Cancel
+        				</jet-secondary-button>
+	
+		        		<jet-button class="ml-2" @click="onSave()" >
+    		    			Save
+		        		</jet-button>
+					</div>
                 </div>
-				<pre>{{myForm}} </pre>
+				<!--<pre> {{form}} </pre>-->
             </div>
         </div>
     </app-layout>
 </template>
 
+<style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
+
 <script>
 	import { computed, ref } from "vue";
     import AppLayout from '@/Layouts/AppLayout'
-	import { SchemaForm, useSchemaForm } from 'formvuelate'
-	import JetInput from '@/Jetstream/Input'
+    import JetLabel from '@/Jetstream/Label'
+    import JetButton from '@/Jetstream/Button'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+    import JetDangerButton from '@/Jetstream/DangerButton'
+	import TextField from '@/UI/TextField'
+	import Multiselect from '@suadelabs/vue3-multiselect'
+	import DialogInvoiceLine from '@/Pages/Invoices/EditLine'
 
     export default {
         components: {
-            AppLayout,
-			SchemaForm,
+            AppLayout, JetLabel, JetButton, JetSecondaryButton, JetDangerButton, 
+			DialogInvoiceLine,
+			TextField, Multiselect 
         },
-		setup () {
-			const myForm = ref({})
-		    useSchemaForm(myForm)
-			return {
-				myForm
-			};
-    	},
-		data() {
+		data () {
             return {
-				mySchema:[
-  {
-    component: JetInput,
-    label: "First Name",
-    model: "firstName",
-  },
-  {
-    component:JetInput,
-    label: "Last Name",
-    model: "lastName",
-  }
-],
-                mySchema1: [
-				  {
-					component: "h3",
-					children: "New Invoice"
-				  },
-				  {
-					type: "select",
-					label: "Select Issuer Branch",
-					name: "issuer_id",
-					placeholder: "Select Branch",
-					options: {
-					  b1: "Branch 1",
-					  b2: "Branch 2",
-					  b3: "Branch 3"
-					},
-					validation: "required"
-				  },
-				  {
-					type: "select",
-					label: "Select Customer",
-					name: "receiver_id",
-					placeholder: "Select Customer",
-					options: {
-					  c1: "Customer 1",
-					  c2: "Customer 2",
-					  c3: "Customer 3"
-					},
-					validation: "required"
-				  },
-				  {
-					component: "div",
-					class: "flex-wrapper",
-					children: [
-					  {
-						type: "date",
-						label: "Invoice Date",
-						name: "dateIssued",
-						validation: "required"
-					  },
-					  {
-						type: "time",
-						label: "Invoice Time",
-						name: "timeIssued",
-						validation: "required"
-					  }
-					]
-				  },
-				  {
-					type: "select",
-					label: "Select Activity",
-					name: "taxpayerActivityCode",
-					placeholder: "Select Customer",
-					options: {
-					  a1: "Acitvity 1",
-					  a2: "Acitivty 2",
-					  a3: "Acitivty 3"
-					},
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Internal Identifier",
-					name: "internalID",
-					placeholder: "internal identifier",
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Purchase Order",
-					name: "purchaseOrderReference",
-					placeholder: "optional"
-				  },
-				  {
-					type: "text",
-					label: "Purchase Order Description",
-					name: "purchaseOrderDescription",
-					placeholder: "optional"
-				  },
-				  {
-					type: "text",
-					label: "Sales Order",
-					name: "salesOrderReference",
-					placeholder: "optional"
-				  },
-				  {
-					type: "text",
-					label: "Sales Order Description",
-					name: "salesOrderDescription",
-					placeholder: "optional"
-				  },
-				  {
-					type: "text",
-					label: "Preforma Invoice Number",
-					name: "proformaInvoiceNumber",
-					placeholder: "optional"
-				  },
-				  {
-					type: "text",
-					label: "Total Sales Amount",
-					name: "totalSalesAmount",
-					placeholder: "",
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Total Discount Amount",
-					name: "totalDiscountAmount",
-					placeholder: "",
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Net Amount",
-					name: "netAmount",
-					placeholder: "",
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Total Amount",
-					name: "totalAmount",
-					placeholder: "",
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Extra Discount Amount",
-					name: "extraDiscountAmount",
-					placeholder: "",
-					validation: "required"
-				  },
-				  {
-					type: "text",
-					label: "Total Items Discount Amount",
-					name: "totalItemsDiscountAmount",
-					placeholder: "",
-					validation: "required"
-				  },
-				  {
-					type: "group",
-					name: "invoiceLines",
-					validation: "min:1,length",
-					repeatable: true,
-					add_label: "+ Add Item",
-					value: [
-					  {}
-					],
-					children: [
-					  {
-						type: "select",
-						name: "item_id",
-						label: "Item",
-						placeholder: "Select one",
-						options: {
-						  I1: "Item 1",
-						  I2: "Item 2",
-						  I3: "Item 3",
-						  I4: "Item 4"
-						}
-					  },
-					  {
-						type: "select",
-						name: "unitType",
-						label: "Type",
-						placeholder: "Select one",
-						options: {
-						  KG: "Weight (KG)",
-						  EA: "Count"
-						}
-					  },
-					  {
-						type: "text",
-						name: "quantity",
-						label: "Quantity",
-						validation: "required"
-					  },
-					  {
-						type: "text",
-						name: "salesTotal",
-						label: "Total Sales",
-						validation: "required"
-					  },
-					  {
-						type: "text",
-						name: "total",
-						label: "Total",
-						validation: "required"
-					  },
-					  {
-						type: "text",
-						name: "valueDifference",
-						label: "Value Difference",
-						validation: "required"
-					  },
-					  {
-						type: "text",
-						name: "totalTaxableFees",
-						label: "Total Taxable Fees",
-						validation: "required"
-					  },
-					  {
-						type: "text",
-						name: "netTotal",
-						label: "Net Total",
-						validation: "required"
-					  },
-					  {
-						type: "text",
-						name: "itemsDiscount",
-						label: "Items Discount",
-						validation: "required"
-					  }
-					]
-				  }
-				]
+				addindNewLine: false,
+				currentItemIdx: 0,
+				tab_idx: 1,
+				currentItem: {quantity: 1009 },
+				branches: [],
+				customers: [],
+				activities: [],
+				errors: [],
+                form: this.$inertia.form({
+					issuer: '',
+					receiver: '',
+					name: '',
+					dateTimeIssued: new Date().toISOString().slice(0, 16),
+					taxpayerActivityCode: '',
+					internalID: '',
+					purchaseOrderReference: '',
+					purchaseOrderDescription: '',
+					salesOrderReference: '',
+					salesOrderDescription: '',
+					purchaseOrderReference: '',
+					proformaInvoiceNumber: '',
+					totalSalesAmount: 0,
+					totalDiscountAmount: 0,
+					netAmount: 0,
+					totalAmount: 0,
+					extraDiscountAmount: 0,
+					totalItemsDiscountAmount: 0,
+					invoiceLines: [],
+					taxTotals: []
+				})
 			}
 		},
 		props: {
 			items: Object
   		},
 		methods: {
-			editItem: function(item_id) {
-			}
+			RecalculateTax: function() {
+				var taxTotals = {};
+				this.form.taxTotals = [];
+				for (var i = 0; i < this.form.invoiceLines.length; i++)
+				{
+					var item = this.form.invoiceLines[i];
+					for (var j = 0; j< item.taxItems.length; j++)
+					{
+						var taxitem = item.taxItems[j];
+						if (taxitem.taxType.Code in taxTotals)
+							taxTotals[taxitem.taxType.Code] = taxTotals[taxitem.taxType.Code] + parseFloat(taxitem.value);
+						else
+							taxTotals[taxitem.taxType.Code] = parseFloat(taxitem.value);
+					}
+				}
+				for (let item of Object.keys(taxTotals))
+					this.form.taxTotals.push({ taxType: item, amount: taxTotals[item] });
+			},
+			AddItem: function() {
+				this.addingNewLine = true;
+				this.currentItem = { quantity: 10,  };
+				this.$nextTick(() => {
+					this.$refs.dlg1.ShowDialog();
+				});
+				this.RecalculateTax();
+			},
+			EditItem: function(item, idx) {
+				this.addingNewLine = false;
+				this.currentItem = item;
+				this.currentItemIdx = idx;
+				this.$nextTick(() => {
+					this.$refs.dlg1.ShowDialog();
+				});
+				this.RecalculateTax();
+			},
+			onClose: function() {
+				if (this.addingNewLine)
+					this.form.invoiceLines.push(this.currentItem);
+				else
+					this.form.invoiceLines[this.currentItemIdx] = this.currentItem;
+				this.addingNewLine = false;
+			},
+			onCancel: function() {
+				window.history.back();
+			},
+			onSave: function() {
+			},
+		},
+		created: function created() {
+			axios.get(route('json.branches'))
+			.then(response => {
+				this.branches = response.data;
+            }).catch(error => {
+
+            });
+			axios.get(route('json.customers'))
+			.then(response => {
+				this.customers = response.data;
+            }).catch(error => {
+
+            });
+			axios.get('/json/ActivityCodes.json')
+			.then(response => {
+				this.activities = response.data;
+            }).catch(error => {
+
+            });
 		}
     }
 </script>
+

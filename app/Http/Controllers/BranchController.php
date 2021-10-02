@@ -63,6 +63,11 @@ class BranchController extends Controller
         });
     }
 
+	public function index_json()
+	{
+		return Issuer::with('address')->get()->toArray();
+	}
+
     /**
      * Show the form for creating a new resource.
      *

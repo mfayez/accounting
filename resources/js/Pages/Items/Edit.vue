@@ -31,10 +31,10 @@
 					<div>
 
 							<jet-label for="activeFrom" value="Activation Start Date" />
-							<jet-input id="activeFrom" type="text" class="mt-1 block w-full" v-model="form.activeFrom" required autofocus />
+							<jet-input id="activeFrom" type="date" class="mt-1 block w-full" v-model="form.activeFrom" required autofocus />
 
 							<jet-label for="activeTo" value="Activation Expire Date" />
-							<jet-input id="activeTo" type="text" class="mt-1 block w-full" v-model="form.activeTo" required autofocus />
+							<jet-input id="activeTo" type="date" class="mt-1 block w-full" v-model="form.activeTo" required autofocus />
 							
 							<jet-label for="description" value="Item Description" />
 							<jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.description" required autofocus />
@@ -54,7 +54,7 @@
    					Cancel
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="SaveNewBranch()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+	        	<jet-button class="ml-2" @click="SaveNew()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
     	    		Save
 	        	</jet-button>
 			</div>
@@ -109,8 +109,8 @@
 					itemCode: "",
 					codeName: "",
 					codeNameAr: "",
-					activeFrom: "",
-					activeTo: "",
+					activeFrom: new Date().toISOString().slice(0, 10),
+					activeTo: "01/01/2035",
 					description: "",
 					descriptionAr: "",
 					requestReason: ""
@@ -126,7 +126,7 @@
 			CancelAddBranch() {
 				this.addingNew = false;
 			},
-			SaveNewBranch() {
+			SaveNew() {
                 axios.post(route('eta.items.store'), this.form)
 				.then(response => {
                     this.processing = false;
@@ -142,7 +142,7 @@
                 });
 			},
             submit() {
-				SaveNewBranch();
+				SaveNew();
             }
         },
     }

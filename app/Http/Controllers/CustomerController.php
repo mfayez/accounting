@@ -60,6 +60,11 @@ class CustomerController extends Controller
             ]);
         });
     }
+	
+	public function index_json()
+	{
+		return Receiver::all()->toArray();
+	}
 
     /**
      * Show the form for creating a new resource.
