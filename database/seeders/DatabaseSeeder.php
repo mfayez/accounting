@@ -44,9 +44,9 @@ class DatabaseSeeder extends Seeder
 			$item2->buildingNumber = 'Building '.$i;
 			$item2->save();
 			$item = new Receiver();
-			$item->type = mt_rand(1,100) > 150 ? "B" : "I";
+			$item->type = mt_rand(1,100) > 150 ? "P" : "P";
 			$item->name = "Customer " . $i;
-			$item->receiver_id = mt_rand(1,100000) * 100+$i+5;
+			$item->receiver_id = '28604170103298';//mt_rand(1,100000) * 100+$i+5;
 			//$item->address()->save($item2);
 			$item2->receiver()->save($item);
 		}/*

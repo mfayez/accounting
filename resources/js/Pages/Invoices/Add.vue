@@ -183,7 +183,7 @@
 			},
 			AddItem: function() {
 				this.addingNewLine = true;
-				this.currentItem = { quantity: 10,  };
+				this.currentItem = { quantity: 1, itemsDiscount: 0, valueDifference: 0};
 				this.$nextTick(() => {
 					this.$refs.dlg1.ShowDialog();
 				});
@@ -199,6 +199,24 @@
 				this.RecalculateTax();
 			},
 			onClose: function() {
+				this.currentItem.description = this.currentItem.item.descriptionPrimaryLang;
+				this.currentItem.itemType= this.currentItem.item.codeTypeName;
+				this.currentItem.itemCode= this.currentItem.item.itemCode;
+				this.currentItem.unitType= this.currentItem.unit.code;
+				this.currentItem.internalCode= this.currentItem.item.Id.toString();
+				var temp = this.currentItem.unitValue;
+				this.currentItem.unitValue = {};
+				this.currentItem.unitValue.currencySold= 'EGP';
+				this.currentItem.unitValue.amountEGP= temp;
+				this.currentItem.taxableItems = this.currentItem.taxItems.map(function(taxitem) {
+					var obj = {};
+					obj.taxType = taxitem.taxType.Code;
+					obj.amount  = taxitem.value;
+					obj.subType = taxitem.taxSubtype.Code;
+					obj.rate    = taxitem.percentage;
+					return obj;
+				});
+				//delete this.currentItem.item;
 				if (this.addingNewLine)
 					this.form.invoiceLines.push(this.currentItem);
 				else
@@ -209,6 +227,20 @@
 				window.history.back();
 			},
 			onSave: function() {
+				axios.post(route('eta.invoices.store'), this.form)
+                .then(response => {
+                    this.processing = false;
+                    this.$nextTick(() => this.$emit('dataUpdated'));
+                    this.form.reset();
+                    this.form.processing = false;
+                    this.addingNew = false;
+                }).catch(error => {
+                    this.form.processing = false;
+                    this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;//.password[0];
+                    //this.$refs.password.focus()
+                });
+
 			},
 		},
 		created: function created() {

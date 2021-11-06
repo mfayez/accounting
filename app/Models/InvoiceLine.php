@@ -14,7 +14,7 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
     public $primaryKey = 'Id';
 
     protected $fillable = ['description', 'itemType', 'itemCode', 'unitType', 'quantity', 'internalCode', 'salesTotal',
-        'total', 'valueDifference', 'totalTaxableFees', 'netTotal', 'itemsDiscount'];
+        'total', 'valueDifference', 'totalTaxableFees', 'netTotal', 'itemsDiscount' ];
 
     public function discount()
     {
@@ -26,12 +26,12 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
         return $this->belongsTo('App\Models\Invoice', 'invoice_id', 'Id');
     }
 
-    public function value()
+    public function unitValue()
     {
         return $this->belongsTo('App\Models\Value', 'unitValue_id', 'Id');
     }
 
-    public function taxableItem()
+    public function taxableItems()
     {
         return $this->hasMany('App\Models\TaxableItem', 'invoiceline_id', 'Id');
     }

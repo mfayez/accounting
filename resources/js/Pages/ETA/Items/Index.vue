@@ -12,26 +12,26 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th v-show="showColumn('codeTypeName')" @click.prevent="sortBy('codeTypeName')">'codeTypeName'</th>
-								<th v-show="showColumn('codeID')" @click.prevent="sortBy('codeID')">'codeID'</th>
-								<th v-show="showColumn('itemCode')" @click.prevent="sortBy('itemCode')">'itemCode'</th>
-								<th v-show="showColumn('codeNamePrimaryLang')" @click.prevent="sortBy('codeNamePrimaryLang')">'codeNamePrimaryLang'</th>
-								<th v-show="showColumn('codeNameSecondaryLang')" @click.prevent="sortBy('codeNameSecondaryLang')">'codeNameSecondaryLang'</th>
-								<th v-show="showColumn('descriptionPrimaryLang')" @click.prevent="sortBy('descriptionPrimaryLang')">'descriptionPrimaryLang'</th>
-								<th v-show="showColumn('descriptionSecondaryLang')" @click.prevent="sortBy('descriptionSecondaryLang')">'descriptionSecondaryLang'</th>
-								<th v-show="showColumn('parentCodeID')" @click.prevent="sortBy('parentCodeID')">'parentCodeID'</th>
-								<th v-show="showColumn('parentItemCode')" @click.prevent="sortBy('parentItemCode')">'parentItemCode'</th>
-								<th v-show="showColumn('parentCodeNamePrimaryLang')" @click.prevent="sortBy('parentCodeNamePrimaryLang')">'parentCodeNamePrimaryLang'</th>
-								<th v-show="showColumn('parentCodeNameSecondaryLang')" @click.prevent="sortBy('parentCodeNameSecondaryLang')">'parentCodeNameSecondaryLang'</th>
-								<th v-show="showColumn('parentLevelName')" @click.prevent="sortBy('parentLevelName')">'parentLevelName'</th>
-								<th v-show="showColumn('levelName')" @click.prevent="sortBy('levelName')">'levelName'</th>
-								<th v-show="showColumn('requestCreationDateTimeUtc')" @click.prevent="sortBy('requestCreationDateTimeUtc')">'requestCreationDateTimeUtc'</th>
-								<th v-show="showColumn('codeCreationDateTimeUtc')" @click.prevent="sortBy('codeCreationDateTimeUtc')">'codeCreationDateTimeUtc'</th>
-								<th v-show="showColumn('activeFrom')" @click.prevent="sortBy('activeFrom')">'activeFrom'</th>
-								<th v-show="showColumn('activeTo')" @click.prevent="sortBy('activeTo')">'activeTo'</th>
-								<th v-show="showColumn('active')" @click.prevent="sortBy('active')">'active'</th>
-								<th v-show="showColumn('status')" @click.prevent="sortBy('status')">'status'</th>
-								<th v-show="showColumn('statusReason')" @click.prevent="sortBy('statusReason')">'statusReason'</th>
+								<th v-show="showColumn('codeTypeName')" @click.prevent="sortBy('codeTypeName')">Type</th>
+								<th v-show="showColumn('codeID')" @click.prevent="sortBy('codeID')">ETA Code</th>
+								<th v-show="showColumn('itemCode')" @click.prevent="sortBy('itemCode')">Standard Code</th>
+								<th v-show="showColumn('codeNamePrimaryLang')" @click.prevent="sortBy('codeNamePrimaryLang')">Name 1</th>
+								<th v-show="showColumn('codeNameSecondaryLang')" @click.prevent="sortBy('codeNameSecondaryLang')">Name 2</th>
+								<th v-show="showColumn('descriptionPrimaryLang')" @click.prevent="sortBy('descriptionPrimaryLang')">Description 1</th>
+								<th v-show="showColumn('descriptionSecondaryLang')" @click.prevent="sortBy('descriptionSecondaryLang')">Description 2</th>
+								<th v-show="showColumn('parentCodeID')" @click.prevent="sortBy('parentCodeID')">ETA Parent Code</th>
+								<th v-show="showColumn('parentItemCode')" @click.prevent="sortBy('parentItemCode')">Parent Code</th>
+								<th v-show="showColumn('parentCodeNamePrimaryLang')" @click.prevent="sortBy('parentCodeNamePrimaryLang')">Parent Name 1</th>
+								<th v-show="showColumn('parentCodeNameSecondaryLang')" @click.prevent="sortBy('parentCodeNameSecondaryLang')">Parent Name2</th>
+								<th v-show="showColumn('parentLevelName')" @click.prevent="sortBy('parentLevelName')">Parent Level Name</th>
+								<th v-show="showColumn('levelName')" @click.prevent="sortBy('levelName')">Level Name</th>
+								<th v-show="showColumn('requestCreationDateTimeUtc')" @click.prevent="sortBy('requestCreationDateTimeUtc')">Request Time</th>
+								<th v-show="showColumn('codeCreationDateTimeUtc')" @click.prevent="sortBy('codeCreationDateTimeUtc')">Creation Time</th>
+								<th v-show="showColumn('activeFrom')" @click.prevent="sortBy('activeFrom')">Active Date</th>
+								<th v-show="showColumn('activeTo')" @click.prevent="sortBy('activeTo')">Expire Date</th>
+								<th v-show="showColumn('active')" @click.prevent="sortBy('active')">Active Status</th>
+								<th v-show="showColumn('status')" @click.prevent="sortBy('status')">Status</th>
+								<th v-show="showColumn('statusReason')" @click.prevent="sortBy('statusReason')">ETA Comment</th>
 								<th @click.prevent="">Actions</th>
 							</tr>
 						</template>
@@ -57,7 +57,7 @@
 								 <td v-show="showColumn('activeTo')">{{ item.activeTo }}</td>
 								 <td v-show="showColumn('active')">{{ item.active }}</td>
 								 <td v-show="showColumn('status')">{{ item.status }}</td>
-								 <td v-show="showColumn('statusReason')">{{ item.statusReason }}</td>
+								 <td v-show="showColumn('statusReason')"><pre>{{ item.statusReason }}</pre></td>
 
 									<td>
 										<div class="grid justify-items-center">

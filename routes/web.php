@@ -21,7 +21,7 @@ use App\Http\Controllers\ETAController;
 |
 */
 
-Route::get('/generate/models', '\\Jimbolino\\Laravel\\ModelBuilder\\ModelGenerator5@start');
+//Route::get('/generate/models', '\\Jimbolino\\Laravel\\ModelBuilder\\ModelGenerator5@start');
 
 Route::get('/', function () {
     //return Inertia::render('Welcome', [
@@ -62,6 +62,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");
 	Route::post('/ETA/Items/Add' , [ETAController::class, 'AddItem'])->name("eta.items.store");
 	Route::get ('/ETA/Items'     , [ETAController::class, 'indexItems'])->name("eta.items.index");
+	Route::post('/ETA/Invoices/Sync/Received', [ETAController::class, 'SyncReceivedInvoices'])->name("eta.invoices.sync.received");
+	Route::post('/ETA/Invoices/Sync/Issued', [ETAController::class, 'SyncIssuedInvoices'])->name("eta.invoices.sync.issued");
+	Route::post('/ETA/Invoices/Add' , [ETAController::class, 'AddInvoice'])->name("eta.invoices.store");
+#todo mfayez change the controller method and implement it later
+	Route::get ('/ETA/Invoices/Received/Index' , [ETAController::class, 'indexItems'])->name("eta.invoices.received.index");
+	Route::get ('/ETA/Invoices/Issued/Index'   , [ETAController::class, 'indexItems'])->name("eta.invoices.sent.index");
 });
 
 Route::get('/language/{language}', function ($language) {

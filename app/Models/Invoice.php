@@ -14,8 +14,17 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     public $primaryKey = 'Id';
 
     public $timestamps = false;
+	protected $casts = [
+        'Id' => 'integer',
+		'totalDiscountAmount' => 'decimal:2',
+		'totalSalesAmount' => 'decimal:2',
+		'netAmount' => 'decimal:2',
+		'totalAmount' => 'decimal:2',
+		'extraDiscountAmount' => 'decimal:2',
+		'totalItemsDiscountAmount' => 'decimal:2',
+    ];
 
-    protected $fillable = ['documentType', 'documentTypeVersion', 'dateTimeIssued', 'taxpayerActivityCode',
+    protected $fillable = ['issuer_id', 'receiver_id', 'documentType', 'documentTypeVersion', 'dateTimeIssued', 'taxpayerActivityCode',
         'internalID', 'purchaseOrderReference', 'purchaseOrderDescription', 'salesOrderReference', 'salesOrderDescription',
         'proformaInvoiceNumber', 'totalDiscountAmount', 'totalSalesAmount', 'netAmount', 'totalAmount', 'extraDiscountAmount',
         'totalItemsDiscountAmount'];
@@ -45,12 +54,12 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
         return $this->belongsTo('App\Models\Receiver', 'receiver_id', 'Id');
     }
 
-    public function invoiceLine()
+    public function invoiceLines()
     {
         return $this->hasMany('App\Models\InvoiceLine', 'invoice_id', 'Id');
     }
 
-    public function taxTotal()
+    public function taxTotals()
     {
         return $this->hasMany('App\Models\TaxTotal', 'invoice_id', 'Id');
     }

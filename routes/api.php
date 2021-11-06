@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Item;
+use App\Models\ETAItem;
+use App\Models\Invoice;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->get('/items', function (Request $request) {
-    return Item::all();
+Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $request) {
+    $temp = Invoice::with([
+		'issuer', 'receiver', 'issuer.address', 'receiver.address',
+		'invoicelines', 'invoicelines.unitvalue', 'invoicelines.taxableitems',
+		'taxtotals',
+	])->first();
+	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });

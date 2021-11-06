@@ -5,6 +5,7 @@
 		<new-branch-dialog ref="dlg2"/>
 		<load-items-dialog ref="dlg3"/>
 		<new-item-dialog ref="dlg4"/>
+		<load-invoices-dialog ref="dlg5"/>
 
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -164,8 +165,15 @@
                                             {{ __('Upload Invoices') }}
                                         </jet-dropdown-link>
 										
-										<jet-dropdown-link as="a" :href="route('invoices.index')">
-                                            {{ __('Show Invoices') }}
+										<jet-dropdown-link as="a" :href="route('eta.invoices.sent.index')">
+                                            {{ __('Show My Invoices') }}
+                                        </jet-dropdown-link>
+
+										<jet-dropdown-link as="a" :href="route('eta.invoices.received.index')">
+                                            {{ __('Show Paid Invoices') }}
+                                        </jet-dropdown-link>
+                                        <jet-dropdown-link as="a" @click.prevent="openDlg5()" href="#">
+                                            {{ __('Load from ETA') }}
                                         </jet-dropdown-link>
 										
                                     </template>
@@ -283,6 +291,7 @@
 	import NewCustomerDialog from '@/Pages/Customers/Edit'
 	import NewBranchDialog from '@/Pages/Branches/Edit'
 	import LoadItemsDialog from '@/Pages/Items/Load'
+	import LoadInvoicesDialog from '@/Pages/Invoices/Load'
 	import NewItemDialog from '@/Pages/Items/Edit'
 
     export default {
@@ -291,6 +300,7 @@
 			NewItemDialog,
 			NewBranchDialog,
 			LoadItemsDialog,
+			LoadInvoicesDialog,
             JetApplicationMark,
             JetBanner,
             JetDropdown,
@@ -318,6 +328,9 @@
 			},
 			openDlg4() {
 				this.$refs.dlg4.ShowDialog();
+			},
+			openDlg5() {
+				this.$refs.dlg5.ShowDialog();
 			},
             logout() {
                 this.$inertia.post(route('logout'));

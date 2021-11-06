@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `TaxableItem`;
 DROP TABLE IF EXISTS `Value`;
 DROP TABLE IF EXISTS `Item`;
 DROP TABLE IF EXISTS ETAItems;
+DROP TABLE IF EXISTS ETAInvoices;
 
 create table Address (
     Id int AUTO_INCREMENT NOT NULL,
@@ -25,8 +26,8 @@ create table Address (
     room varchar(50) NULL,
     landmark varchar(50) NULL,
     additionalInformation varchar(50) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Address PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -39,8 +40,8 @@ create table Issuer (
     type varchar(50) NULL,
     issuer_id varchar(50) NULL,
     name varchar(50) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Issuer PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -54,8 +55,8 @@ create table Receiver (
     type varchar(50) NULL,
     receiver_id varchar(50) NULL,
     name varchar(50) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Receiver PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -71,8 +72,8 @@ create table Payment (
     bankAccountIBAN varchar(50) NULL,
     swiftCode varchar(50) NULL,
     terms varchar(50) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Payment PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -88,8 +89,8 @@ create table Delivery (
     grossWeight decimal(9,2) NOT NULL,
     netWeight decimal(9,2) NOT NULL,
     terms varchar(50) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Delivery PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -102,8 +103,8 @@ create table Value (
     amountEGP decimal(9,3),
 	amountSold decimal(9,3) NULL,
 	currencyExchangeRate decimal(9,3) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_UnitValue PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -114,8 +115,8 @@ create table Discount (
     Id int AUTO_INCREMENT NOT NULL,
     rate decimal(9,3) NOT NULL,
     amount decimal(9.3) NOT NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Discount PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -139,8 +140,8 @@ create table InvoiceLine (
     unitValue_id int,
     discount_id int,
 	invoice_id int not null,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_InvoiceLine PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -155,8 +156,8 @@ create table TaxableItem (
     subType varchar(50) NULL,
     rate decimal(9,3) NOT NULL,
 	invoiceline_id int NOT NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_TaxableItem PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -168,8 +169,8 @@ create table TaxTotal (
     taxType varchar(50) NULL,
     amount decimal(9,3) NOT NULL,
 	invoice_id int not null,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_TaxTotal PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -199,8 +200,8 @@ create table Invoice (
     totalAmount decimal(9,3) NOT NULL,
     extraDiscountAmount decimal(9,3) NOT NULL,
     totalItemsDiscountAmount decimal(9,3) NOT NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Invoice PRIMARY KEY CLUSTERED
    (
       Id asc
@@ -219,8 +220,8 @@ create table Item (
     description varchar(50) NULL,
     descriptionAr varchar(50) NULL,
     requestReason varchar(50) NULL,
-	`created_at` timestamp NULL DEFAULT NULL,
-	`updated_at` timestamp NULL DEFAULT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT PK_Item PRIMARY KEY CLUSTERED
     (
       Id asc
@@ -275,6 +276,37 @@ CREATE TABLE ETAItems(
   )
 )
 ;
+CREATE TABLE ETAInvoices(
+  Id int AUTO_INCREMENT NOT NULL
+  ,uuid                          VARCHAR(26) NOT NULL
+  ,submissionUUID                VARCHAR(26) NOT NULL
+  ,longId                        VARCHAR(80) NOT NULL
+  ,internalId                    VARCHAR(32) NOT NULL
+  ,typeName                      VARCHAR(10) NOT NULL
+  ,typeVersionName               NUMERIC(5,2) NOT NULL
+  ,issuerId                      INTEGER  NOT NULL
+  ,issuerName                    VARCHAR(256) NOT NULL
+  ,receiverId                    INTEGER  NULL
+  ,receiverName                  VARCHAR(256) NULL
+  ,dateTimeIssued                DATETIME  NOT NULL
+  ,dateTimeReceived              DATETIME  NOT NULL
+  ,totalSales                    NUMERIC(12,2) NOT NULL
+  ,totalDiscount                 NUMERIC(12,2) NOT NULL
+  ,netAmount                     NUMERIC(12,2) NOT NULL
+  ,total                         NUMERIC(12,2) NOT NULL
+  ,cancelRequestDate             DATETIME NULL 
+  ,rejectRequestDate             DATETIME NULL
+  ,cancelRequestDelayedDate      DATETIME NULL
+  ,rejectRequestDelayedDate      DATETIME NULL
+  ,declineCancelRequestDate      DATETIME NULL
+  ,declineRejectRequestDate      DATETIME NULL
+  ,status                        VARCHAR(16) NOT NULL
+  ,createdByUserId               VARCHAR(46) NOT NULL
+  ,CONSTRAINT PK_ETAInvoices PRIMARY KEY CLUSTERED
+  (
+    Id asc
+  )
+);
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_issuer_id FOREIGN KEY (issuer_id) REFERENCES Issuer(id);
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_receiver_id FOREIGN KEY (receiver_id) REFERENCES Receiver(id);
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_payment_id FOREIGN KEY (payment_id) REFERENCES Payment(id);

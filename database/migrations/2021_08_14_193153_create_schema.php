@@ -15,7 +15,10 @@ class CreateSchema extends Migration
     public function up()
     {
 		ini_set('memory_limit', '-1');
-		DB::unprepared( file_get_contents( "schema.sql" ) );
+		foreach (explode(";", file_get_contents("schema.sql")) as $sql_statment) {
+			if(strlen($sql_statment) > 5)
+				DB::unprepared( $sql_statment);
+		}
     }
 
     /**

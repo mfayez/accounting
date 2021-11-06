@@ -63,7 +63,7 @@ class CustomerController extends Controller
 	
 	public function index_json()
 	{
-		return Receiver::all()->toArray();
+		return Receiver::with('address')->get()->toArray();
 	}
 
     /**
