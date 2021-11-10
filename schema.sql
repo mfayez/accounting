@@ -200,6 +200,8 @@ create table Invoice (
     totalAmount decimal(9,3) NOT NULL,
     extraDiscountAmount decimal(9,3) NOT NULL,
     totalItemsDiscountAmount decimal(9,3) NOT NULL,
+    `status` VARCHAR(200) NULL DEFAULT NULL,
+	`statusReason` VARCHAR(1000) NULL DEFAULT NULL,
 	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT PK_Invoice PRIMARY KEY CLUSTERED

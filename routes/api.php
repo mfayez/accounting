@@ -28,3 +28,10 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 	])->first();
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
+
+Route::middleware('auth:sanctum')->get('/invoices/update', function (Request $request) {
+	$invoice = Invoice::find($request->internal_id);
+	$invoice->status = $request->status;
+	$invoice->statusreason = $request->reason;
+	$invoice->save();
+});
