@@ -16,7 +16,7 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     protected $fillable = ['documentType', 'documentTypeVersion', 'dateTimeIssued', 'taxpayerActivityCode',
         'internalID', 'purchaseOrderReference', 'purchaseOrderDescription', 'salesOrderReference', 'salesOrderDescription',
         'proformaInvoiceNumber', 'totalDiscountAmount', 'totalSalesAmount', 'netAmount', 'totalAmount', 'extraDiscountAmount',
-        'totalItemsDiscountAmount'];
+        'totalItemsDiscountAmount', 'Status', 'StatusReason'];
 
     public function getDates()
     {

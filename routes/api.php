@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\ETAItem;
+use App\Models\ETAInvoice;
 use App\Models\Invoice;
 
 /*
@@ -25,13 +26,37 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 		'issuer', 'receiver', 'issuer.address', 'receiver.address',
 		'invoicelines', 'invoicelines.unitvalue', 'invoicelines.taxableitems',
 		'taxtotals',
-	])->first();
+	])->where(function($query) {
+		$query->where('status', '=', 'pending')
+			  ->orWhereNull('status');
+	})->first();
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
 
-Route::middleware('auth:sanctum')->get('/invoices/update', function (Request $request) {
-	$invoice = Invoice::find($request->internal_id);
-	$invoice->status = $request->status;
-	$invoice->statusreason = $request->reason;
-	$invoice->save();
+Route::middleware('auth:sanctum')->post('/invoices/update', function (Request $request) {
+	$data = $request->all();
+	foreach($data["acceptedDocuments"] as $document) {
+		$invoice = Invoice::where('internalID', '=', $document["internalId"])
+						->where(function ($query) {
+							$query->where('status', '=', 'pending')
+							      ->orWhereNull('status');
+					    })->firstOrFail();
+		$invoice->status = 'processing';
+		$invoice->statusreason = 'Accepted for processing';
+		$invoice->uuid = $document["uuid"];
+		$invoice->submissionUUID = $data["submissionId"];
+		$invoice->longId = $document["longId"];
+		$invoice->save();
+	}
+	foreach($data["rejectedDocuments"] as $document) {
+		$invoice = Invoice::where('internalID', '=', $document["internalId"])
+						->where(function ($query) {
+							$query->where('status', '=', 'pending')
+							      ->orWhereNull('status');
+					    })->firstOrFail();
+		$invoice->status = 'rejected';
+		$invoice->statusreason = json_encode($document["error"]);
+		$invoice->save();
+	}
+	return response()->json(["status" => "ok"]);
 });

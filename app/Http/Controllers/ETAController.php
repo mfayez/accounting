@@ -239,6 +239,37 @@ class ETAController extends Controller
 		}
 	}
 
+	public function indexIssued()
+	{
+		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                $query->where('totalDiscountAmount', '=', "{$value}")
+                    ->orWhere('netAmount', '=', "{$value}");
+            });
+        });
+
+		$items = QueryBuilder::for(Invoice::class)
+			->with("receiver")
+			//->join("Receiver", "Invoice.receiver_id", "Receiver.Id")
+			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
+            ->defaultSort('Invoice.Id')
+            ->allowedSorts(['Status'])
+            ->allowedFilters(['status', $globalSearch])
+            ->paginate(20)
+            ->withQueryString();
+        return Inertia::render('Invoices/Index', [
+            'items' => $items,
+        ])->table(function (InertiaTable $table) {
+            $table->addSearchRows([
+				'internalID'	=>	'Internal ID'
+			])->addColumns([
+                'internalID'	=> 'Internal ID',
+				'Status'		=> 'Status',
+				'receiver.name' => 'Receiver',
+				'receiver.Id'	=> 'Test'
+            ]);
+        });
+    }
     public function indexItems()
     {
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {

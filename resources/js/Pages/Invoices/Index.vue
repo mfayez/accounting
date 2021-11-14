@@ -12,24 +12,18 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th v-show="showColumn('description')" @click.prevent="sortBy('description')">Description</th>
-								<th v-show="showColumn('internal_code')" @click.prevent="sortBy('internal_code')">Internal Code</th>
-								<th v-show="showColumn('gs1_code')" @click.prevent="sortBy('gs1_code')">Global Standard Code</th>
-								<th v-show="showColumn('egs_code')" @click.prevent="sortyBy('egs_code')">Egyptian Standard Code</th>
-								<th v-show="showColumn('unit_type')" @click.prevent="">Unit Type</th>
-								<th v-show="showColumn('unit_value')" @click.prevent="">Unit Price</th>
+								<th v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+									{{ col.label }}
+								</th>
 								<th @click.prevent="">Actions</th>
 							</tr>
 						</template>
 
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
-									<td v-show="showColumn('description')">{{ item.description }}</td>
-									<td v-show="showColumn('internal_code')">{{ item.internal_code }}</td>
-									<td v-show="showColumn('gs1_code')">{{ item.gs1_code }}</td>
-									<td v-show="showColumn('egs_code')">{{ item.egs_code }}</td>
-									<td v-show="showColumn('unit_type')">{{ item.unit_type }}</td>
-									<td v-show="showColumn('unit_value')">{{ item.unit_value }}</td>
+									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+										{{ nestedIndex(item, key) }}
+									</td>
 									<td>
 										<div class="grid justify-items-center">
                     						<add-edit-item :item="item" @confirmed="enableTwoFactorAuthentication">
@@ -68,6 +62,16 @@
 			items: Object
   		},
 		methods: {
+			nestedIndex: function(item, key) {
+				var keys = key.split(".");
+				if (keys.length == 1)
+					return item[key];
+				if (keys.length == 2)
+					return item[keys[0]][keys[1]];
+				if (keys.length == 3)
+					return item[keys[0]][keys[1]][keys[2]];
+				return "Unsupported Nested Index";
+			},
 			editItem: function(item_id) {
 				//alert(JSON.stringify(item_id));
 			}

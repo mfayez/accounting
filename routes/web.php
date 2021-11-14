@@ -67,7 +67,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::post('/ETA/Invoices/Add' , [ETAController::class, 'AddInvoice'])->name("eta.invoices.store");
 #todo mfayez change the controller method and implement it later
 	Route::get ('/ETA/Invoices/Received/Index' , [ETAController::class, 'indexItems'])->name("eta.invoices.received.index");
-	Route::get ('/ETA/Invoices/Issued/Index'   , [ETAController::class, 'indexItems'])->name("eta.invoices.sent.index");
+	Route::get ('/ETA/Invoices/Issued/Index'   , [ETAController::class, 'indexIssued'])->name("eta.invoices.sent.index");
 });
 
 Route::get('/language/{language}', function ($language) {

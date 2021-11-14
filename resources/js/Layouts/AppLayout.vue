@@ -206,7 +206,7 @@
                                             {{ __('Upload Items') }}
                                         </jet-dropdown-link>
 										
-										<jet-dropdown-link as="a" :href="route('eta.items.index')">
+										<jet-dropdown-link as="a" :href="route('eta.items.index')+'?page=1&columns%5B0%5D=itemCode&columns%5B1%5D=codeNamePrimaryLang&columns%5B2%5D=parentCodeNameSecondaryLang&columns%5B3%5D=activeTo&columns%5B4%5D=active&columns%5B5%5D=status'">
                                             {{ __('Show Items') }}
                                         </jet-dropdown-link>
                                         <jet-dropdown-link as="a" @click.prevent="openDlg3()" href="#">
