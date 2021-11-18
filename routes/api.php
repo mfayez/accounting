@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\ETAItem;
 use App\Models\ETAInvoice;
 use App\Models\Invoice;
+use App\Http\Controllers\ETAController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,8 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 	})->first();
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
+
+Route::middleware('auth:sanctum')->post('/invoices/upload', [ETAController::class, 'UploadInvoice']);
 
 Route::middleware('auth:sanctum')->post('/invoices/update', function (Request $request) {
 	$data = $request->all();

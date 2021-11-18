@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\TaxableItem;
+use App\Models\TaxTotal;
+use App\Models\Value;
 /**
  * Eloquent class to describe the Invoice table.
  *
@@ -33,6 +36,40 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     {
         return ['dateTimeIssued'];
     }
+
+	public function normalize()
+	{
+		$salesTotal = 0;
+		$total = 0;
+		foreach($this->invoiceLines as $line) {
+			$salesTotal += $line->salesTotal;
+			$total += $line->total;
+		}
+		$this->netAmount = $salesTotal;
+		$this->totalSalesAmount = $salesTotal;
+		$this->totalAmount = $total;
+	}
+
+	public function updateTaxTotals()
+	{
+		$this->taxTotals()->delete();
+		$taxTotals = array();
+		foreach($this->invoiceLines as $line) {
+			foreach($line->taxableItems as $item) {
+				if (isset($taxTotals[$item->taxType]))
+					$taxTotals[$item->taxType] += $item->amount; 
+				else
+					$taxTotals[$item->taxType] = $item->amount; 
+			}
+		}
+		foreach($taxTotals as $key=>$item) {
+			$totalTax = new TaxTotal();
+			$totalTax->taxType = $key;
+			$totalTax->amount = $item;
+			$totalTax->invoice_id = $this->Id;
+			$totalTax->save();	
+		}
+	}
 
     public function delivery()
     {

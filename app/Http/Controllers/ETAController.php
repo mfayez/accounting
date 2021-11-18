@@ -26,28 +26,88 @@ class ETAController extends Controller
 	protected $token = '';
 	protected $token_expires_at = null;
 	
+	public function UploadInvoice(Request $request)
+	{
+		//$request->validate([
+        //    'file' => 'required|file|mimes:csv',
+        //]);
+    
+		$temp = $this->csvToArray($request->file);
+		$inserted = array(); 
+		$updated = array(); 
+		foreach($temp as $key=>$invoice_data)
+		{
+			if (isset($inserted[$invoice_data['internalID']])) {
+				$temp[$key]["invoice_id"] = $inserted[$invoice_data['internalID']];
+				continue;
+			}
+			$invoice = new Invoice($invoice_data);
+			$invoice->documentType = "I";
+			$invoice->documentTypeVersion = "0.9";
+			$invoice->totalDiscountAmount = 0;
+			$invoice->totalSalesAmount = 0;
+			$invoice->netAmount = 0;
+			$invoice->totalAmount = 0;
+			$invoice->extraDiscountAmount = 0;
+			$invoice->totalItemsDiscountAmount = 0;	
+			$invoice->save();
+			$temp[$key]["invoice_id"] = $invoice->Id;
+			$inserted[$invoice_data['internalID']] = $invoice->Id;
+		}
+		foreach($temp as $key=>$invoice_data)
+		{
+			$item = ETAItem::where("itemCode", "=", $invoice_data["itemCode"])->first();
+			if (!$item){
+				$temp[$key]["error"] = "Item not found!";
+				continue;
+			}
+			
+			$unitValue = new Value($invoice_data);
+			$unitValue->save();
+			$invoiceline = new InvoiceLine($invoice_data);
+			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->itemType = $item->codeTypeName;//"EGS"
+			$invoiceline->description = $item->codeNamePrimaryLang;
+			$invoiceline->internalCode = $item->Id;
+			$invoiceline->netTotal = $invoice_data["salesTotal"];
+			$invoiceline->valueDifference = 0;
+			$invoiceline->totalTaxableFees = 0;
+			$invoiceline->itemsDiscount = 0;
+			$invoiceline->save();
+			if ($invoice_data["T1(V009)"] > 0) {
+				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($invoice_data["T1(V009)"])]);
+				$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
+				$item1->invoiceline_id = $invoiceline->Id;
+				$item1->save();
+			}
+			$invoiceline->invoice->normalize();
+			$invoiceline->invoice->save();
+			
+		}
+		foreach($temp as $key=>$invoice_data)
+		{
+			if (!isset($updated[$invoice_data['internalID']])) {
+				$invoice = Invoice::find($invoice_data['invoice_id']);
+				$invoice->updateTaxTotals();
+				$updated[$invoice_data['internalID']] = $invoice->Id;
+			}
+		}
+		
+		return $temp;
+        //$fileName = time().'.'.$request->file->extension();  
+     
+        //$request->file->move(public_path('file'), $fileName);
+  
+        /* Store $fileName name in DATABASE from HERE */
+        //File::create(['name' => $fileName])
+    
+	}
+
 	public function AddInvoice(StoreInvoiceRequest $request)
 	{
 		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documentsubmissions";
 		$data = $request->validated();
-		//remove extra attributes
-		//unset($data['issuer']['Id']);
-		unset($data['issuer']['issuer_id']);
-		unset($data['issuer']['address_id']);
-		unset($data['issuer']['address']['Id']);
-		unset($data['issuer']['address']['created_at']);
-		unset($data['issuer']['address']['updated_at']);
-		unset($data['issuer']['created_at']);
-		unset($data['issuer']['updated_at']);
-		//unset($data['receiver']['Id']);
-		unset($data['receiver']['address_id']);
-		unset($data['receiver']['address']['Id']);
-		unset($data['receiver']['address']['branchID']);
-		unset($data['receiver']['address']['created_at']);
-		unset($data['receiver']['address']['updated_at']);
-		unset($data['receiver']['receiver_id']);
-		unset($data['receiver']['created_at']);
-		unset($data['receiver']['updated_at']);
+		//remove extra attributes, no need but you can get them from git history
 		$data['dateTimeIssued'] = $data['dateTimeIssued'] . ":00Z";
 		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode']['code'];
 		$data['totalSalesAmount'] = floatval($data['totalSalesAmount']);
@@ -329,5 +389,30 @@ class ETAController extends Controller
     public function indexItems_json()
     {
 		return ETAItem::all()->toArray();
+	}
+	
+	private function csvToArray($filename = '', $delimiter = ',')
+	{
+    	if (!file_exists($filename) || !is_readable($filename))
+        	return false;
+
+	    $header_en = null;
+	    $header_ar = null;
+    	$data = array();
+	    if (($handle = fopen($filename, 'r')) !== false)
+    	{
+        	while (($row = fgetcsv($handle, 10000, $delimiter)) !== false)
+	        {
+    	        if (!$header_en)
+        	        $header_en = $row;
+    	        else if (!$header_ar)
+        	        $header_ar = $row;
+            	else
+                	$data[] = array_combine($header_en, $row);
+        	}
+	        fclose($handle);
+    	}
+
+    	return $data;
 	}
 }

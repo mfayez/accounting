@@ -6,6 +6,7 @@
 		<load-items-dialog ref="dlg3"/>
 		<new-item-dialog ref="dlg4"/>
 		<load-invoices-dialog ref="dlg5"/>
+		<upload-invoices-dialog ref="dlg6" />
 
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -161,7 +162,7 @@
                                             {{ __('Add New Invoice') }}
                                         </jet-dropdown-link>
 										
-										<jet-dropdown-link :href="route('invoices.create')">
+										<jet-dropdown-link as="a" @click.prevent="openDlg6()" href="#"> 
                                             {{ __('Upload Invoices') }}
                                         </jet-dropdown-link>
 										
@@ -293,9 +294,11 @@
 	import LoadItemsDialog from '@/Pages/Items/Load'
 	import LoadInvoicesDialog from '@/Pages/Invoices/Load'
 	import NewItemDialog from '@/Pages/Items/Edit'
+	import UploadInvoicesDialog from '@/Pages/Invoices/Upload'
 
     export default {
         components: {
+			UploadInvoicesDialog,
 			NewCustomerDialog,
 			NewItemDialog,
 			NewBranchDialog,
@@ -331,6 +334,9 @@
 			},
 			openDlg5() {
 				this.$refs.dlg5.ShowDialog();
+			},
+			openDlg6() {
+				this.$refs.dlg6.ShowDialog();
 			},
             logout() {
                 this.$inertia.post(route('logout'));

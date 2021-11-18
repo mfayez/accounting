@@ -23,18 +23,18 @@ use App\Http\Controllers\ETAController;
 
 //Route::get('/generate/models', '\\Jimbolino\\Laravel\\ModelBuilder\\ModelGenerator5@start');
 
-Route::get('/', function () {
-    //return Inertia::render('Welcome', [
-    return Inertia::render('Auth/Login', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+//Route::get('/', function () {
+//    //return Inertia::render('Welcome', [
+//    return Inertia::render('Auth/Login', [
+//        'canLogin' => Route::has('login'),
+//        'canRegister' => Route::has('register'),
+//        'laravelVersion' => Application::VERSION,
+//        'phpVersion' => PHP_VERSION,
+//    ]);
+//});
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-	Route::get('/dashboard', function () {
+	Route::get('/', function () {
 		//Session()->flash('flash.banner', 'Yay it works!');
 		//Session()->flash('flash.bannerStyle', 'danger');
     	return Inertia::render('Dashboard');
@@ -65,6 +65,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::post('/ETA/Invoices/Sync/Received', [ETAController::class, 'SyncReceivedInvoices'])->name("eta.invoices.sync.received");
 	Route::post('/ETA/Invoices/Sync/Issued', [ETAController::class, 'SyncIssuedInvoices'])->name("eta.invoices.sync.issued");
 	Route::post('/ETA/Invoices/Add' , [ETAController::class, 'AddInvoice'])->name("eta.invoices.store");
+	Route::post('/ETA/Invoices/Upload' , [ETAController::class, 'UploadInvoice'])->name("eta.invoices.upload");
 #todo mfayez change the controller method and implement it later
 	Route::get ('/ETA/Invoices/Received/Index' , [ETAController::class, 'indexItems'])->name("eta.invoices.received.index");
 	Route::get ('/ETA/Invoices/Issued/Index'   , [ETAController::class, 'indexIssued'])->name("eta.invoices.sent.index");

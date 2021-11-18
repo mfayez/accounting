@@ -13,7 +13,7 @@ class TaxTotal extends \Illuminate\Database\Eloquent\Model
 
     public $primaryKey = 'Id';
 
-    protected $fillable = ['taxType', 'amount'];
+    protected $fillable = ['taxType', 'amount', 'invoice_id'];
 
     public function invoice()
     {

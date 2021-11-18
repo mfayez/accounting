@@ -12,53 +12,18 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th v-show="showColumn('codeTypeName')" @click.prevent="sortBy('codeTypeName')">Type</th>
-								<th v-show="showColumn('codeID')" @click.prevent="sortBy('codeID')">ETA Code</th>
-								<th v-show="showColumn('itemCode')" @click.prevent="sortBy('itemCode')">Standard Code</th>
-								<th v-show="showColumn('codeNamePrimaryLang')" @click.prevent="sortBy('codeNamePrimaryLang')">Name 1</th>
-								<th v-show="showColumn('codeNameSecondaryLang')" @click.prevent="sortBy('codeNameSecondaryLang')">Name 2</th>
-								<th v-show="showColumn('descriptionPrimaryLang')" @click.prevent="sortBy('descriptionPrimaryLang')">Description 1</th>
-								<th v-show="showColumn('descriptionSecondaryLang')" @click.prevent="sortBy('descriptionSecondaryLang')">Description 2</th>
-								<th v-show="showColumn('parentCodeID')" @click.prevent="sortBy('parentCodeID')">ETA Parent Code</th>
-								<th v-show="showColumn('parentItemCode')" @click.prevent="sortBy('parentItemCode')">Parent Code</th>
-								<th v-show="showColumn('parentCodeNamePrimaryLang')" @click.prevent="sortBy('parentCodeNamePrimaryLang')">Parent Name 1</th>
-								<th v-show="showColumn('parentCodeNameSecondaryLang')" @click.prevent="sortBy('parentCodeNameSecondaryLang')">Parent Name2</th>
-								<th v-show="showColumn('parentLevelName')" @click.prevent="sortBy('parentLevelName')">Parent Level Name</th>
-								<th v-show="showColumn('levelName')" @click.prevent="sortBy('levelName')">Level Name</th>
-								<th v-show="showColumn('requestCreationDateTimeUtc')" @click.prevent="sortBy('requestCreationDateTimeUtc')">Request Time</th>
-								<th v-show="showColumn('codeCreationDateTimeUtc')" @click.prevent="sortBy('codeCreationDateTimeUtc')">Creation Time</th>
-								<th v-show="showColumn('activeFrom')" @click.prevent="sortBy('activeFrom')">Active Date</th>
-								<th v-show="showColumn('activeTo')" @click.prevent="sortBy('activeTo')">Expire Date</th>
-								<th v-show="showColumn('active')" @click.prevent="sortBy('active')">Active Status</th>
-								<th v-show="showColumn('status')" @click.prevent="sortBy('status')">Status</th>
-								<th v-show="showColumn('statusReason')" @click.prevent="sortBy('statusReason')">ETA Comment</th>
+								<th v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+									{{ col.label }}
+								</th>
 								<th @click.prevent="">Actions</th>
 							</tr>
 						</template>
 
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
-								 <td v-show="showColumn('codeTypeName')">{{ item.codeTypeName }}</td>
-								 <td v-show="showColumn('codeID')">{{ item.codeID }}</td>
-								 <td v-show="showColumn('itemCode')">{{ item.itemCode }}</td>
-								 <td v-show="showColumn('codeNamePrimaryLang')">{{ item.codeNamePrimaryLang }}</td>
-								 <td v-show="showColumn('codeNameSecondaryLang')">{{ item.codeNameSecondaryLang }}</td>
-								 <td v-show="showColumn('descriptionPrimaryLang')">{{ item.descriptionPrimaryLang }}</td>
-								 <td v-show="showColumn('descriptionSecondaryLang')">{{ item.descriptionSecondaryLang }}</td>
-								 <td v-show="showColumn('parentCodeID')">{{ item.parentCodeID }}</td>
-								 <td v-show="showColumn('parentItemCode')">{{ item.parentItemCode }}</td>
-								 <td v-show="showColumn('parentCodeNamePrimaryLang')">{{ item.parentCodeNamePrimaryLang }}</td>
-								 <td v-show="showColumn('parentCodeNameSecondaryLang')">{{ item.parentCodeNameSecondaryLang }}</td>
-								 <td v-show="showColumn('parentLevelName')">{{ item.parentLevelName }}</td>
-								 <td v-show="showColumn('levelName')">{{ item.levelName }}</td>
-								 <td v-show="showColumn('requestCreationDateTimeUtc')">{{ item.requestCreationDateTimeUtc }}</td>
-								 <td v-show="showColumn('codeCreationDateTimeUtc')">{{ item.codeCreationDateTimeUtc }}</td>
-								 <td v-show="showColumn('activeFrom')">{{ item.activeFrom }}</td>
-								 <td v-show="showColumn('activeTo')">{{ item.activeTo }}</td>
-								 <td v-show="showColumn('active')">{{ item.active }}</td>
-								 <td v-show="showColumn('status')">{{ item.status }}</td>
-								 <td v-show="showColumn('statusReason')"><pre>{{ item.statusReason }}</pre></td>
-
+									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+										{{ nestedIndex(item, key) }}
+									</td>
 									<td>
 										<div class="grid justify-items-center">
                     						<add-edit-item :item="item" @confirmed="enableTwoFactorAuthentication">
@@ -97,6 +62,16 @@
 			items: Object
   		},
 		methods: {
+			nestedIndex: function(item, key) {
+				var keys = key.split(".");
+				if (keys.length == 1)
+					return item[key];
+				if (keys.length == 2)
+					return item[keys[0]][keys[1]];
+				if (keys.length == 3)
+					return item[keys[0]][keys[1]][keys[2]];
+				return "Unsupported Nested Index";
+			},
 			editItem: function(item_id) {
 				//alert(JSON.stringify(item_id));
 			}
