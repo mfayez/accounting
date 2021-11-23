@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 use App\Http\Controllers\InvoiceController;
@@ -35,9 +36,19 @@ use App\Http\Controllers\ETAController;
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::get('/', function () {
+		$sql = "select count(*) as invoicesCount,
+			sum(totalSalesAmount) totalSalesAmount,
+			sum(totalAmount) totalAmount,
+			ifnull(sum(t2.amount), 0) taxTotal,
+			ifnull(Status, 'pending') as Status
+		from Invoice t1 left outer join TaxTotal t2 on t1.Id = t2.invoice_id
+		group by Status";
+		$data = DB::select($sql);
 		//Session()->flash('flash.banner', 'Yay it works!');
 		//Session()->flash('flash.bannerStyle', 'danger');
-    	return Inertia::render('Dashboard');
+    	return Inertia::render('Dashboard', [
+			'statistics' => $data
+		]);
 	})->name('dashboard');
 	
 	Route::get('/dashboard2', function () {

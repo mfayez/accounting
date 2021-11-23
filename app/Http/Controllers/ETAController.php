@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\ETAItem;
+use App\Models\ETAInvoice;
+use App\Models\Invoice;
 use App\Models\Invoice;
 use App\Models\InvoiceLine;
 use App\Models\TaxableItem;
@@ -169,31 +171,11 @@ class ETAController extends Controller
 		]);
 		//$collection = ETAItem::hydrate($response['result']);
 		$collection = $response['result'];
-		//dd($response);
-		dd($response['result']);
 		//$collection->transform(function ($item, $key) {
     	//$collection->each(function ($item) {
 		foreach($collection as $item) {
-			$item2 = new ETAItem($item);
-			$item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
-            $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
-            $item2->ownerTaxpayernameAr = $item['ownerTaxpayer']['nameAr'];
-            $item2->requesterTaxpayerrin = $item['requesterTaxpayer']['rin'];
-            $item2->requesterTaxpayername = $item['requesterTaxpayer']['name'];
-            $item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
-            $item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
-            $item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
-            $item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
-            $item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
-            $item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
-            $item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
-            $item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
-            $item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
-            $item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
-            $item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
-            $item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
-            $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
-			$item2->save();
+			$invoice = ETAInvoice::updateOrCreate(['uuid' => $item->uuid], $item); 
+			//$invoice->save();
 		};
 		//$collection = $collection->flatten();
 		//foreach($response['result'] as $item) {
@@ -304,7 +286,8 @@ class ETAController extends Controller
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 $query->where('totalDiscountAmount', '=', "{$value}")
-                    ->orWhere('netAmount', '=', "{$value}");
+                    ->orWhere('netAmount', '=', "{$value}")
+                    ->orWhere('internalID', '=', "{$value}");
             });
         });
 
@@ -314,19 +297,23 @@ class ETAController extends Controller
 			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
             ->defaultSort('Invoice.Id')
             ->allowedSorts(['Status'])
-            ->allowedFilters(['status', $globalSearch])
+            ->allowedFilters(['status', 'internalID', $globalSearch])
             ->paginate(20)
             ->withQueryString();
         return Inertia::render('Invoices/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-				'internalID'	=>	'Internal ID'
+				'internalID'	=>	'Internal ID',
+				'status'	=>	'Status'
 			])->addColumns([
                 'internalID'	=> 'Internal ID',
-				'Status'		=> 'Status',
 				'receiver.name' => 'Receiver',
-				'receiver.Id'	=> 'Test'
+				'receiver.receiver_id'	=> 'Customer Registration Number',
+				'totalAmount' => 'Total Amount',
+				'netAmount' => 'Net Amount',
+				'status'		=> 'Status',
+				'statusReason'		=> 'ETA Comments',
             ]);
         });
     }

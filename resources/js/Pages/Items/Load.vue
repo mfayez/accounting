@@ -94,7 +94,7 @@
 					if (this.progress.value < this.progress.maxValue)
 						this.$nextTick(() => this.LoadETA());
 					else
-						this.CnacleAdd();
+						this.CancelAdd();
                 }).catch(error => {
 					this.$page.props.errors = error.response.data.errors;
                     this.errors = error.response.data.errors;
