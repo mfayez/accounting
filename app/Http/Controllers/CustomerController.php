@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Validation\Rule;
 
 use App\Models\Address;
 use App\Models\Delivery;
@@ -84,7 +85,15 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+		$data = $request->validate([
+            'name' 							=> ['required', 'string', 'max:255'],
+            'receiver_id' 					=> ['required', 'integer'],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
+        ]);
+
+        $item = new Receiver($data);
+        $item->save();
+        return $item;
     }
 
     /**

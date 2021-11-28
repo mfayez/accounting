@@ -17,10 +17,9 @@
 		</div>
 	</div>
 </div>
-
-
-
-					<img src="images\placeholder.png" />
+<div class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:px-8">
+	<top-items />
+</div>
                 </div>
             </div>
         </div>
@@ -30,9 +29,11 @@
 <script>
     import AppLayout from '@/Layouts/AppLayout'
     import Welcome from '@/Jetstream/Welcome'
+	import TopItems from '@/Charts/TopItems'
 
     export default {
         components: {
+			TopItems,
             AppLayout,
             Welcome,
         },

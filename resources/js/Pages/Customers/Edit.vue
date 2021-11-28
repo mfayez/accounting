@@ -1,31 +1,44 @@
 <template>
-        <!-- New Customer Modal -->
-        <jet-dialog-modal :show="addingNewCustomer" @close="addingNewCustomer = false">
-            <template #title>
-                Add new customer
-            </template>
+    <jet-dialog-modal :show="addingNew" @close="addingNew = false">
+		<template #title>
+        	Add new customer
+        </template>
 
-            <template #content>
-                <div class="grid grid-cols-3 md:grid-cols-3 gap-4">
-                	<div>
-						<label class="flex items-center">Name:</label>
-                    </div>
-                	<div>
-						<input type="text" :value="form.name"/>
-               		</div>
-                </div>
-            </template>
+        <template #content>
+			<jet-validation-errors class="mb-4" />
 
-            <template #footer>
-                <jet-secondary-button @click="CancelAddCustomer()">
-                    Cancel
-                </jet-secondary-button>
+			<form @submit.prevent="submit">
+				<div class="grid grid-cols-3 gap-4">
+						<div>
+							<jet-label for="type"  value="Customer Type" />
+							<select id="type" v-model="form.type" class="mt-1 block w-full">
+							  <option value="P">Person</option>
+							  <option value="B">Business</option>
+							</select>
+						</div>
+						<div> 
+							<jet-label for="id" value="Tax Registration Number" />
+							<jet-input id="id" type="text" class="mt-1 block w-full" v-model="form.receiver_id" required />
+						</div>
+						<div> 
+							<jet-label for="name" value="Name" />
+							<jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required />
+						</div>
+				</div>
+			</form>
+		</template>
+		<template #footer>
+			<div class="flex items-center justify-end mt-4">
+	    		<jet-secondary-button @click="CancelAddBranch()">
+   					Cancel
+        		</jet-secondary-button>
 
-                <jet-button class="ml-2" @click="SaveNewCustomer()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Save
-                </jet-button>
-            </template>
-        </jet-dialog-modal>
+	        	<jet-button class="ml-2" @click="SaveNewBranch()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+    	    		Save
+	        	</jet-button>
+			</div>
+	   </template>
+	</jet-dialog-modal>
 </template>
 
 <script>
@@ -42,9 +55,12 @@
     import JetLabel from '@/Jetstream/Label'
     import JetSecondaryButton from '@/Jetstream/SecondaryButton'
     import JetSectionBorder from '@/Jetstream/SectionBorder'
+    import JetValidationErrors from '@/Jetstream/ValidationErrors'
+	import Multiselect from '@suadelabs/vue3-multiselect'
 
     export default {
         components: {
+			Multiselect,
             JetActionMessage,
             JetActionSection,
             JetButton,
@@ -58,31 +74,51 @@
             JetLabel,
             JetSecondaryButton,
             JetSectionBorder,
+			JetValidationErrors,
         },
 
         props: [
-            'customer',
+            'branch',
         ],
 
         data() {
             return {
+				errors: [],
                 form: this.$inertia.form({
                     name: '',
-                }),
-				addingNewCustomer: false,
+                    receiver_id: '',
+                    type: 'B',
+				}),
+				addingNew: false,
             }
         },
 
         methods: {
 			ShowDialog() {
-				this.addingNewCustomer = true;
+				this.addingNew = true;
 			},
-			CancelAddCustomer() {
-				this.addingNewCustomer = false;
+			CancelAddBranch() {
+				this.addingNew = false;
 			},
-			SaveNewCustomer() {
-				this.addingNewCustomer = false;
+			SaveNewBranch() {
+                axios.post(route('customers.store'), this.form)
+				.then(response => {
+                    this.processing = false;
+                    this.$nextTick(() => this.$emit('dataUpdated'));
+					this.form.reset();
+					this.form.processing = false;
+					this.addingNew = false;
+                }).catch(error => {
+                    this.form.processing = false;
+					this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;//.password[0];
+                    //this.$refs.password.focus()
+                });
 			},
+            submit() {
+				SaveNewBranch();
+            }
         },
     }
 </script>
+

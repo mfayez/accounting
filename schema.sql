@@ -325,3 +325,5 @@ ALTER TABLE InvoiceLine ADD CONSTRAINT fk_invoiceline_discount_it FOREIGN KEY (d
 ALTER TABLE InvoiceLine ADD CONSTRAINT fk_invoiceline_invoice_id FOREIGN KEY (invoice_id) REFERENCES Invoice(id);
 ALTER TABLE Receiver ADD CONSTRAINT fk_receiver_address_id FOREIGN KEY (address_id) REFERENCES Address(id);
 
+
+ALTER TABLE `ETAInvoices` CHANGE `receiverId` `receiverId` BIGINT(14) NULL DEFAULT NULL;

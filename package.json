@@ -30,7 +30,9 @@
         "@protonemedia/inertiajs-tables-laravel-query-builder": "^1.3.3",
         "@suadelabs/vue3-multiselect": "^1.0.2",
         "chart.js": "^2.9.4",
+        "echarts": "^5.2.2",
         "formvuelate": "^3.5.0",
+        "vue-echarts": "^6.0.0",
         "webpack": "^5.51.1"
     }
 }

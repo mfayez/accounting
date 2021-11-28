@@ -15,7 +15,6 @@ use Illuminate\Validation\Rule;
 use App\Models\ETAItem;
 use App\Models\ETAInvoice;
 use App\Models\Invoice;
-use App\Models\Invoice;
 use App\Models\InvoiceLine;
 use App\Models\TaxableItem;
 use App\Models\TaxTotal;
@@ -28,6 +27,15 @@ class ETAController extends Controller
 	protected $token = '';
 	protected $token_expires_at = null;
 	
+	public function UploadItem(Request $request)
+	{
+		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
+		$temp = $this->csvToArray($request->file);
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->post($url, ["items" => temp]);
+		return $response;
+		
+	}
 	public function UploadInvoice(Request $request)
 	{
 		//$request->validate([
@@ -174,20 +182,16 @@ class ETAController extends Controller
 		//$collection->transform(function ($item, $key) {
     	//$collection->each(function ($item) {
 		foreach($collection as $item) {
-			$invoice = ETAInvoice::updateOrCreate(['uuid' => $item->uuid], $item); 
+			$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
+			$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
+			if ($invoice2)
+			{
+				$invoice2->status = $item['status'];
+				$invoice2->save();
+			}
+
 			//$invoice->save();
 		};
-		//$collection = $collection->flatten();
-		//foreach($response['result'] as $item) {
-		//	$dbItem = new ETAItem
-		//}
-		//dd($collection);
-		//DB::transaction (function () use ($collection) {
-    	//	$collection->each(function ($item) {
-		//		$temp = new ETAItem($item);
-		//		$temp->save();
-    	//	});
-		//});
 		return $response['metadata'];
 	}
 
@@ -199,12 +203,9 @@ class ETAController extends Controller
 			"Ps" => "10",
 			"Pn" => $request->input("value")
 		]);
-		//$collection = ETAItem::hydrate($response['result']);
 		$collection = $response['result'];
-		//$collection->transform(function ($item, $key) {
-    	//$collection->each(function ($item) {
 		foreach($collection as $item) {
-			$item2 = new ETAItem($item);
+			$item2 = ETAItem::updateOrCreate(['itemCode' => $item['itemCode']], $item);
 			$item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
             $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
             $item2->ownerTaxpayernameAr = $item['ownerTaxpayer']['nameAr'];
@@ -225,17 +226,6 @@ class ETAController extends Controller
             $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
 			$item2->save();
 		};
-		//$collection = $collection->flatten();
-		//foreach($response['result'] as $item) {
-		//	$dbItem = new ETAItem
-		//}
-		//dd($collection);
-		//DB::transaction (function () use ($collection) {
-    	//	$collection->each(function ($item) {
-		//		$temp = new ETAItem($item);
-		//		$temp->save();
-    	//	});
-		//});
 		return $response['metadata'];
 	}
 
@@ -280,6 +270,44 @@ class ETAController extends Controller
 		else {
 		}
 	}
+
+	public function indexInvoices()
+	{
+		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                $query->where('totalDiscountAmount', '=', "{$value}")
+                    ->orWhere('netAmount', '=', "{$value}")
+                    ->orWhere('internalID', '=', "{$value}");
+            });
+        });
+
+		$items = QueryBuilder::for(ETAInvoice::class)
+            ->defaultSort('Id')
+            ->allowedSorts(['Status'])
+            ->allowedFilters(['status', 'internalID', $globalSearch])
+            ->paginate(20)
+            ->withQueryString();
+        return Inertia::render('Invoices/Index', [
+            'items' => $items,
+        ])->table(function (InertiaTable $table) {
+            $table->addSearchRows([
+				'internalId'	=>	'Internal ID',
+				'status'	=>	'Status'
+			])->addColumns([
+                'internalId'	=> 'Internal ID',
+				'issuerName' => 'Issuer',
+				'receiverId' => 'Receiver Registration Number',
+				'receiverName' => 'Receiver',
+			#	'dateTimeIssued' => 'Issued At',
+			#	'dateTimeReceived' => 'Received At',
+				'totalSales' => 'Sales',
+				'totalDiscount' => 'Discount',
+				'netAmount' => 'Net',
+				'total' => 'Total',
+				'status' => 'Status',
+            ]);
+        });
+    }
 
 	public function indexIssued()
 	{
