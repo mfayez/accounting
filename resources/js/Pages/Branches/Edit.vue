@@ -1,7 +1,7 @@
 <template>
-    <jet-dialog-modal :show="addingNew" @close="addingNew = false">
+    <jet-dialog-modal :show="showDialog" @close="showDialog = false">
 		<template #title>
-        	Add new branch
+        	Branch Information
         </template>
 
         <template #content>
@@ -62,7 +62,7 @@
    					Cancel
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="SaveNewBranch()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+	        	<jet-button class="ml-2" @click="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
     	    		Save
 	        	</jet-button>
 			</div>
@@ -104,9 +104,12 @@
 			JetValidationErrors,
         },
 
-        props: [
-            'branch',
-        ],
+        props: {
+            branch: {
+				Type: Object,
+				default:null
+			},
+        },
 
         data() {
             return {
@@ -127,16 +130,40 @@
 
 					}
                 }),
-				addingNew: false,
+				showDialog: false,
             }
         },
 
         methods: {
 			ShowDialog() {
-				this.addingNew = true;
+				if (this.branch !== null){
+					this.form.name = this.branch.name;
+					this.form.issuer_id = this.branch.issuer_id;
+					this.form.type = this.branch.type;
+					this.form.address.branchId = this.branch.address.branchID;
+					this.form.address.country = this.branch.address.country;
+					this.form.address.governate = this.branch.address.governate;
+					this.form.address.regionCity = this.branch.address.regionCity;
+					this.form.address.street = this.branch.address.street;
+					this.form.address.buildingNumber = this.branch.address.buildingNumber;
+					this.form.address.postalCode = this.branch.address.postalCode;
+					this.form.address.additionalInformation = this.branch.address.additionalInformation;
+				}
+				this.showDialog = true;
 			},
 			CancelAddBranch() {
-				this.addingNew = false;
+				this.showDialog = false;
+			},
+			SaveBranch() {
+                axios.put(route('branches.update', {'branch': this.branch.Id}), this.form)
+				.then(response => {
+					location.reload();
+                }).catch(error => {
+                    this.form.processing = false;
+					this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;//.password[0];
+                    //this.$refs.password.focus()
+                });
 			},
 			SaveNewBranch() {
                 axios.post(route('branches.store'), this.form)
@@ -145,7 +172,7 @@
                     this.$nextTick(() => this.$emit('dataUpdated'));
 					this.form.reset();
 					this.form.processing = false;
-					this.addingNew = false;
+					this.showDialog = false;
                 }).catch(error => {
                     this.form.processing = false;
 					this.$page.props.errors = error.response.data.errors;
@@ -154,7 +181,10 @@
                 });
 			},
             submit() {
-				SaveNewBranch();
+				if (this.branch == null)
+					this.SaveNewBranch();
+				else
+					this.SaveBranch();
             }
         },
     }

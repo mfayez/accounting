@@ -13,7 +13,7 @@ class Address extends \Illuminate\Database\Eloquent\Model
 
     public $primaryKey = 'Id';
 
-    protected $fillable = ['branchID', 'country', 'governate', 'regionCity', 'street', 'buildingNumber', 'postalCode',
+    protected $fillable = ['branchId', 'country', 'governate', 'regionCity', 'street', 'buildingNumber', 'postalCode',
         'floor', 'room', 'landmark', 'additionalInformation'];
 
     public function issuer()

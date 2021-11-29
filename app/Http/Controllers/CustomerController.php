@@ -91,8 +91,16 @@ class CustomerController extends Controller
             'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
         ]);
 
+		$item2 = new Address();
+		$item2->country = 'EG';
+		$item2->governate = 'Cairo';
+		$item2->regionCity = 'City';
+		$item2->street = 'Street';
+		$item2->buildingNumber = '0';
+		$item2->save();
         $item = new Receiver($data);
         $item->save();
+		$item2->receiver()->save($item);
         return $item;
     }
 
@@ -127,7 +135,14 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+		$customer = Receiver::findOrFail($id);
+		$data = $request->validate([
+            'name' 							=> ['required', 'string', 'max:255'],
+            'receiver_id' 					=> ['required', 'integer'],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
+        ]);
+		$customer->update($data);
+		return $customer;
     }
 
     /**
@@ -138,6 +153,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $customer = Receiver::findOrFail($id);
+		$customer->delete(); 
     }
 }

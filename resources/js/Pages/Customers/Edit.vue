@@ -1,7 +1,7 @@
 <template>
-    <jet-dialog-modal :show="addingNew" @close="addingNew = false">
+    <jet-dialog-modal :show="showDialog" @close="showDialog = false">
 		<template #title>
-        	Add new customer
+        	Customer Information
         </template>
 
         <template #content>
@@ -33,7 +33,7 @@
    					Cancel
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="SaveNewBranch()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+	        	<jet-button class="ml-2" @click="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
     	    		Save
 	        	</jet-button>
 			</div>
@@ -77,9 +77,12 @@
 			JetValidationErrors,
         },
 
-        props: [
-            'branch',
-        ],
+        props: {
+            customer:{
+				Type: Object,
+				default:null
+			},
+        },
 
         data() {
             return {
@@ -89,16 +92,32 @@
                     receiver_id: '',
                     type: 'B',
 				}),
-				addingNew: false,
+				showDialog: false,
             }
         },
 
         methods: {
 			ShowDialog() {
-				this.addingNew = true;
+				if (this.customer !== null){
+					this.form.name = this.customer.name;
+					this.form.type = this.customer.type;
+					this.form.receiver_id = this.customer.receiver_id;
+				}
+				this.showDialog = true;
 			},
 			CancelAddBranch() {
-				this.addingNew = false;
+				this.showDialog = false;
+			},
+			SaveBranch() {
+                axios.put(route('customers.update', {'customer': this.customer.Id}), this.form)
+				.then(response => {
+					location.reload();
+                }).catch(error => {
+                    this.form.processing = false;
+					this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;//.password[0];
+                    //this.$refs.password.focus()
+                });
 			},
 			SaveNewBranch() {
                 axios.post(route('customers.store'), this.form)
@@ -107,7 +126,7 @@
                     this.$nextTick(() => this.$emit('dataUpdated'));
 					this.form.reset();
 					this.form.processing = false;
-					this.addingNew = false;
+					this.showDialog = false;
                 }).catch(error => {
                     this.form.processing = false;
 					this.$page.props.errors = error.response.data.errors;
@@ -116,7 +135,10 @@
                 });
 			},
             submit() {
-				SaveNewBranch();
+				if (this.customer == null)
+					this.SaveNewBranch();
+				else
+					this.SaveBranch();
             }
         },
     }

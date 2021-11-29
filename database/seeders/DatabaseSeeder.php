@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 		$item->password = Hash::make("12345678");
 		$item->save();
 		
-		for ($i = 0; $i < 100; $i++) {
+		for ($i = 0; $i < 15; $i++) {
 			$item2 = new Address();
 			$item2->country = 'EG';
 			$item2->governate = 'Tanta';

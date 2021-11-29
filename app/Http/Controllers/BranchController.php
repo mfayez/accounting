@@ -151,7 +151,26 @@ class BranchController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+		$data = $request->validate([
+            'name' 							=> ['required', 'string', 'max:255'],
+            'issuer_id' 					=> ['required', 'integer'],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
+            'address.branchId' 				=> ['required', 'integer'],
+			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
+			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza'])],
+			'address.regionCity' 			=> ['required', 'string'],
+			'address.street' 				=> ['required', 'string'],
+			'address.buildingNumber' 		=> ['required', 'integer'],
+			'address.postalCode' 			=> ['required', 'integer'],
+			'address.additionalInformation' => ['nullable', 'string'],
+        ]);
+
+		$item = Issuer::findOrFail($id);
+		$item->update($data);
+		$item2 = $item->address;
+		$item2->update($data['address']);
+        
+		return $item;
     }
 
     /**
@@ -162,6 +181,9 @@ class BranchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $branch = Issuer::findOrFail($id);
+		$address = $branch->address;
+		$branch->delete(); 
+		$address->delete();
     }
 }
