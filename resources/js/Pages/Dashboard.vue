@@ -19,6 +19,7 @@
 </div>
 <div class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:px-8">
 	<top-items />
+	<top-receivers />
 </div>
                 </div>
             </div>
@@ -30,9 +31,11 @@
     import AppLayout from '@/Layouts/AppLayout'
     import Welcome from '@/Jetstream/Welcome'
 	import TopItems from '@/Charts/TopItems'
+	import TopReceivers from '@/Charts/TopReceivers'
 
     export default {
         components: {
+			TopReceivers,
 			TopItems,
             AppLayout,
             Welcome,

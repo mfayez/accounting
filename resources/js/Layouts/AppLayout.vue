@@ -31,6 +31,11 @@
                             </div>
 							-->
 							<!-- Settings Dropdown -->
+							<div class="ml-3 relative">
+                                <inertia-link :href="route('dashboard')">
+									<div>Invoice Master</div>
+                                </inertia-link>
+							</div>
                             <div class="ml-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>

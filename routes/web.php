@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 #charts data
 	Route::get('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");
+	Route::get('/json/top/receivers', [ChartsController::class, 'topReceivers'])->name("json.top.receivers");
 });
 
 Route::get('/language/{language}', function ($language) {

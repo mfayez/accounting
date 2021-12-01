@@ -36,7 +36,7 @@
             return {
 				option: {
 					title: {
-					 	text: "Top Items",
+					 	text: "Top Receivers (Customers)",
 					 	left: "center"
 					},
 					tooltip: {
@@ -86,7 +86,7 @@
 		methods: {
 		},
 		created: function created() {
-			axios.get(route('json.top.items'))
+			axios.get(route('json.top.receivers'))
 			.then(response => {
 				this.option.series[0].data = response.data;
             }).catch(error => {

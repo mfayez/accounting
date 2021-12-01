@@ -292,6 +292,7 @@ class ETAController extends Controller
 
 	public function indexInvoices()
 	{
+		$myid = Issuer::whereNotNull('issuer_id')->pluck('issuer_id');
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 $query->where('totalDiscountAmount', '=', "{$value}")
@@ -302,6 +303,7 @@ class ETAController extends Controller
 
 		$items = QueryBuilder::for(ETAInvoice::class)
             ->defaultSort('Id')
+			->whereNotIn('issuerId', $myid)
             ->allowedSorts(['Status'])
             ->allowedFilters(['status', 'internalID', $globalSearch])
             ->paginate(20)
@@ -340,6 +342,7 @@ class ETAController extends Controller
 
 		$items = QueryBuilder::for(Invoice::class)
 			->with("receiver")
+			->whereNotNull('issuer_id')
 			//->join("Receiver", "Invoice.receiver_id", "Receiver.Id")
 			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
             ->defaultSort('Invoice.Id')
