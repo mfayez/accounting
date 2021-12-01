@@ -14,14 +14,14 @@
 					<jet-label value="Units" />
 					<multiselect v-model="item.unit" :options="units" label="desc_en" />
 				</div>
-				<TextField v-model="item.quantity" itemType="number" itemLabel="Quantity" />
-				<TextField v-model="item.unitValue" itemType="number" itemLabel="Unit Price" />
-				<TextField v-model="item.salesTotal" itemType="number" itemLabel="Sales Total" />
-				<TextField v-model="item.total" itemType="number" itemLabel="Total" />
+				<TextField v-model="item.quantity" itemType="number" itemLabel="Quantity" @update:model-value="updateValues()" />
+				<TextField v-model="item.unitValue.amountEGP" itemType="number" itemLabel="Unit Price" @update:model-value="updateValues()" />
+				<TextField v-model="item.salesTotal" itemType="number" itemLabel="Sales Total" :active="false"/>
+				<TextField v-model="item.total" itemType="number" itemLabel="Total" :active="false"/>
 				<TextField v-model="item.valueDifference" itemType="number" itemLabel="Value Difference" />
 				<TextField v-model="item.totalTaxableFees" itemType="number" itemLabel="Total Taxable Fees" />
-				<TextField v-model="item.netTotal" itemType="number" itemLabel="Net Total" />
-				<TextField v-model="item.itemsDiscount" itemType="number" itemLabel="Items Discount" />
+				<TextField v-model="item.netTotal" itemType="number" itemLabel="Net Total" :active="false"/>
+				<TextField v-model="item.itemsDiscount" itemType="number" itemLabel="Items Discount" @update:model-value="updateValues()"/>
 			</div>
 			<div class="grid grid-cols-7 gap-2 mt-2 border-t border-b border-gray-20">
 				<multiselect class="col-span-3"
@@ -159,11 +159,35 @@
 				});
 				this.subType = {};
 			},
+			calculateTax(){
+				this.item.total = this.item.netTotal + 0;
+				if (this.item.taxItems) {
+					for (var j = 0; j< this.item.taxItems.length; j++)
+					{
+						var taxitem = this.item.taxItems[j];
+						taxitem.value = taxitem.percentage * this.item.total / 100.0
+						this.item.total += taxitem.value;
+					}
+				}
+			},
+			parse(val){
+				var temp = parseFloat(val);
+				if (isNaN(temp))
+					temp = 0;
+				return temp;
+			},
+			updateValues(){
+				this.item.salesTotal = this.parse(this.item.quantity) * this.parse(this.item.unitValue.amountEGP);
+				this.item.netTotal = this.item.salesTotal - this.parse(this.item.itemsDiscount);
+				this.calculateTax();
+			},
 			updateValue(item, val) {
-				item.value = this.item.totalTaxableFees * val / 100.0;
+				item.value = this.item.netTotal * val / 100.0;
+				this.calculateTax();
 			},
 			updatePercentage(item, val) {
-				item.percentage = val * 100.0 / this.item.totalTaxableFees;
+				item.percentage = val * 100.0 / this.item.netTotal;
+				this.calculateTax();
 			},
 			SaveItem() {
 				this.item.isDirty = true;

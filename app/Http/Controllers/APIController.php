@@ -28,7 +28,7 @@ class APIController extends Controller
 							      ->orWhereNull('status');
 					    })->firstOrFail();
 			$invoice->status = 'processing';
-			$invoice->statusreason = 'Accepted for processing';
+			$invoice->statusreason = '';
 			$invoice->uuid = $document["uuid"];
 			$invoice->submissionUUID = $data["submissionId"];
 			$invoice->longId = $document["longId"];
@@ -44,7 +44,7 @@ class APIController extends Controller
 			$invoice->statusreason = "";
 			if (isset($document["error"]["details"])){
 				foreach($document["error"]["details"] as $error)
-					$invoice->statusreason = $invoice->statusreason . $error["message"] . "<br>";
+					$invoice->statusreason = $invoice->statusreason . $error["message"] . ",";
 			}else{
 				$invoice->statusreason = json_encode($document["error"]);
 			}

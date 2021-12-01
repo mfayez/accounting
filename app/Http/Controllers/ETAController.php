@@ -20,6 +20,8 @@ use App\Models\TaxableItem;
 use App\Models\TaxTotal;
 use App\Models\Value;
 use App\Models\Discount;
+use App\Models\Receiver;
+use App\Models\Issuer;
 use App\Http\Requests\StoreInvoiceRequest;
 
 class ETAController extends Controller
@@ -183,10 +185,12 @@ class ETAController extends Controller
     	//$collection->each(function ($item) {
 		foreach($collection as $item) {
 			$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
-			$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
+			//$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
+			$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
 			if ($invoice2)
 			{
 				$invoice2->status = $item['status'];
+				$invoice2->statusreason = $item['documentStatusReason'];
 				$invoice2->save();
 			}
 
@@ -247,6 +251,21 @@ class ETAController extends Controller
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => array($data)]);
 		return $response;
+	}
+
+	private function AuthenticateETA2()
+	{
+		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
+			$url = "https://id.preprod.eta.gov.eg/connect/token";
+			$response = Http::asForm()->post($url, [
+				"grant_type" => "client_credentials",
+				"scope" => "InvoicingAPI",
+				"client_id" => env("CLIENT_ID"),
+				"client_secret" => env("CLIENT_SECRET") 
+			]);
+			$this->token = $response['access_token'];
+			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
+		}
 	}
 
 	private function AuthenticateETA(Request $request)
@@ -429,5 +448,75 @@ class ETAController extends Controller
     	}
 
     	return $data;
+	}
+
+	public function UpdateInvoices(){
+		$urlbase = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
+		$invoices = Invoice::where('status', '=', 'Invalid')
+					->where('statusReason', '=', '')
+					->get();
+		
+		$this->AuthenticateETA2();
+		foreach($invoices as $invoice) {
+			$url = sprintf($urlbase, $invoice->uuid);
+			$response = Http::withToken($this->token)->get($url);
+			$errors = "";
+			$steps = $response['validationResults']['validationSteps'];
+			foreach($steps as $step) {
+				if ($step['status'] != "Invalid")
+					continue;
+				//if(!$step['error']) continue;
+				$errors = $errors . "," .  $step['error']['error'];
+				if ($step['error']['innerError'])
+					foreach($step['error']['innerError'] as $inner)
+						$errors = $errors . "," .  $inner['error'];
+			}
+			$invoice->statusreason = $errors;
+			$invoice->save();	
+		}
+		
+		//error_log(json_encode($invoices));
+	}
+	public function LoadMissingInvoices() {
+		$urlbase = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
+		$oldinv = Invoice::whereNotNull('uuid')->pluck('uuid');
+		$missing = ETAInvoice::whereNotIn('uuid', $oldinv)->pluck('uuid');
+		
+		$this->AuthenticateETA2();
+		foreach($missing as $inv) {
+			$url = sprintf($urlbase, $inv);
+			$response = Http::withToken($this->token)->get($url);
+			$document = json_decode($response['document']);
+			error_log($response['uuid']);
+			$invoice = new Invoice((array)$document);
+
+			$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
+			$receiver = Receiver::where('receiver_id', '=', $document->receiver->id)->first();
+			$invoice->status = $response['status'];
+			$invoice->uuid = $response["uuid"];
+			$invoice->submissionUUID = $response["submissionUUID"];
+			$invoice->longId = $response["longId"];
+			if ($issuer)
+				$invoice->issuer_id = $issuer->Id;
+			//else
+			//	$invoice->issuer_id = AddIssuer($document->issuer);
+			if ($receiver)
+				$invoice->receiver_id = $receiver->Id;
+			//else
+			//	$invoice->receiver_id = AddReceiver($document->receiver);
+			$errors = "";
+			$steps = $response['validationResults']['validationSteps'];
+			foreach($steps as $step) {
+				if ($step['status'] != "Invalid")
+					continue;
+				//if(!$step['error']) continue;
+				$errors = $errors . "," .  $step['error']['error'];
+				if ($step['error']['innerError'])
+					foreach($step['error']['innerError'] as $inner)
+						$errors = $errors . "," .  $inner['error'];
+			}
+			$invoice->statusreason = $errors;
+			$invoice->save();
+		}
 	}
 }

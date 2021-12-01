@@ -22,7 +22,7 @@
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
 									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
-										{{ nestedIndex(item, key) }}
+										<div v-for="rowVals in nestedIndex(item, key).split(',')">{{ rowVals }}</div>
 									</td>
 									<td>
 										<div class="grid justify-items-center">
@@ -63,14 +63,19 @@
   		},
 		methods: {
 			nestedIndex: function(item, key) {
-				var keys = key.split(".");
-				if (keys.length == 1)
-					return item[key];
-				if (keys.length == 2)
-					return item[keys[0]][keys[1]];
-				if (keys.length == 3)
-					return item[keys[0]][keys[1]][keys[2]];
-				return "Unsupported Nested Index";
+				try {
+					var keys = key.split(".");
+					if (keys.length == 1)
+						return item[key].toString();;
+					if (keys.length == 2)
+						return item[keys[0]][keys[1]].toString();
+					if (keys.length == 3)
+						return item[keys[0]][keys[1]][keys[2]].toString();
+					return "Unsupported Nested Index";
+				}
+				catch(err) {
+				}
+				return "N/A";
 			},
 			editItem: function(item_id) {
 				//alert(JSON.stringify(item_id));

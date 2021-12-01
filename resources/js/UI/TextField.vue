@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<jet-label :for="itemId" :value="itemLabel" />
-		<jet-input :id="itemId" :type="itemType" class="mt-1 block w-full h-9" v-model="modelValue" required autofocus 
-			@update:modelValue="$emit('update:modelValue', $event)"
+		<jet-input :inputId="itemId" :type="itemType" class="mt-1 block w-full h-9 disabled:bg-gray-400" v-model="modelValue" required autofocus 
+			@update:modelValue="$emit('update:modelValue', $event)" :disabled="!active" 
 		/>
 	</div>
 </template>
@@ -40,9 +40,16 @@
             JetSectionBorder,
 			JetValidationErrors,
         },
-        props: [
-			'modelValue', 'itemLabel', 'itemId', 'itemType'
-        ],
+        props: {
+			itemLabel: String, 
+			itemId: String,
+			itemType: String,
+			modelValue: String,
+			active: {
+				Type: Boolean,
+				default: true
+			}
+        },
 
         emits: ['update:modelValue'],
 

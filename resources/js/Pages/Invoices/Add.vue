@@ -31,12 +31,12 @@
 						</div>
 						<TextField v-model="form.dateTimeIssued" itemType="datetime-local" itemLabel="Invoice Date" />
 						<TextField v-model="form.internalID" itemType="text" itemLabel="Internal Invoice ID" />
-						<TextField v-model="form.totalSalesAmount" itemType="number" itemLabel="Total Sales Amount" />
-						<TextField v-model="form.totalDiscountAmount" itemType="number" itemLabel="Total Discount Amount" />
-						<TextField v-model="form.netAmount" itemType="number" itemLabel="Net Amount" />
-						<TextField v-model="form.totalAmount" itemType="number" itemLabel="Total Amount" />
-						<TextField v-model="form.extraDiscountAmount" itemType="number" itemLabel="Extra Discount Amount" />
-						<TextField v-model="form.totalItemsDiscountAmount" itemType="number" itemLabel="Total Items Discount Amount" />
+						<TextField v-model="form.totalSalesAmount" itemType="number" itemLabel="Total Sales Amount" :active="false" />
+						<TextField v-model="form.totalDiscountAmount" itemType="number" itemLabel="Total Discount Amount" :active="false" />
+						<TextField v-model="form.netAmount" itemType="number" itemLabel="Net Amount" :active="false" />
+						<TextField v-model="form.totalAmount" itemType="number" itemLabel="Total Amount" :active="false" />
+						<TextField v-model="form.extraDiscountAmount" itemType="number" itemLabel="Extra Discount Amount" :active="false" />
+						<TextField v-model="form.totalItemsDiscountAmount" itemType="number" itemLabel="Total Items Discount Amount" :active="false" />
 					</div>
 					<!--second tab-->
 					<div v-show="tab_idx==2" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
@@ -60,7 +60,7 @@
 							<div class="bg-gray-200 col-span-1"></div>
 							<template v-for="(item, idx1) in form.invoiceLines">
 								<jet-label class="mt-2 col-span-3">{{item.item.codeNamePrimaryLang}}</jet-label>
-								<jet-label class="mt-2 col-span-1">{{item.unitValue}}</jet-label>
+								<jet-label class="mt-2 col-span-1">{{item.unitValue.amountEGP}}</jet-label>
 								<jet-label class="mt-2 col-span-1">{{item.quantity}}</jet-label>
 								<jet-label class="mt-2 col-span-1">{{item.salesTotal}}</jet-label>
 								<jet-label class="mt-2 col-span-1">{{item.netTotal}}</jet-label>
@@ -70,10 +70,10 @@
 										<jet-label class="mt-2 col-span-2">{{taxitem.value}}({{taxitem.percentage}}%)</jet-label>
 									</template>
 								</div>
-								<jet-secondary-button @click="EditItem(item, idx1)" class="mt-2 ml-2">
+								<jet-secondary-button @click="EditItem(item, idx1)" class="h-12 mt-2 ml-2">
 									Edit
 								</jet-secondary-button>				
-								<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="mt-2 ml-2">
+								<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="h-12 mt-2 ml-2">
 									Delete
 								</jet-danger-button>				
 							</template>
@@ -125,6 +125,12 @@
 			DialogInvoiceLine,
 			TextField, Multiselect 
         },
+		props: {
+			invoice:{
+				Type: Object,
+				default: null
+			}
+		},
 		data () {
             return {
 				addindNewLine: false,
@@ -164,11 +170,25 @@
   		},
 		methods: {
 			RecalculateTax: function() {
+				this.form.totalSalesAmount = 0;
+				this.form.totalDiscountAmount = 0;
+				this.form.netAmount = 0;
+				this.form.totalAmount = 0;
+				this.form.extraDiscountAmount = 0;
+				this.form.totalItemsDiscountAmount = 0;
 				var taxTotals = {};
 				this.form.taxTotals = [];
 				for (var i = 0; i < this.form.invoiceLines.length; i++)
 				{
 					var item = this.form.invoiceLines[i];
+
+					this.form.totalSalesAmount += parseFloat(item.salesTotal);
+					this.form.totalDiscountAmount += parseFloat(item.itemsDiscount);
+					this.form.netAmount += parseFloat(item.netTotal);
+					this.form.totalAmount += parseFloat(item.total);
+					this.form.extraDiscountAmount += 0;
+					this.form.totalItemsDiscountAmount += parseFloat(item.itemsDiscount);
+
 					for (var j = 0; j< item.taxItems.length; j++)
 					{
 						var taxitem = item.taxItems[j];
@@ -183,7 +203,7 @@
 			},
 			AddItem: function() {
 				this.addingNewLine = true;
-				this.currentItem = { quantity: 1, itemsDiscount: 0, valueDifference: 0};
+				this.currentItem = { quantity: 1, itemsDiscount: 0, valueDifference: 0, unitValue:{amountEGP: 0}};
 				this.$nextTick(() => {
 					this.$refs.dlg1.ShowDialog();
 				});
@@ -204,7 +224,7 @@
 				this.currentItem.itemCode= this.currentItem.item.itemCode;
 				this.currentItem.unitType= this.currentItem.unit.code;
 				this.currentItem.internalCode= this.currentItem.item.Id.toString();
-				var temp = this.currentItem.unitValue;
+				var temp = this.currentItem.unitValue.amountEGP;
 				this.currentItem.unitValue = {};
 				this.currentItem.unitValue.currencySold= 'EGP';
 				this.currentItem.unitValue.amountEGP= temp;
@@ -222,6 +242,7 @@
 				else
 					this.form.invoiceLines[this.currentItemIdx] = this.currentItem;
 				this.addingNewLine = false;
+				this.RecalculateTax();
 			},
 			onCancel: function() {
 				window.history.back();
@@ -234,6 +255,7 @@
                     this.form.reset();
                     this.form.processing = false;
                     this.addingNew = false;
+					this.tab_idx = 1;
                 }).catch(error => {
                     this.form.processing = false;
                     this.$page.props.errors = error.response.data.errors;

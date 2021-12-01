@@ -42,7 +42,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 			sum(totalAmount) totalAmount,
 			ifnull(sum(t2.amount), 0) taxTotal,
 			ifnull(Status, 'pending') as Status
-		from Invoice t1 left outer join TaxTotal t2 on t1.Id = t2.invoice_id
+		from Invoice t1 left outer join 
+			 (select invoice_id, sum(amount) as amount from TaxTotal group by invoice_id) t2  on t1.Id = t2.invoice_id
 		group by Status";
 		$data = DB::select($sql);
 		//Session()->flash('flash.banner', 'Yay it works!');

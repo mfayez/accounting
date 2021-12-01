@@ -66,7 +66,10 @@ class InvoiceController extends Controller
      */
     public function edit($id)
     {
-        //
+		$invoice = Invoice::findOrFail($id);
+        return Inertia::render('Invoices/Add', [
+			invoice => $invoice
+        ]);
     }
 
     /**
