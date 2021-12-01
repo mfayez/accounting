@@ -166,6 +166,31 @@ class ETAController extends Controller
 		//return $response;
 	}
 
+	public function CancelInvoice(Request $request)
+	{
+		$url = "https://api.preprod.invoicing.eta.gov.eg/api/iv1.0/documents/%s/state";
+		$url = sprintf($url, $request->input("uuid"));
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->put($url, [
+			"status" => $request->input("status"),
+			"reason" => $request->input("reason")
+		]);
+		if ($response->successful()) {
+			$inv1 = Invoice::where("uuid", "=", $request->input("uuid"))->first();
+			$inv2 = ETAInvoice::where("uuid", "=", $request->input("uuid"))->first();
+			if($inv1){
+				$inv1->status = $request->input("status");
+				$inv1->statusreason = $request->input("reason");
+				$inv1->save();
+			}
+			if($inv2){
+				$inv2->status = $request->input("status");
+				$inv2->save();
+			}
+		}
+		return $response;
+	}
+
 	public function SyncReceivedInvoices(Request $request)
 	{
 	}

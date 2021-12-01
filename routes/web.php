@@ -79,6 +79,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	#Route::post('/ETA/Invoices/Sync/Received', [ETAController::class, 'SyncReceivedInvoices'])->name("eta.invoices.sync.received");
 	Route::post('/ETA/Invoices/Sync/Issued', [ETAController::class, 'SyncIssuedInvoices'])->name("eta.invoices.sync.issued");
 	Route::post('/ETA/Invoices/Add' , [ETAController::class, 'AddInvoice'])->name("eta.invoices.store");
+	Route::post('/ETA/Invoices/Cancel' , [ETAController::class, 'CancelInvoice'])->name("eta.invoices.cancel");
 	Route::post('/ETA/Invoices/Upload' , [ETAController::class, 'UploadInvoice'])->name("eta.invoices.upload");
 #todo mfayez change the controller method and implement it later
 	Route::get ('/ETA/Invoices/Received/Index' , [ETAController::class, 'indexInvoices'])->name("eta.invoices.received.index");

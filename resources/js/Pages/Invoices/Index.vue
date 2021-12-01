@@ -1,5 +1,18 @@
 <template>
     <app-layout>
+		<confirm ref="dlg1" @confirmed="rejectInv2()">
+			<jet-label for="type"  value="Select rejection reason:" />
+			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
+				  <option value="Wrong invoice details">Wrong invoice details</option>
+			</select>
+		</confirm>
+		<confirm ref="dlg2" @confirmed="cancelInv2()">
+			<jet-label for="type"  value="Select cancelation reason:" />
+			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
+			  <option value="Wrong buyer details">Wrong buyer details</option>
+			  <option value="Wrong invoice details">Wrong invoice details</option>
+			</select>
+		</confirm>
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
@@ -26,14 +39,19 @@
 									</td>
 									<td>
 										<div class="grid justify-items-center">
-                    						<add-edit-item :item="item" @confirmed="enableTwoFactorAuthentication">
-		                        				<jet-button type="button" >
-												<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z"/></svg>
-						                        </jet-button>
-						                    </add-edit-item>
+										<button class="p-1 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="rejectInvoice(item)"
+											v-show="route().current('eta.invoices.received.index')"
+										>
+											<div>Reject</div>
+										</button>	
+										<button class="p-1 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="cancelInvoice(item)"
+											v-show="route().current('eta.invoices.sent.index')"
+										>
+											<div>Cancel</div>
+										</button>	
 <!--											<jet-button @click.prevent="editItem(item)">
 											</jet-button> -->
-										</div>
+								 	 	</div>
 									</td>
 							  </tr>
 						</template>
@@ -49,11 +67,15 @@
 	import { InteractsWithQueryBuilder, Tailwind2 } from '@protonemedia/inertiajs-tables-laravel-query-builder';
     import JetButton from '@/Jetstream/Button';
 	import AddEditItem from '@/Pages/Items/AddEdit';
+	import Confirm from '@/UI/Confirm'
+    import JetLabel from '@/Jetstream/Label'
 
     export default {
 		mixins: [InteractsWithQueryBuilder],
         components: {
             AppLayout,
+			Confirm,
+			JetLabel,
 			Table: Tailwind2.Table,
 			JetButton,
 			AddEditItem,
@@ -61,7 +83,47 @@
 		props: {
 			items: Object
   		},
+        data() {
+            return {
+				invItem: Object,
+				cancelReason: ''
+            }
+        },
 		methods: {
+			cancelInvoice(item) {
+				this.invItem = item;
+				this.$refs.dlg2.ShowModal();
+			},
+			cancelInv2() {
+                axios.post(route('eta.invoices.cancel'), {uuid: this.invItem.uuid, 
+					status: 'cancelled',
+					reason: this.cancelReason
+				})
+				.then(response => {
+					alert("Cancellation request sent successfully!");
+                }).catch(error => {
+					alert(error.response.data);
+                    //this.$refs.password.focus()
+                });
+				
+			},
+			rejectInvoice(item) {
+				this.invItem = item;
+				this.$refs.dlg1.ShowModal();
+			},
+			rejectInv2() {
+                axios.post(route('eta.invoices.cancel'), {uuid: this.invItem.uuid, 
+					status: 'rejected',
+					reason: this.cancelReason
+				})
+				.then(response => {
+					alert("Rejection request sent successfully!");
+                }).catch(error => {
+					alert(error.response.data);
+                    //this.$refs.password.focus()
+                });
+				
+			},
 			nestedIndex: function(item, key) {
 				try {
 					var keys = key.split(".");
