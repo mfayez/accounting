@@ -16,6 +16,7 @@
 				  	>
 						<template #head>
 						  	<tr>
+								<th v-show="showColumn('Id')"  @click.prevent="sortBy('Id')">ID</th>
 								<th v-show="showColumn('name')"  @click.prevent="sortBy('name')">Name</th>
 								<th v-show="showColumn('receiver_id')" @click.prevent="sortBy('receiver_id')">Registration Number</th>
 
@@ -25,7 +26,8 @@
 						</template>
 
 						<template #body>
-					  		<tr v-for="customer in customers.data" :key="customer.id">
+					  		<tr v-for="customer in customers.data" :key="customer.Id">
+									<td v-show="showColumn('Id')">{{ customer.Id }}</td>
 									<td v-show="showColumn('name')">{{ customer.name }}</td>
 									<td v-show="showColumn('receiver_id')">{{ customer.receiver_id }}</td>
 									<td v-show="showColumn('type')">{{ customer.type == 'B' ? 'Business' : 'Individual'  }}</td>

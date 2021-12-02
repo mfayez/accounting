@@ -187,8 +187,10 @@ class ETAController extends Controller
 				$inv2->status = $request->input("status");
 				$inv2->save();
 			}
+			return "request accepted";
 		}
-		return $response;
+		
+		return "request rejected by ETA";
 	}
 
 	public function SyncReceivedInvoices(Request $request)

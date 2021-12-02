@@ -43,7 +43,7 @@ class CustomerController extends Controller
         $customers = QueryBuilder::for(Receiver::class)
 			->with('address')
         	->defaultSort('name')
-            ->allowedSorts(['name', 'receiver_id', 'type'])
+            ->allowedSorts(['Id', 'name', 'receiver_id', 'type'])
             ->allowedFilters(['name', 'receiver_id', 'type', $globalSearch])
             ->paginate(10)
             ->withQueryString();
@@ -55,6 +55,7 @@ class CustomerController extends Controller
                 'name' => 'Name',
                 'receiver_id' => 'Tax Registration ID/National ID',
             ])->addColumns([
+				'Id' => 'ID',
                 'name' => 'Name',
                 'receiver_id' => 'Customer Identifier',
 				'type' => 'Customer Type'

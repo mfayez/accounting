@@ -16,16 +16,18 @@
 				  	>
 						<template #head>
 						  	<tr>
+								<th v-show="showColumn('Id')"  @click.prevent="sortBy('Id')">ID</th>
 								<th v-show="showColumn('name')"  @click.prevent="sortBy('name')">Name</th>
 								<th v-show="showColumn('receiver_id')" @click.prevent="sortBy('receiver_id')">Registration Number</th>
 
-								<th v-show="showColumn('type')" @click.prevent="sortBy('type')">Type(B|I)</th>
+								<th v-show="showColumn('type')" @click.prevent="sortBy('type')">Type(B|P)</th>
 								<th @click.prevent="">Actions</th>
 							</tr>
 						</template>
 
 						<template #body>
 					  		<tr v-for="branch in branches.data" :key="branch.id">
+									<td v-show="showColumn('Id')">{{ branch.Id }}</td>
 									<td v-show="showColumn('name')">{{ branch.name }}</td>
 									<td v-show="showColumn('receiver_id')">{{ branch.receiver_id }}</td>
 									<td v-show="showColumn('type')">{{ branch.type == 'B' ? 'Business' : 'Individual'  }}</td>

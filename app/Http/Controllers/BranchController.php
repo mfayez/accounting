@@ -44,7 +44,7 @@ class BranchController extends Controller
         $branches = QueryBuilder::for(Issuer::class)
 			->with('address')
         	->defaultSort('name')
-            ->allowedSorts(['name', 'issuer_id', 'type'])
+            ->allowedSorts(['Id', 'name', 'issuer_id', 'type'])
             ->allowedFilters(['name', 'issuer_id', 'type', $globalSearch])
             ->paginate(10)
             ->withQueryString();
@@ -56,6 +56,7 @@ class BranchController extends Controller
                 'name' => 'Name',
                 'issuer_id' => 'Tax Registration ID/National ID',
             ])->addColumns([
+                'Id' => 'ID',
                 'name' => 'Name',
                 'issuer_id' => 'Branch Identifier',
 				'type' => 'Branch Type'

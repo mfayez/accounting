@@ -100,7 +100,7 @@
 					reason: this.cancelReason
 				})
 				.then(response => {
-					alert("Cancellation request sent successfully!");
+					alert(response.data);
                 }).catch(error => {
 					alert(error.response.data);
                     //this.$refs.password.focus()
@@ -117,7 +117,7 @@
 					reason: this.cancelReason
 				})
 				.then(response => {
-					alert("Rejection request sent successfully!");
+					alert(response.data);
                 }).catch(error => {
 					alert(error.response.data);
                     //this.$refs.password.focus()
