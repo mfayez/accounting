@@ -467,8 +467,12 @@ class ETAController extends Controller
     	{
         	while (($row = fgetcsv($handle, 10000, $delimiter)) !== false)
 	        {
-    	        if (!$header_en)
-        	        $header_en = $row;
+    	        if (!$header_en){
+					foreach($row as $key=>$item){
+						$row[$key] = iconv('UTF-8', 'ASCII//TRANSLIT', $item);	
+					}
+					$header_en = $row;
+				}
     	        else if (!$header_ar)
         	        $header_ar = $row;
             	else
