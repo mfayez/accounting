@@ -24,26 +24,26 @@
 
                             <!-- Navigation Links -->
                             <!--
-							<div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+							<div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </jet-nav-link>
                             </div>
 							-->
 							<!-- Settings Dropdown -->
-							<div class="ml-3 relative">
+							<div class="ms-3 relative">
                                 <inertia-link :href="route('dashboard')">
 									<div>Invoice Master</div>
                                 </inertia-link>
 							</div>
-                            <div class="ml-3 relative">
-                                <jet-dropdown align="right" width="48">
+                            <div class="ms-3 relative">
+                                <jet-dropdown align="left" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
                                                 {{ $page.props.user.name }}
 
-                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
@@ -79,10 +79,10 @@
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden sm:flex sm:items-center sm:ms-6">
                             
 							<!-- Customers Dropbown -->
-							<div class="ml-3 relative">
+							<div class="ms-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -93,7 +93,7 @@
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
                                                 {{ __('Customers') }}
 
-                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
@@ -113,7 +113,7 @@
                                 </jet-dropdown>
                             </div>
 							<!-- Branches Dropbown -->
-							<div class="ml-3 relative">
+							<div class="ms-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -124,7 +124,7 @@
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
                                                 {{ __('Branches') }}
 
-                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
@@ -145,7 +145,7 @@
                             </div>
 
 							<!-- Invoices Dropbown -->
-							<div class="ml-3 relative">
+							<div class="ms-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -156,7 +156,7 @@
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
                                                 {{ __('Invoices') }}
 
-                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
@@ -187,7 +187,7 @@
                                 </jet-dropdown>
                             </div>
 							<!-- Items Dropbown -->
-							<div class="ml-3 relative">
+							<div class="ms-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -198,7 +198,7 @@
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
                                                 {{ __('Items') }}
 
-                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
@@ -226,7 +226,7 @@
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
+                        <div class="-me-2 flex items-center sm:hidden">
                             <button @click="showingNavigationDropdown = ! showingNavigationDropdown" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -242,7 +242,7 @@
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="flex items-center px-4">
-                            <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex-shrink-0 mr-3" >
+                            <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex-shrink-0 me-3" >
                                 <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
                             </div>
 

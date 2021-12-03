@@ -4,5 +4,8 @@
 	"email": "الأيميل",
 	"Profile" : "معلوماتى",
 	"Log Out" : "خروج",
-	"API Tokens" : "كود اأتصال"
+	"API Tokens" : "كود الأتصال",
+	"Items" : "الأصناف",
+	"Add New Item" : "أضافة صنف جديد",
+	"Upload Items" : "رفع أصناف"
 }
