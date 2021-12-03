@@ -1,5 +1,8 @@
 {
-	"Brand": "E-Invoice Broker",
+	"Brand": "Invoice Master",
 	"password": "Password",
-	"email": "Email"
+	"email": "Email",
+	"Profile" : "Profile",
+	"Log Out" : "Log Out",
+	"API Tokens" : "API Tokens"
 }

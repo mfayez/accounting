@@ -5,7 +5,7 @@
                 <div class="container px-6 mx-auto">
                     <nav class="flex flex-col py-2 sm:flex-row sm:justify-between sm:items-center">
                         <div>
-                            <a href="#" class="text-2xl font-semibold text-white hover:text-gray-300">{{__(Brand)}}</a>
+                            <a href="#" class="text-2xl font-semibold text-white hover:text-gray-300">Brand</a>
                         </div>
 
                         <div class="flex items-center mt-2 -mx-2 sm:mt-0">
@@ -16,7 +16,7 @@
 
                     <div class="flex flex-col items-center py-6 lg:h-128 lg:flex-row">
                         <div class="lg:w-1/2">
-                            <h2 class="text-4xl font-semibold text-gray-100">{{__(Brand)}}</h2>
+                            <h2 class="text-4xl font-semibold text-gray-100">Brand</h2>
 
                             <h3 class="text-2xl font-semibold text-gray-100">
                                 Hello <span class="text-indigo-400">Guest</span>
@@ -80,7 +80,7 @@
             <div class="container px-6 mx-auto">
                 <nav class="flex flex-col py-2 sm:flex-row sm:justify-between sm:items-center">
                     <div>
-                        <a href="#" class="text-2xl font-semibold text-white hover:text-gray-300">{{__(Brand)}}</a>
+                        <a href="#" class="text-2xl font-semibold text-white hover:text-gray-300">Brand</a>
                     </div>
 
                     <div class="flex items-center mt-2 -mx-2 sm:mt-0">
@@ -91,7 +91,7 @@
 
                 <div class="flex flex-col items-center py-6 lg:h-128 lg:flex-row">
                     <div class="lg:w-1/2">
-                        <h2 class="text-4xl font-semibold text-gray-100">{{__(Brand)}}</h2>
+                        <h2 class="text-4xl font-semibold text-gray-100">Brand</h2>
 
                         <h3 class="text-2xl font-semibold text-gray-100">
                             Hello <span class="text-indigo-400">Guest</span>

@@ -4,7 +4,7 @@
             <header class="bg-white dark:bg-gray-800">
                 <nav class="bg-white dark:bg-gray-800">
                     <div class="container p-6 mx-auto">
-                        <a class="block text-2xl font-bold text-center text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">{{__(Brand)}}</a>
+                        <a class="block text-2xl font-bold text-center text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">Brand</a>
 
                         <div class="flex items-center justify-center mt-6 text-gray-600 capitalize dark:text-gray-300">
                             <a href="#" class="text-gray-800 dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6">home</a>
@@ -26,7 +26,7 @@
                     </div>
                 </nav>
 
-                <div class="container flex flex-col px-6 py-4 mx-auto space-y-6 lg:h-128 lg:py-16 lg:flex-row lg:items-center lg:space-x-6">
+                <div class="container flex flex-col px-6 py-4 mx-auto space-y-6 lg:h-128 lg:py-16 lg:flex-row lg:items-center">
                     <div class="flex flex-col items-center w-full lg:flex-row lg:w-1/2">
                         <div class="flex justify-center order-2 mt-6 lg:mt-0 lg:space-y-3 lg:flex-col">
                             <button class="w-3 h-3 mx-2 bg-blue-500 rounded-full lg:mx-0 focus:outline-none"></button>
@@ -45,7 +45,7 @@
                     </div>
             
                     <div class="flex items-center justify-center w-full h-96 lg:w-1/2">
-                        <img class="object-cover w-full h-full max-w-2xl rounded-md" src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80" alt="orange watch photo">
+                        <img class="object-cover w-full h-full max-w-2xl rounded-md" src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80" alt="apple watch photo">
                     </div>
                 </div>
             </header>
@@ -62,7 +62,7 @@
         <header class="bg-white dark:bg-gray-800">
             <nav class="bg-white dark:bg-gray-800">
                 <div class="container p-6 mx-auto">
-                    <a class="block text-2xl font-bold text-center text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">{{__(Brand)}}</a>
+                    <a class="block text-2xl font-bold text-center text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">Brand</a>
 
                     <div class="flex items-center justify-center mt-6 text-gray-600 capitalize dark:text-gray-300">
                         <a href="#" class="text-gray-800 dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6">home</a>
@@ -84,7 +84,7 @@
                 </div>
             </nav>
 
-            <div class="container flex flex-col px-6 py-4 mx-auto space-y-6 lg:h-128 lg:py-16 lg:flex-row lg:items-center lg:space-x-6">
+            <div class="container flex flex-col px-6 py-4 mx-auto space-y-6 lg:h-128 lg:py-16 lg:flex-row lg:items-center">
                 <div class="flex flex-col items-center w-full lg:flex-row lg:w-1/2">
                     <div class="flex justify-center order-2 mt-6 lg:mt-0 lg:space-y-3 lg:flex-col">
                         <button class="w-3 h-3 mx-2 bg-blue-500 rounded-full lg:mx-0 focus:outline-none"></button>
@@ -103,7 +103,7 @@
                 </div>
         
                 <div class="flex items-center justify-center w-full h-96 lg:w-1/2">
-                    <img class="object-cover w-full h-full max-w-2xl rounded-md" src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80" alt="orange watch photo">
+                    <img class="object-cover w-full h-full max-w-2xl rounded-md" src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80" alt="apple watch photo">
                 </div>
             </div>
         </header>`,

@@ -1,4 +1,8 @@
 {
+	"Brand": "Invoice Master",
 	"password": "كلمة السر",
-	"email": "الأيميل"
+	"email": "الأيميل",
+	"Profile" : "معلوماتى",
+	"Log Out" : "خروج",
+	"API Tokens" : "كود اأتصال"
 }

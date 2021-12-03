@@ -1,6 +1,5 @@
 <template>
      <view-component :name="name" :code="code">
-        <hr class="h-px my-6 bg-gray-300 border-none dark:bg-gray-700">
         <div class="py-6" slot="component">
             <footer class="bg-white dark:bg-gray-800">
                 <div class="container px-6 py-4 mx-auto">
@@ -8,10 +7,10 @@
                         <div class="w-full -mx-6 lg:w-2/5">
                             <div class="px-6">
                                 <div>
-                                    <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-gray-700 dark:hover:text-gray-300">{{__(Brand)}}</a>
+                                    <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-gray-700 dark:hover:text-gray-300">Brand</a>
                                 </div>
                                 
-                                <p class="max-w-md mt-2 text-gray-500 dark:text-gray-400">Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis, nisi! Id.</p>
+                                <p class="max-w-md mt-2 text-gray-500 dark:text-gray-400">Join 31,000+ other and never miss out on new tips, tutorials, and more.</p>
                                 
                                 <div class="flex mt-4 -mx-2">
                                     <a href="#" class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300" aria-label="Reddit">
@@ -80,7 +79,7 @@
                     <hr class="h-px my-6 bg-gray-300 border-none dark:bg-gray-700">
 
                     <div>
-                        <p class="text-center text-gray-800 dark:text-white">© {{__(Brand)}} 2020 - All rights reserved</p>
+                        <p class="text-center text-gray-800 dark:text-white">© Brand 2020 - All rights reserved</p>
                     </div>
                 </div>
             </footer>
@@ -100,10 +99,10 @@
                     <div class="w-full -mx-6 lg:w-2/5">
                         <div class="px-6">
                             <div>
-                                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-gray-700 dark:hover:text-gray-300">{{__(Brand)}}</a>
+                                <a href="#" class="text-xl font-bold text-gray-800 dark:text-white hover:text-gray-700 dark:hover:text-gray-300">Brand</a>
                             </div>
                             
-                            <p class="max-w-md mt-2 text-gray-500 dark:text-gray-400">Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis, nisi! Id.</p>
+                            <p class="max-w-md mt-2 text-gray-500 dark:text-gray-400">Join 31,000+ other and never miss out on new tips, tutorials, and more.</p>
                             
                             <div class="flex mt-4 -mx-2">
                                 <a href="#" class="mx-2 text-gray-700 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400" aria-label="Linkden">
@@ -162,7 +161,7 @@
                 <hr class="h-px my-6 bg-gray-300 border-none dark:bg-gray-700">
 
                 <div>
-                    <p class="text-center text-gray-800 dark:text-white">© {{__(Brand)}} 2020 - All rights reserved</p>
+                    <p class="text-center text-gray-800 dark:text-white">© Brand 2020 - All rights reserved</p>
                 </div>
             </div>
         </footer>`

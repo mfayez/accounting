@@ -1,12 +1,12 @@
 <template>
     <view-component :name="name" :code="code">
-        <div class="py-0" slot="component">
+        <div class="py-6" slot="component">
             <nav class="bg-white shadow dark:bg-gray-800">
                 <div class="container px-6 py-4 mx-auto">
                     <div class="md:flex md:items-center md:justify-between">
                         <div class="flex items-center justify-between">
                             <div class="text-xl font-semibold text-gray-700">
-                                <a class="text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">{{__("Brand")}}</a>
+                                <a class="text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">Brand</a>
                             </div>
 
                             <!-- Mobile menu button -->
@@ -22,15 +22,10 @@
                         <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
                         <div :class="!isOpen ? 'hidden' : ''" class="flex-1 md:flex md:items-center md:justify-between">
                             <div class="flex flex-col -mx-4 md:flex-row md:items-center md:mx-8">
-                                <a :href="route('invoices.index')" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">
-									{{__('Invoices')}}
-								</a>
-                                <a :href="route('customers.index')" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">
-									{{__('Customers')}}
-								</a>
-                                <a :href="route('items.index')" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">
-									{{__('Items')}}
-								</a>
+                                <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Join Slack</a>
+                                <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Browse Topics</a>
+                                <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Random Item</a>
+                                <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Experts</a>
                             </div>
 
                             <div class="flex items-center mt-4 md:mt-0">
@@ -68,7 +63,7 @@
                 <div class="md:flex md:items-center md:justify-between">
                     <div class="flex items-center justify-between">
                         <div class="text-xl font-semibold text-gray-700">
-                            <a class="text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">{{__(Brand)}}</a>
+                            <a class="text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300" href="#">Brand</a>
                         </div>
 
                         <!-- Mobile menu button -->
@@ -84,7 +79,7 @@
                     <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
                     <div class="flex-1 md:flex md:items-center md:justify-between">
                         <div class="flex flex-col -mx-4 md:flex-row md:items-center md:mx-8">
-                            <a href="/invoices" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">{{__('Invoices')}}</a>
+                            <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Join Slack</a>
                             <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Browse Topics</a>
                             <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Random Item</a>
                             <a href="#" class="px-2 py-1 mx-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md md:mt-0 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700">Experts</a>
