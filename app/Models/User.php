@@ -58,4 +58,9 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+    
+	public function uploads()
+    {
+        return $this->hasMany('App\Models\Upload', 'userId', 'Id');
+    }
 }

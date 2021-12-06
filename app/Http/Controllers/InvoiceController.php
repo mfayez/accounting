@@ -66,9 +66,13 @@ class InvoiceController extends Controller
      */
     public function edit($id)
     {
-		$invoice = Invoice::findOrFail($id);
+		$invoice = Invoice::with('invoicelines')
+			->with("invoicelines.taxableItems")
+			->with('invoicelines.item')
+			->with('invoicelines.unitValue')
+			->findOrFail($id);
         return Inertia::render('Invoices/Add', [
-			invoice => $invoice
+			'invoice' => $invoice
         ]);
     }
 

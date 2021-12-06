@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+		<preview-invoice ref="dlg3" v-model="invItem" />
 		<confirm ref="dlg1" @confirmed="rejectInv2()">
 			<jet-label for="type"  value="Select rejection reason:" />
 			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
@@ -38,16 +39,29 @@
 										<div v-for="rowVals in nestedIndex(item, key).split(',')">{{ rowVals }}</div>
 									</td>
 									<td>
-										<div class="grid justify-items-center">
-										<button class="p-1 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="rejectInvoice(item)"
-											v-show="route().current('eta.invoices.received.index')"
+										<div>
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="rejectInvoice(item)"
+											v-show="route().current('eta.invoices.received.index') && item.status =='Valid'"
 										>
 											<div>Reject</div>
 										</button>	
-										<button class="p-1 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="cancelInvoice(item)"
-											v-show="route().current('eta.invoices.sent.index')"
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="cancelInvoice(item)"
+											v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
 										>
 											<div>Cancel</div>
+										</button>	
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="editInvoice(item)"
+											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
+										>
+											<div>Edit</div>
+										</button>	
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="viewInvoice(item)">
+											<div>View</div>
+										</button>	
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="downloadPDF(item)"
+											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
+										>
+											<div>PDF</div>
 										</button>	
 <!--											<jet-button @click.prevent="editItem(item)">
 											</jet-button> -->
@@ -69,12 +83,14 @@
 	import AddEditItem from '@/Pages/Items/AddEdit';
 	import Confirm from '@/UI/Confirm'
     import JetLabel from '@/Jetstream/Label'
+	import PreviewInvoice from '@/Pages/Invoices/Preview';
 
     export default {
 		mixins: [InteractsWithQueryBuilder],
         components: {
             AppLayout,
 			Confirm,
+			PreviewInvoice,
 			JetLabel,
 			Table: Tailwind2.Table,
 			JetButton,
@@ -85,11 +101,25 @@
   		},
         data() {
             return {
-				invItem: Object,
+				invItem: {quantity: 1009 },
 				cancelReason: ''
             }
         },
 		methods: {
+			downloadPDF(item) {
+				this.invItem = item;
+				window.location.href = route('invoices.edit', [item.Id]);
+			},
+			editInvoice(item) {
+				this.invItem = item;
+				window.location.href = route('invoices.edit', [item.Id]);
+			},
+			viewInvoice(item) {
+				this.invItem = item;
+				this.$nextTick(() => {
+					this.$refs.dlg3.ShowDialog();
+				});
+			},
 			cancelInvoice(item) {
 				this.invItem = item;
 				this.$refs.dlg2.ShowModal();

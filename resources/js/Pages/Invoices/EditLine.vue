@@ -139,6 +139,8 @@
 			ShowDialog() {
 				this.item = JSON.parse(JSON.stringify(this.modelValue));
 				this.showDlg = true;
+				if (this.item)
+					this.item.unit = this.units.find(option => option.code === this.item.unitType);
 			},
 			CancelDlg() {
 				this.showDlg = false;
@@ -165,7 +167,7 @@
 					for (var j = 0; j< this.item.taxItems.length; j++)
 					{
 						var taxitem = this.item.taxItems[j];
-						taxitem.value = taxitem.percentage * this.item.total / 100.0
+						taxitem.value = taxitem.percentage * this.item.netTotal / 100.0
 						this.item.total += taxitem.value;
 					}
 				}
@@ -183,11 +185,15 @@
 			},
 			updateValue(item, val) {
 				item.value = this.item.netTotal * val / 100.0;
-				this.calculateTax();
+				this.$nextTick(() => {
+					this.calculateTax();
+				});
 			},
 			updatePercentage(item, val) {
 				item.percentage = val * 100.0 / this.item.netTotal;
-				this.calculateTax();
+				this.$nextTick(() => {
+					this.calculateTax();
+				});
 			},
 			SaveItem() {
 				this.item.isDirty = true;
@@ -203,6 +209,8 @@
 			axios.get('/json/UnitTypes.json')
 			.then(response => {
 				this.units = response.data;
+				if (this.item)
+					this.item.unit = this.units.find(option => option.code === this.item.unitType);
             }).catch(error => {});
 			axios.get('/json/TaxSubtypes.json')
 			.then(response => {

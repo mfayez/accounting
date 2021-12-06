@@ -24,11 +24,11 @@ class APIController extends Controller
 		foreach($data["acceptedDocuments"] as $document) {
 			$invoice = Invoice::where('internalID', '=', $document["internalId"])
 						->where(function ($query) {
-							$query->where('status', '=', 'pending')
+							$query->where('status', '=', 'approved')
 							      ->orWhereNull('status');
 					    })->firstOrFail();
 			$invoice->status = 'processing';
-			$invoice->statusreason = '';
+			$invoice->statusreason = 'Sent to ETA for Processing';
 			$invoice->uuid = $document["uuid"];
 			$invoice->submissionUUID = $data["submissionId"];
 			$invoice->longId = $document["longId"];
@@ -37,7 +37,7 @@ class APIController extends Controller
 		foreach($data["rejectedDocuments"] as $document) {
 			$invoice = Invoice::where('internalID', '=', $document["internalId"])
 						->where(function ($query) {
-							$query->where('status', '=', 'pending')
+							$query->where('status', '=', 'approved')
 							      ->orWhereNull('status');
 					    })->firstOrFail();
 			$invoice->status = 'rejected';

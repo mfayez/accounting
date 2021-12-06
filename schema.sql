@@ -204,6 +204,7 @@ create table Invoice (
     submissionUUID                VARCHAR(26) NULL,
     longId                        VARCHAR(80) NULL,
   	createdByUserId               VARCHAR(46) NULL,
+	upload_id	int NULL,
     `status` VARCHAR(200) NULL DEFAULT NULL,
 	`statusReason` VARCHAR(1000) NULL DEFAULT NULL,
 	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -312,6 +313,19 @@ CREATE TABLE ETAInvoices(
   (
     Id asc
   )
+);
+CREATE TABLE Uploads (
+	Id int AUTO_INCREMENT NOT NULL,
+    userId INT NOT NULL,
+    fileName VARCHAR(255) NOT NULL,
+    recordsCount INT NOT NULL,
+    status VARCHAR(100) NOT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT PK_Uploads PRIMARY KEY CLUSTERED
+	(
+    	Id asc
+  	)
 );
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_issuer_id FOREIGN KEY (issuer_id) REFERENCES Issuer(id);
 ALTER TABLE Invoice ADD CONSTRAINT fk_invoice_receiver_id FOREIGN KEY (receiver_id) REFERENCES Receiver(id);

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+//use App\Models\Item;
+
 /**
  * Eloquent class to describe the InvoiceLine table.
  *
@@ -12,6 +14,7 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
     protected $table = 'InvoiceLine';
 
     public $primaryKey = 'Id';
+	//protected $appends = ['item'];
 
     protected $fillable = ['description', 'itemType', 'itemCode', 'unitType', 'quantity', 'internalCode', 'salesTotal',
         'total', 'valueDifference', 'totalTaxableFees', 'netTotal', 'itemsDiscount', 'invoice_id' ];
@@ -19,6 +22,13 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
     public function discount()
     {
         return $this->belongsTo('App\Models\Discount', 'discount_id', 'Id');
+    }
+
+    //public function getItemAttribute()
+    public function item()
+    {
+		//return Item::firstWhere('itemCode', $this->itemCode);
+		return $this->belongsTo('App\Models\ETAItem', 'itemCode', 'itemCode');
     }
 
     public function invoice()

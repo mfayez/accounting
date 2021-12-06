@@ -29,8 +29,8 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 		'invoicelines', 'invoicelines.unitvalue', 'invoicelines.taxableitems',
 		'taxtotals',
 	])->where(function($query) {
-		$query->where('status', '=', 'pending')
-			  ->orWhereNull('status');
+		$query->where('status', '=', 'approved');
+//			  ->orWhereNull('status');
 	})->get();
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });

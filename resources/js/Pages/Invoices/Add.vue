@@ -66,14 +66,14 @@
 								<jet-label class="mt-2 col-span-1">{{item.netTotal}}</jet-label>
 								<div class="grid grid-cols-2 gap-1">
 									<template v-for="(taxitem, idx1) in item.taxItems" :key="taxitem.key">
-										<jet-label class="mt-2 col-span-2">{{taxitem.taxType.Code}}({{taxitem.taxSubtype.Code}})</jet-label>
+										<jet-label class="mt-2 col-span-2">{{getTaxStr(taxitem)}}</jet-label>
 										<jet-label class="mt-2 col-span-2">{{taxitem.value}}({{taxitem.percentage}}%)</jet-label>
 									</template>
 								</div>
 								<jet-secondary-button @click="EditItem(item, idx1)" class="h-12 mt-2 ml-2">
 									Edit
 								</jet-secondary-button>				
-								<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="h-12 mt-2 ml-2">
+								<jet-danger-button @click="DeleteItem(idx1)" class="h-12 mt-2 ml-2">
 									Delete
 								</jet-danger-button>				
 							</template>
@@ -129,6 +129,10 @@
 			invoice:{
 				Type: Object,
 				default: null
+			},
+			items: {
+				Type: Object,
+				default: null
 			}
 		},
 		data () {
@@ -165,9 +169,6 @@
 				})
 			}
 		},
-		props: {
-			items: Object
-  		},
 		methods: {
 			RecalculateTax: function() {
 				this.form.totalSalesAmount = 0;
@@ -209,6 +210,10 @@
 				});
 				this.RecalculateTax();
 			},
+			DeleteItem: function(idx){
+				this.form.invoiceLines.splice(idx, 1);
+				this.RecalculateTax();
+			},
 			EditItem: function(item, idx) {
 				this.addingNewLine = false;
 				this.currentItem = item;
@@ -248,6 +253,8 @@
 				window.history.back();
 			},
 			onSave: function() {
+				if (this.invoice)
+					this.form.Id = this.invoice.Id;
 				axios.post(route('eta.invoices.store'), this.form)
                 .then(response => {
                     this.processing = false;
@@ -264,26 +271,71 @@
                 });
 
 			},
+			getTaxStr: function(taxitem) {
+				if (taxitem.taxType.Code) return taxitem.taxType.Code +'('+taxitem.taxSubtype.Code+')';
+				return taxitem.taxType +'('+taxitem.subType+')';
+			},
 		},
 		created: function created() {
 			axios.get(route('json.branches'))
 			.then(response => {
 				this.branches = response.data;
+				if (this.invoice)
+					this.form.issuer = this.branches.find(option => option.Id === this.invoice.issuer_id);
             }).catch(error => {
 
             });
 			axios.get(route('json.customers'))
 			.then(response => {
 				this.customers = response.data;
+				if (this.invoice)
+					this.form.receiver = this.customers.find(option => option.Id === this.invoice.receiver_id);
             }).catch(error => {
 
             });
 			axios.get('/json/ActivityCodes.json')
 			.then(response => {
 				this.activities = response.data;
+					this.form.taxpayerActivityCode = this.activities.find(option => option.code === this.invoice.taxpayerActivityCode);
             }).catch(error => {
 
             });
+			this.$nextTick(() => {
+			if (this.invoice){
+				this.form.receiver = this.customers.find(option => option.Id === this.invoice.receiver_id);
+				//todo mfayez fix this this.invoice.receiver;
+				this.form.name = this.invoice.name
+				this.form.taxpayerActivityCode = this.invoice.taxpayerActivityCode
+				this.form.internalID = this.invoice.internalID
+				this.form.totalSalesAmount = this.invoice.totalSalesAmount
+				this.form.totalDiscountAmount = this.invoice.totalDiscountAmount
+				this.form.netAmount = this.invoice.netAmount
+				this.form.totalAmount = this.invoice.totalAmount
+				this.form.extraDiscountAmount = this.invoice.extraDiscountAmount
+				this.form.totalItemsDiscountAmount = this.invoice.totalItemsDiscountAmount
+				this.form.invoiceLines = this.invoice.invoicelines;
+				for(var i = 0; i < this.form.invoiceLines.length; i++){
+					this.form.invoiceLines[i].unitValue = this.form.invoiceLines[i].unit_value;
+					this.form.invoiceLines[i].taxItems = this.form.invoiceLines[i].taxable_items;
+					for(var j = 0; j < this.form.invoiceLines[i].taxItems.length; j++){
+						this.form.invoiceLines[i].taxItems[j].value = this.form.invoiceLines[i].taxItems[j].amount;
+						this.form.invoiceLines[i].taxItems[j].percentage = this.form.invoiceLines[i].taxItems[j].rate;
+						this.form.invoiceLines[i].taxItems[j].taxType = {Code: this.form.invoiceLines[i].taxItems[j].taxType};
+						this.form.invoiceLines[i].taxItems[j].taxSubtype = {Code: this.form.invoiceLines[i].taxItems[j].subType};
+						this.form.invoiceLines[i].taxItems[j].taxType.label = this.form.invoiceLines[i].taxItems[j].taxType.Code;
+						this.form.invoiceLines[i].taxItems[j].taxSubtype.label = this.form.invoiceLines[i].taxItems[j].taxSubtype.Code;
+					}
+					this.form.invoiceLines[i].taxableItems = this.form.invoiceLines[i].taxItems.map(function(taxitem) {
+						var obj = {};
+						obj.taxType = taxitem.taxType.Code;
+						obj.amount  = taxitem.value;
+						obj.subType = taxitem.taxSubtype.Code;
+						obj.rate    = taxitem.percentage;
+						return obj;
+					});
+				}
+				this.RecalculateTax();
+			}});
 		}
     }
 </script>

@@ -6,6 +6,9 @@ use Inertia\Inertia;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Str;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,6 +25,7 @@ use App\Models\Value;
 use App\Models\Discount;
 use App\Models\Receiver;
 use App\Models\Issuer;
+use App\Models\Upload;
 use App\Http\Requests\StoreInvoiceRequest;
 
 class ETAController extends Controller
@@ -45,6 +49,12 @@ class ETAController extends Controller
         //]);
     
 		$temp = $this->csvToArray($request->file);
+		$upload = new Upload();
+		$upload->userId = Auth::id();
+		$upload->fileName = $request->file->getClientOriginalName();
+		$upload->recordsCount = count($temp);
+		$upload->status = 'Uploading';
+		$upload->save();
 		$inserted = array(); 
 		$updated = array(); 
 		foreach($temp as $key=>$invoice_data)
@@ -61,7 +71,10 @@ class ETAController extends Controller
 			$invoice->netAmount = 0;
 			$invoice->totalAmount = 0;
 			$invoice->extraDiscountAmount = 0;
-			$invoice->totalItemsDiscountAmount = 0;	
+			$invoice->totalItemsDiscountAmount = 0;
+			$invoice->status = "In Review";	
+			$invoice->statusreason = "Excel Upload";
+			$invoice->upload_id = $upload->Id;
 			$invoice->save();
 			$temp[$key]["invoice_id"] = $invoice->Id;
 			$inserted[$invoice_data['internalID']] = $invoice->Id;
@@ -86,12 +99,24 @@ class ETAController extends Controller
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->itemsDiscount = 0;
 			$invoiceline->save();
-			if ($invoice_data["T1(V009)"] > 0) {
+			foreach($invoice_data as $key->$taxVal)
+			{
+				$dicTax = Str::of($key)->split('/[()]+/');
+				if ($dicTax[0][0] == 'T'){
+					if (intval(substr($dicTax[0], 1)) < 13 && intval(substr($dicTax[0], 1)) > 0){
+						$item1 = new TaxableItem(["taxType" => $dicTax[0], "subType" => $dicTax[1], "amount" => floatval($taxVal)]);
+						$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
+		     			$item1->invoiceline_id = $invoiceline->Id;
+		                $item1->save();
+					}
+				}
+			}
+			/*if ($invoice_data["T1(V009)"] > 0) {
 				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($invoice_data["T1(V009)"])]);
 				$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
-			}
+			}*/
 			$invoiceline->invoice->normalize();
 			$invoiceline->invoice->save();
 			
@@ -105,7 +130,9 @@ class ETAController extends Controller
 			}
 		}
 		
-		return $temp;
+		$upload->status = 'Review';
+		$upload->save();
+		return $upload;
         //$fileName = time().'.'.$request->file->extension();  
      
         //$request->file->move(public_path('file'), $fileName);
@@ -138,10 +165,29 @@ class ETAController extends Controller
 			$data['invoiceLines'][$key]['unitValue']['amountEGP'] = floatval($line['unitValue']['amountEGP']);
 		}
 		//return ["documents" => array($data)];
-		$invoice = new Invoice($data);
-		$invoice->issuer_id = $data['issuer']['Id'];
-		$invoice->receiver_id = $data['receiver']['Id'];
-		$invoice->save();	
+		$data['status'] = "In Review";
+		$data['statusReason'] = "Manual Entry";
+		$data['issuer_id'] = $data['issuer']['Id'];
+		$data['receiver_id'] = $data['receiver']['Id'];
+		$invoice = Invoice::updateOrCreate(['Id' => $request->input('Id', -1)], $data);
+		foreach($invoice->invoiceLines as $line)
+		{
+			//if($line->discount)
+			$line->discount()->delete();
+			$delme = $line->unitValue;
+			//if($line->taxableItems)
+			$line->taxableItems()->delete();
+			$line->delete();
+			if($delme) $delme->delete();
+		}
+		//if($invoice->taxTotals)
+		$invoice->taxTotals()->delete();
+
+		//$invoice->issuer_id = $data['issuer']['Id'];
+		//$invoice->receiver_id = $data['receiver']['Id'];
+		//$invoice->status = "In Review";
+		//$invoice->statusreason = "Manual Entry";
+		//$invoice->save();	
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
 			$unitValue->save();
@@ -266,7 +312,7 @@ class ETAController extends Controller
 		$data = $request->validate([
 			'codeType'		=> ['required', 'string', Rule::in(['EGS', 'GS1'])],
 			'parentCode'	=> ['required', 'integer'],
-			'itemCode'		=> ['required', 'regex:/EG-[0-9]+-[0-9]+/'],
+			'itemCode'		=> ['required', 'regex:/EG-[0-9]+-[A-Za-z0-9_]+/'],
 			'codeName'		=> ['required', 'string', 'max:255'],
 			'codeNameAr'	=> ['required', 'string', 'max:255'],
 			'activeFrom'	=> ['required', 'date'],
@@ -357,7 +403,7 @@ class ETAController extends Controller
         });
     }
 
-	public function indexIssued()
+	public function indexIssued(Request $request, $upload_id = null)
 	{
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
@@ -369,10 +415,16 @@ class ETAController extends Controller
 
 		$items = QueryBuilder::for(Invoice::class)
 			->with("receiver")
+			->with("invoiceLines")
+			->with("invoiceLines.taxableItems")
 			->whereNotNull('issuer_id')
+			->where(function ($query) use ($upload_id){
+				if ($upload_id)
+            		$query->where('upload_id', '=', $upload_id);
+           	})
 			//->join("Receiver", "Invoice.receiver_id", "Receiver.Id")
 			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
-            ->defaultSort('Invoice.Id')
+            ->defaultSort('-Invoice.Id')
             ->allowedSorts(['Status'])
             ->allowedFilters(['status', 'internalID', $globalSearch])
             ->paginate(20)
@@ -552,5 +604,65 @@ class ETAController extends Controller
 			$invoice->statusreason = $errors;
 			$invoice->save();
 		}
+	}
+
+    public function indexExcel()
+    {
+		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                $query->where('fileName', 'LIKE', "%{$value}%")->orWhere('status', 'LIKE', "%{$value}%");
+            });
+        });
+
+        $items = QueryBuilder::for(Upload::class)
+			->with('user')
+			->whereNotIn('status', ['canceled'])
+        	->defaultSort('-created_at')
+            ->allowedSorts(['Id', 'fileName', 'status', 'recordsCount'])
+            ->allowedFilters(['fileName', 'user.name', $globalSearch])
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Invoices/UploadIndex', [
+            'items' => $items,
+        ])->table(function (InertiaTable $table) {
+            $table->addSearchRows([
+                'fileName' => 'Name',
+                'user.name' => 'Uploader',
+            ])->addColumns([
+                'fileName' => 'File Name',
+                'created_at' => 'Upload Time',
+				'recordsCount' => 'Number of Items',
+				'user.name' => 'Uploader',
+				'status' => 'Status'
+            ]);
+        });
+    }
+
+	function CancelUpload(Request $request){
+		$upload = Upload::findOrFail($request->input('id'));
+		$upload->status = "Canceled";
+		$upload->save();
+		/*foreach($upload->invoices as $inv){
+			foreach($inv->invoiceLines as $line)
+			{
+				$line->discount->delete();
+				$line->unitValue->delete();
+				$line->taxableItems->delete();
+				$line->delete();
+			}
+			$inv->taxTotals->delete();
+			$inv->delete();
+		}
+		$upload->delete();*/
+	}
+
+	public function ApproveInvoice(Request $request)
+	{
+		$inv = Invoice::findOrFail($request->input('Id'));
+		$inv->status = 'approved';
+		$inv->statusreason = 'Approved by ' . Auth::user()->name;
+		$inv->save();
+		return "Invoice approved";
 	}
 }

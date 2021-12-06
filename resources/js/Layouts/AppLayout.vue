@@ -167,17 +167,18 @@
                                         <jet-dropdown-link as="a" :href="route('invoices.create')">
                                             {{ __('Add New Invoice') }}
                                         </jet-dropdown-link>
-										
-										<jet-dropdown-link as="a" @click.prevent="openDlg6()" href="#"> 
-                                            {{ __('Upload Invoices') }}
-                                        </jet-dropdown-link>
-										
 										<jet-dropdown-link as="a" :href="route('eta.invoices.sent.index')">
                                             {{ __('Show My Invoices') }}
                                         </jet-dropdown-link>
 
 										<jet-dropdown-link as="a" :href="route('eta.invoices.received.index')">
                                             {{ __('Show Paid Invoices') }}
+                                        </jet-dropdown-link>
+										<jet-dropdown-link as="a" @click.prevent="openDlg6()" href="#"> 
+                                            {{ __('Upload Invoices') }}
+                                        </jet-dropdown-link>
+                                        <jet-dropdown-link as="a" :href="route('invoices.excel.review')">
+                                            {{ __('Review Excel Files') }}
                                         </jet-dropdown-link>
                                         <jet-dropdown-link as="a" @click.prevent="openDlg5()" href="#">
                                             {{ __('Load from ETA') }}
