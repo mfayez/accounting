@@ -26,7 +26,8 @@ class APIController extends Controller
 						->where(function ($query) {
 							$query->where('status', '=', 'approved')
 							      ->orWhereNull('status');
-					    })->firstOrFail();
+					    })->first();
+			if (!$invoice) continue;
 			$invoice->status = 'processing';
 			$invoice->statusreason = 'Sent to ETA for Processing';
 			$invoice->uuid = $document["uuid"];
@@ -39,7 +40,8 @@ class APIController extends Controller
 						->where(function ($query) {
 							$query->where('status', '=', 'approved')
 							      ->orWhereNull('status');
-					    })->firstOrFail();
+					    })->first();
+			if (!$invoice) continue;
 			$invoice->status = 'rejected';
 			$invoice->statusreason = "";
 			if (isset($document["error"]["details"])){

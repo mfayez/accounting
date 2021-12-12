@@ -47,8 +47,20 @@
 </script>
 
 <style>
+.Valid {
+	background-color: #0E9F6E
+}
 .processing {
 	background-color: #0E9F6E
+}
+.Review {
+	background-color: #0E6E9F
+}
+.Canceled {
+	background-color: #9F0E6E
+}
+.Invalid {
+	background-color: #F05252
 }
 .rejected {
 	background-color: #F05252

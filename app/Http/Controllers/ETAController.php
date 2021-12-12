@@ -99,13 +99,16 @@ class ETAController extends Controller
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->itemsDiscount = 0;
 			$invoiceline->save();
-			foreach($invoice_data as $key->$taxVal)
+			foreach($invoice_data as $key=>$taxVal)
 			{
 				$dicTax = Str::of($key)->split('/[()]+/');
 				if ($dicTax[0][0] == 'T'){
 					if (intval(substr($dicTax[0], 1)) < 13 && intval(substr($dicTax[0], 1)) > 0){
 						$item1 = new TaxableItem(["taxType" => $dicTax[0], "subType" => $dicTax[1], "amount" => floatval($taxVal)]);
-						$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
+						if ($invoiceline->salesTotal > 0)
+							$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
+						else
+							$item1->rate = 0;
 		     			$item1->invoiceline_id = $invoiceline->Id;
 		                $item1->save();
 					}
@@ -257,7 +260,14 @@ class ETAController extends Controller
 		//$collection->transform(function ($item, $key) {
     	//$collection->each(function ($item) {
 		foreach($collection as $item) {
-			$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
+			try{
+			//$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
+			$invoice = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
+			if ($invoice)
+			{
+				$invoice->update($item);
+				$invoice->save();
+			}
 			//$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
 			$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
 			if ($invoice2)
@@ -266,6 +276,7 @@ class ETAController extends Controller
 				$invoice2->statusreason = $item['documentStatusReason'];
 				$invoice2->save();
 			}
+			} catch (Exception $e) {}
 
 			//$invoice->save();
 		};

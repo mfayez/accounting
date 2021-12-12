@@ -59,7 +59,6 @@
 											<div>View</div>
 										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="downloadPDF(item)"
-											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
 										>
 											<div>PDF</div>
 										</button>	
@@ -108,7 +107,7 @@
 		methods: {
 			downloadPDF(item) {
 				this.invItem = item;
-				window.location.href = route('invoices.edit', [item.Id]);
+				window.open(route('pdf.invoice.preview', [item.Id]));
 			},
 			editInvoice(item) {
 				this.invItem = item;

@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ETAController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ChartsController;
 
 /*
@@ -91,6 +92,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 #charts data
 	Route::get('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");
 	Route::get('/json/top/receivers', [ChartsController::class, 'topReceivers'])->name("json.top.receivers");
+#pdf stuff
+	Route::get('/pdf/invoice/{Id}', [PDFController::class,'previewInvoice'])->name('pdf.invoice.preview');
 });
 
 Route::get('/language/{language}', function ($language) {
