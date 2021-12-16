@@ -5,6 +5,11 @@
         </template>
 
         <template #content>
+			<div class="grid grid-cols-10 gap-0 mt-2">
+				<div class="col-span-5">Branch: {{item.issuer.name}}</div>
+				<div class="col-span-5">Customer: {{item.receiver.name}}</div>
+				<div class="col-span-5">Date: {{item.dateTimeIssued}}</div>
+			</div>
 			<div class="grid grid-cols-11 gap-0 mt-2">
 				<div class="bg-gray-400 col-span-3">Item</div>
 				<div class="bg-gray-400 col-span-3">Code</div>

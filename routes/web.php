@@ -81,6 +81,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::post('/ETA/Invoices/Sync/Issued', [ETAController::class, 'SyncIssuedInvoices'])->name("eta.invoices.sync.issued");
 	Route::post('/ETA/Invoices/Add' , [ETAController::class, 'AddInvoice'])->name("eta.invoices.store");
 	Route::post('/ETA/Invoices/Cancel' , [ETAController::class, 'CancelInvoice'])->name("eta.invoices.cancel");
+	Route::post('/ETA/Invoices/Delete' , [ETAController::class, 'DeleteInvoice'])->name("eta.invoices.delete");
 	Route::post('/ETA/Invoices/Approve' , [ETAController::class, 'ApproveInvoice'])->name("eta.invoices.approve");
 	Route::post('/ETA/Invoices/Upload' , [ETAController::class, 'UploadInvoice'])->name("eta.invoices.upload");
 	Route::post('/ETA/Invoices/Upload/Cancel' , [ETAController::class, 'CancelUpload'])->name("eta.invoices.upload.cancel");

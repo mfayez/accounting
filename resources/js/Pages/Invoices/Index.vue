@@ -14,6 +14,9 @@
 			  <option value="Wrong invoice details">Wrong invoice details</option>
 			</select>
 		</confirm>
+		<confirm ref="dlg4" @confirmed="deleteInv()">
+			<jet-label for="type"  value="Are you sure you want to delete this Invoice?" />
+		</confirm>
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
@@ -50,6 +53,11 @@
 										>
 											<div>Cancel</div>
 										</button>	
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="deleteInvoice(item)"
+											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
+										>
+											<div>Delete</div>
+										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="editInvoice(item)"
 											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
 										>
@@ -61,6 +69,11 @@
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="downloadPDF(item)"
 										>
 											<div>PDF</div>
+										</button>	
+										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="openExternal(item)"
+											v-show="item.status=='Valid'"
+										>
+											<div>ETA</div>
 										</button>	
 <!--											<jet-button @click.prevent="editItem(item)">
 											</jet-button> -->
@@ -105,6 +118,9 @@
             }
         },
 		methods: {
+			openExternal(item) {
+				window.open("https://invoicing.eta.gov.eg/print/documents/"+item.uuid+"/share/"+item.longId);
+			},
 			downloadPDF(item) {
 				this.invItem = item;
 				window.open(route('pdf.invoice.preview', [item.Id]));
@@ -119,6 +135,20 @@
 					this.$refs.dlg3.ShowDialog();
 				});
 			},
+			deleteInvoice(item) {
+				this.invItem = item;
+				this.$refs.dlg4.ShowModal();
+			},
+			deleteInv() {
+                axios.post(route('eta.invoices.delete'), {Id: this.invItem.Id, 
+				})
+				.then(response => {
+					location.reload();
+                }).catch(error => {
+					alert(error.response.data);
+                });
+				
+			},
 			cancelInvoice(item) {
 				this.invItem = item;
 				this.$refs.dlg2.ShowModal();
@@ -129,7 +159,8 @@
 					reason: this.cancelReason
 				})
 				.then(response => {
-					alert(response.data);
+					location.reload();
+					//alert(response.data);
                 }).catch(error => {
 					alert(error.response.data);
                     //this.$refs.password.focus()

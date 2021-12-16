@@ -427,6 +427,7 @@ class ETAController extends Controller
 
 		$items = QueryBuilder::for(Invoice::class)
 			->with("receiver")
+			->with("issuer")
 			->with("invoiceLines")
 			->with("invoiceLines.taxableItems")
 			->whereNotNull('issuer_id')
@@ -676,5 +677,22 @@ class ETAController extends Controller
 		$inv->statusreason = 'Approved by ' . Auth::user()->name;
 		$inv->save();
 		return "Invoice approved";
+	}
+	
+	public function DeleteInvoice(Request $request)
+	{
+		$inv = Invoice::findOrFail($request->input('Id'));
+		foreach($inv->invoiceLines as $line) {
+			//if ($line->discount) $line->discount->delete();
+			//if ($line->taxableItems) $line->taxableItems->delete();
+			$line->discount()->delete();
+			$line->taxableItems()->delete();
+			$line->delete();
+			$line->unitValue()->delete();
+		}
+		//if ($inv->taxTotals) 
+		$inv->taxTotals()->delete();
+		$inv->delete();
+		return "Invoice Deleted";
 	}
 }
