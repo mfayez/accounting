@@ -296,7 +296,10 @@
 			axios.get('/json/ActivityCodes.json')
 			.then(response => {
 				this.activities = response.data;
+				if (this.invoice)
 					this.form.taxpayerActivityCode = this.activities.find(option => option.code === this.invoice.taxpayerActivityCode);
+				else
+					this.form.taxpayerActivityCode = this.activities[0];
             }).catch(error => {
 
             });
@@ -314,6 +317,7 @@
 				this.form.extraDiscountAmount = this.invoice.extraDiscountAmount
 				this.form.totalItemsDiscountAmount = this.invoice.totalItemsDiscountAmount
 				this.form.invoiceLines = this.invoice.invoicelines;
+				this.form.dateTimeIssued = this.invoice.dateTimeIssued.slice(0, 16);
 				for(var i = 0; i < this.form.invoiceLines.length; i++){
 					this.form.invoiceLines[i].unitValue = this.form.invoiceLines[i].unit_value;
 					this.form.invoiceLines[i].taxItems = this.form.invoiceLines[i].taxable_items;
