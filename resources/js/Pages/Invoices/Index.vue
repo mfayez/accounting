@@ -32,7 +32,7 @@
 								<th v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
 									{{ col.label }}
 								</th>
-								<th @click.prevent="">Actions</th>
+								<th @click.prevent="">{{__('Actions')}}</th>
 							</tr>
 						</template>
 
@@ -46,25 +46,25 @@
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="rejectInvoice(item)"
 											v-show="route().current('eta.invoices.received.index') && item.status =='Valid'"
 										>
-											<div>Reject</div>
+											<div>{{__('Reject')}}</div>
 										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="cancelInvoice(item)"
 											v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
 										>
-											<div>Cancel</div>
+											<div>{{__('Cancel')}}</div>
 										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="deleteInvoice(item)"
 											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
 										>
-											<div>Delete</div>
+											<div>{{__('Delete')}}</div>
 										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="editInvoice(item)"
 											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
 										>
-											<div>Edit</div>
+											<div>{{__('Edit')}}</div>
 										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="viewInvoice(item)">
-											<div>View</div>
+											<div>{{__('View')}}</div>
 										</button>	
 										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="downloadPDF(item)"
 										>
