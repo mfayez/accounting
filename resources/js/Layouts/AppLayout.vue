@@ -224,6 +224,8 @@
                                     </template>
                                 </jet-dropdown>
                             </div>
+							
+							<language-selector />
                         </div>
 
                         <!-- Hamburger -->

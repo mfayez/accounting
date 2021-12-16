@@ -21,5 +21,14 @@
 	"Show Branches" : "عرض الفروع",
 	"Customers" : "العملاء",
 	"Add New Customer" : "أضافة عميل جديد",
-	"Show Customer" : "عرض العملاء"
+	"Show Customer" : "عرض العملاء",
+	"Net Amount": "صافى القيمة",
+	"Gross Amount": "أجمالي القيمة",
+	"Tax Amount": "قيمة الضريبة",
+	"Invalid" : "مرفوضة",
+	"Valid" : "مقبولة",
+	"processing" : "معالجة",
+	"In Review" : "المراجعة",
+	"approved" : "معتمدة",
+	"Canceled": "ملغاة"
 }

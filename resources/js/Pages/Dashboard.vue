@@ -7,13 +7,13 @@
 <div class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-4 sm:px-8">
 	<div class="items-center bg-white border rounded-sm overflow-hidden shadow" v-for="row in statistics">
 		<div class="uppercase text-center text-3xl p-4 w-full" :class="row.Status">
-			{{row.Status}}			
+			{{__(row.Status)}}			
 		</div>
 		<div class="px-4 text-gray-700">
-			<p class="text-xl">Invoices: {{row.invoicesCount}}</p>
-			<p class="text-xl">Net Amount: {{row.totalSalesAmount}}</p>
-			<p class="text-xl">Gross Amount: {{row.totalAmount}}</p>
-			<p class="text-xl">Tax Amount: {{row.taxTotal}}</p>
+			<p class="text-xl">{{__('Invoices')}}: {{row.invoicesCount}}</p>
+			<p class="text-xl">{{__('Net Amount')}}: {{row.totalSalesAmount}}</p>
+			<p class="text-xl">{{__('Gross Amount')}}: {{row.totalAmount}}</p>
+			<p class="text-xl">{{__('Tax Amount')}}: {{row.taxTotal}}</p>
 		</div>
 	</div>
 </div>

@@ -97,8 +97,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 	Route::get('/pdf/invoice/{Id}', [PDFController::class,'previewInvoice'])->name('pdf.invoice.preview');
 });
 
-Route::get('/language/{language}', function ($language) {
-    Session()->put('locale', $language);
-    return redirect()->back();
-})->name('language');
+Route::middleware(['web'])->group(function () {
+	Route::get('/language/{language}', function ($language) {
+		header("Refresh:0");
+    	Session()->put('locale', $language);
+	    return redirect()->back();
+	})->name('language');
+});
 
