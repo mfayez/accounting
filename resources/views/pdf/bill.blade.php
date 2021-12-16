@@ -5,6 +5,10 @@
     <title>Invoice Master</title>
     
     <style>
+	.logo {
+		width: 30%;
+	}
+
     .invoice-box {
         max-width: 800px;
         margin: auto;
@@ -101,7 +105,7 @@
                     <table>
                         <tr>
                             <td class="title">
-								<div>Al Sabil</div>
+								<img src="/images/invoice_logo.jpg" class="logo" alt="Fat Hens For Trading"/>
                             </td>
                            <td /> 
                             <td style="font-family: DejaVu Sans;text-align:left;">
