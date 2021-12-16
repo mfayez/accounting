@@ -7,5 +7,19 @@
 	"API Tokens" : "كود الأتصال",
 	"Items" : "الأصناف",
 	"Add New Item" : "أضافة صنف جديد",
-	"Upload Items" : "رفع أصناف"
+	"Upload Items" : "رفع أصناف",
+	"Show Items" : "عرض الأصناف",
+	"Load from ETA" : "مزامنة مع الضرائب",
+	"Invoices" : "الفواتير",
+	"Add New Invoice" : "أضافة فاتورة",
+	"Show My Invoices" : "عرض فواتيري",
+	"Show Paid Invoices" : "عرض فواتير الشراء",
+	"Upload Invoices" : "رفع فواتير (ملف أكسل)",
+	"Review Excel Files" : "مراجعة ملفات الأكسل",
+	"Branches" : "الفروع",
+	"Add New Branch" : "أضافة فرع جديد",
+	"Show Branches" : "عرض الفروع",
+	"Customers" : "العملاء",
+	"Add New Customer" : "أضافة عميل جديد",
+	"Show Customer" : "عرض العملاء"
 }
