@@ -142,6 +142,7 @@ class CustomerController extends Controller
             'receiver_id' 					=> ['required', 'integer'],
             'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
         ]);
+		
 		$customer->update($data);
 		return $customer;
     }

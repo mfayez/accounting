@@ -35,7 +35,7 @@ class ETAController extends Controller
 	
 	public function UploadItem(Request $request)
 	{
-		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
+		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
 		$temp = $this->csvToArray($request->file);
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => temp]);
@@ -65,7 +65,7 @@ class ETAController extends Controller
 			}
 			$invoice = new Invoice($invoice_data);
 			$invoice->documentType = "I";
-			$invoice->documentTypeVersion = "0.9";
+			$invoice->documentTypeVersion = "1.0";
 			$invoice->totalDiscountAmount = 0;
 			$invoice->totalSalesAmount = 0;
 			$invoice->netAmount = 0;
@@ -99,6 +99,7 @@ class ETAController extends Controller
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->itemsDiscount = 0;
 			$invoiceline->save();
+			/*
 			foreach($invoice_data as $key=>$taxVal)
 			{
 				$dicTax = Str::of($key)->split('/[()]+/');
@@ -113,13 +114,13 @@ class ETAController extends Controller
 		                $item1->save();
 					}
 				}
-			}
-			/*if ($invoice_data["T1(V009)"] > 0) {
+			}*/
+			if ($invoice_data["T1(V009)"] > 0) {
 				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($invoice_data["T1(V009)"])]);
 				$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
-			}*/
+			}
 			$invoiceline->invoice->normalize();
 			$invoiceline->invoice->save();
 			
@@ -147,7 +148,7 @@ class ETAController extends Controller
 
 	public function AddInvoice(StoreInvoiceRequest $request)
 	{
-		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documentsubmissions";
+		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/documentsubmissions";
 		$data = $request->validated();
 		//remove extra attributes, no need but you can get them from git history
 		$data['dateTimeIssued'] = $data['dateTimeIssued'] . ":00Z";
@@ -217,7 +218,7 @@ class ETAController extends Controller
 
 	public function CancelInvoice(Request $request)
 	{
-		$url = "https://api.preprod.invoicing.eta.gov.eg/api/iv1.0/documents/%s/state";
+		$url = "https://api.invoicing.eta.gov.eg/api/iv1.0/documents/%s/state";
 		$url = sprintf($url, $request->input("uuid"));
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->put($url, [
@@ -248,7 +249,7 @@ class ETAController extends Controller
 
 	public function SyncIssuedInvoices(Request $request)
 	{
-		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documents/recent";
+		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"PageSize" => "10",
@@ -285,7 +286,7 @@ class ETAController extends Controller
 
 	public function SyncItems(Request $request)
 	{
-		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/my";
+		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/my";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "10",
@@ -319,7 +320,7 @@ class ETAController extends Controller
 
 	public function AddItem(Request $request)
 	{
-		$url = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
+		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
 		$data = $request->validate([
 			'codeType'		=> ['required', 'string', Rule::in(['EGS', 'GS1'])],
 			'parentCode'	=> ['required', 'integer'],
@@ -340,7 +341,7 @@ class ETAController extends Controller
 	private function AuthenticateETA2()
 	{
 		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = "https://id.preprod.eta.gov.eg/connect/token";
+			$url = "https://id.eta.gov.eg/connect/token";
 			$response = Http::asForm()->post($url, [
 				"grant_type" => "client_credentials",
 				"scope" => "InvoicingAPI",
@@ -357,7 +358,7 @@ class ETAController extends Controller
 		$this->token = $request->session()->get('eta_token', null);
 		$this->token_expires_at = $request->session()->get('eta_token_expires_at', null);
 		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = "https://id.preprod.eta.gov.eg/connect/token";
+			$url = "https://id.eta.gov.eg/connect/token";
 			$response = Http::asForm()->post($url, [
 				"grant_type" => "client_credentials",
 				"scope" => "InvoicingAPI",
@@ -548,7 +549,7 @@ class ETAController extends Controller
 	}
 
 	public function UpdateInvoices(){
-		$urlbase = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
+		$urlbase = "https://api.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
 		$invoices = Invoice::where('status', '=', 'Invalid')
 					->where('statusReason', '=', '')
 					->get();
@@ -575,7 +576,7 @@ class ETAController extends Controller
 		//error_log(json_encode($invoices));
 	}
 	public function LoadMissingInvoices() {
-		$urlbase = "https://api.preprod.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
+		$urlbase = "https://api.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
 		$oldinv = Invoice::whereNotNull('uuid')->pluck('uuid');
 		$missing = ETAInvoice::whereNotIn('uuid', $oldinv)->pluck('uuid');
 		
