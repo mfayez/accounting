@@ -1,7 +1,7 @@
 <template>
     <jet-dialog-modal :show="addingNew" @close="addingNew = false">
 		<template #title>
-        	Add new item
+        	{{__('Add new item')}}
         </template>
 
         <template #content>
@@ -10,39 +10,39 @@
 			<form @submit.prevent="submit">
 				<div class="grid grid-cols-2 gap-4">
 					<div>
-							<jet-label for="codeType" value="Select code type" />
+							<jet-label for="codeType" :value="__('Select code type')" />
 							<select id="codeType" v-model="form.codeType" 
 										class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full">
 								<option value="EGS">EGS</option>
 								<option value="GS1">GS1</option>
 							</select>
-							<jet-label for="parentCode" value="Parent Code" />
+							<jet-label for="parentCode" :value="__('Parent Code')" />
 							<jet-input id="parentCode" type="number" class="mt-1 block w-full" v-model="form.parentCode" required autofocus />
 							
-							<jet-label for="itemCode" value="Item Code" />
+							<jet-label for="itemCode" :value="__('Item Code')" />
 							<jet-input id="itemCode" type="text" class="mt-1 block w-full" v-model="form.itemCode" required autofocus />
 
-							<jet-label for="codeName" value="Item label" />
+							<jet-label for="codeName" :value="__('Item label')" />
 							<jet-input id="codeName" type="text" class="mt-1 block w-full" v-model="form.codeName" required autofocus />
 							
-							<jet-label for="codeNameAr" value="Item Label (Arabic)" />
+							<jet-label for="codeNameAr" :value="__('Item Label (Arabic)')" />
 							<jet-input id="codeNameAr" type="text" class="mt-1 block w-full" v-model="form.codeNameAr" required autofocus />
 					</div>
 					<div>
 
-							<jet-label for="activeFrom" value="Activation Start Date" />
+							<jet-label for="activeFrom" :value="__('Activation Start Date')" />
 							<jet-input id="activeFrom" type="date" class="mt-1 block w-full" v-model="form.activeFrom" required autofocus />
 
-							<jet-label for="activeTo" value="Activation Expire Date" />
+							<jet-label for="activeTo" :value="__('Activation Expire Date')" />
 							<jet-input id="activeTo" type="date" class="mt-1 block w-full" v-model="form.activeTo" required autofocus />
 							
-							<jet-label for="description" value="Item Description" />
+							<jet-label for="description" :value="__('Item Description')" />
 							<jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.description" required autofocus />
 							
-							<jet-label for="descriptionAr" value="Item Description (Arabic)" />
+							<jet-label for="descriptionAr" :value="__('Item Description (Arabic)')" />
 							<jet-input id="descriptionAr" type="text" class="mt-1 block w-full" v-model="form.descriptionAr" required autofocus />
 							
-							<jet-label for="requestReason" value="Reason for adding the item" />
+							<jet-label for="requestReason" :value="__('Reason for adding the item')" />
 							<jet-input id="requestReason" type="text" class="mt-1 block w-full" v-model="form.requestReason" required autofocus />
 					</div>
 				</div>
@@ -51,11 +51,11 @@
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
 	    		<jet-secondary-button @click="CancelAddBranch()">
-   					Cancel
+   					{{__('Cancel')}}
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="SaveNew()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-    	    		Save
+	        	<jet-button class="ms-2" @click="SaveNew()" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+    	    		{{__('Save')}}
 	        	</jet-button>
 			</div>
 	   </template>

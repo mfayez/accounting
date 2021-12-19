@@ -45,7 +45,7 @@
                                             {{ role.name }}
                                         </div>
 
-                                        <svg v-if="addTeamMemberForm.role == role.key" class="ml-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <svg v-if="addTeamMemberForm.role == role.key" class="ms-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     </div>
 
                                     <!-- Role Description -->
@@ -91,7 +91,7 @@
 
                             <div class="flex items-center">
                                 <!-- Cancel Team Invitation -->
-                                <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
+                                <button class="cursor-pointer ms-6 text-sm text-red-500 focus:outline-none"
                                                     @click="cancelTeamInvitation(invitation)"
                                                     v-if="userPermissions.canRemoveTeamMembers">
                                     Cancel
@@ -122,30 +122,30 @@
                         <div class="flex items-center justify-between" v-for="user in team.users" :key="user.id">
                             <div class="flex items-center">
                                 <img class="w-8 h-8 rounded-full" :src="user.profile_photo_url" :alt="user.name">
-                                <div class="ml-4">{{ user.name }}</div>
+                                <div class="ms-4">{{ user.name }}</div>
                             </div>
 
                             <div class="flex items-center">
                                 <!-- Manage Team Member Role -->
-                                <button class="ml-2 text-sm text-gray-400 underline"
+                                <button class="ms-2 text-sm text-gray-400 underline"
                                         @click="manageRole(user)"
                                         v-if="userPermissions.canAddTeamMembers && availableRoles.length">
                                     {{ displayableRole(user.membership.role) }}
                                 </button>
 
-                                <div class="ml-2 text-sm text-gray-400" v-else-if="availableRoles.length">
+                                <div class="ms-2 text-sm text-gray-400" v-else-if="availableRoles.length">
                                     {{ displayableRole(user.membership.role) }}
                                 </div>
 
                                 <!-- Leave Team -->
-                                <button class="cursor-pointer ml-6 text-sm text-red-500"
+                                <button class="cursor-pointer ms-6 text-sm text-red-500"
                                                     @click="confirmLeavingTeam"
                                                     v-if="$page.props.user.id === user.id">
                                     Leave
                                 </button>
 
                                 <!-- Remove Team Member -->
-                                <button class="cursor-pointer ml-6 text-sm text-red-500"
+                                <button class="cursor-pointer ms-6 text-sm text-red-500"
                                                     @click="confirmTeamMemberRemoval(user)"
                                                     v-if="userPermissions.canRemoveTeamMembers">
                                     Remove
@@ -178,7 +178,7 @@
                                         {{ role.name }}
                                     </div>
 
-                                    <svg v-if="updateRoleForm.role === role.key" class="ml-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <svg v-if="updateRoleForm.role === role.key" class="ms-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
 
                                 <!-- Role Description -->
@@ -196,7 +196,7 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
+                <jet-button class="ms-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
                     Save
                 </jet-button>
             </template>
@@ -217,7 +217,7 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="leaveTeam" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing">
+                <jet-danger-button class="ms-2" @click="leaveTeam" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing">
                     Leave
                 </jet-danger-button>
             </template>
@@ -238,7 +238,7 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="removeTeamMember" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing">
+                <jet-danger-button class="ms-2" @click="removeTeamMember" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing">
                     Remove
                 </jet-danger-button>
             </template>

@@ -59,7 +59,7 @@
 					<jet-input :id="taxitem.key" type="number" class="mt-1 block w-full mt-2 col-span-1"
 						:isRounded="false" @update:model-value="updateValue(taxitem, $event)"
 						v-model="taxitem.percentage" required autofocus />
-		    		<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="mt-2 ml-2">
+		    		<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="mt-2 ms-2">
    						Delete
 	        		</jet-danger-button>				
 				</template>
@@ -74,7 +74,7 @@
    					Cancel
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="SaveItem()" >
+	        	<jet-button class="ms-2" @click="SaveItem()" >
     	    		Save
 	        	</jet-button>
 			</div>

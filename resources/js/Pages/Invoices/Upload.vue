@@ -18,7 +18,7 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="submitFile()" :disabled="processing">
+                <jet-button class="ms-2" @click="submitFile()" :disabled="processing">
                     Save
                 </jet-button>
             </template>

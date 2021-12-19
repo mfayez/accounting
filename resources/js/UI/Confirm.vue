@@ -13,7 +13,7 @@
                     No
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="confirm">
+                <jet-button class="ms-2" @click="confirm">
                     Yes
                 </jet-button>
             </template>

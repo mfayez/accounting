@@ -41,10 +41,10 @@
    					Cancel
 	        	</jet-secondary-button>
 				<div>
-	        	<jet-button class="ml-2" @click="ApproveItem()" >
+	        	<jet-button class="ms-2" @click="ApproveItem()" >
     	    		{{__('Approve')}}
 	        	</jet-button>
-	        	<jet-button class="ml-2" @click="CopyItem()" >
+	        	<jet-button class="ms-2" @click="CopyItem()" >
     	    		{{__('Copy')}}
 	        	</jet-button>
 				</div>

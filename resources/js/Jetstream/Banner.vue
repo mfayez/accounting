@@ -14,12 +14,12 @@
                             </svg>
                         </span>
 
-                        <p class="ml-3 font-medium text-sm text-white truncate">
+                        <p class="ms-3 font-medium text-sm text-white truncate">
                             {{ message }}
                         </p>
                     </div>
 
-                    <div class="flex-shrink-0 sm:ml-3">
+                    <div class="flex-shrink-0 sm:ms-3">
                         <button
                             type="button"
                             class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"

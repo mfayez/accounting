@@ -1,5 +1,5 @@
 <template>
-    <div class="ml-4">
+    <div class="ms-4">
         <inertia-link :href="route('language', [selectable_locale])" :class="classes">
             <div v-if="selectable_locale == 'ar'">AR</div>
             <div v-else>EN</div>

@@ -1,7 +1,7 @@
 <template>
     <jet-dialog-modal :show="showDialog" @close="showDialog = false">
 		<template #title>
-        	Branch Information
+        	{{__('Branch Information')}}
         </template>
 
         <template #content>
@@ -11,45 +11,45 @@
 				<div class="grid grid-cols-2 gap-4">
 					<div>
 						<div>
-							<jet-label for="branchNo" value="Branch Number" />
+							<jet-label for="branchNo" :value="__('Branch Number')" />
 							<jet-input id="branchNo" type="number" class="mt-1 block w-full" v-model="form.address.branchId" required autofocus />
 						</div>
 						<div class="mt-4">
-							<jet-label for="id" value="Tax Registration Number" />
+							<jet-label for="id" :value="__('Tax Registration Number')" />
 							<jet-input id="id" type="number" class="mt-1 block w-full" v-model="form.issuer_id" required />
 						</div>
 							<div class="mt-4">
-							<jet-label for="name" value="Branch Name" />
+							<jet-label for="name" :value="__('Branch Name')" />
 							<jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required />
 						</div>
 						<div class="mt-4">
-							<jet-label for="additionalInformation" value="Additional Information (Location)" />
+							<jet-label for="additionalInformation" :value="__('Additional Information (Location)')" />
 							<jet-input id="additionalInformation" type="text" class="mt-1 block w-full" v-model="form.address.additionalInformation" />
 						</div>
 						<div class="mt-4">
-							<jet-label for="postalCode" value="Postal Code" />
+							<jet-label for="postalCode" :value="__('Postal Code')" />
 							<jet-input id="postalCode" type="number" class="mt-1 block w-full" v-model="form.address.postalCode" />
 						</div>
 					</div>
 					<div>
 						<div>
-							<jet-label for="country" value="Country" />
+							<jet-label for="country" :value="__('Country')" />
 							<jet-input id="country" type="text" class="mt-1 block w-full" v-model="form.address.country" required />
 						</div>
 						<div class="mt-4">
-							<jet-label for="governate" value="Governate/State" />
+							<jet-label for="governate" :value="__('Governate/State')" />
 							<jet-input id="governate" type="text" class="mt-1 block w-full" v-model="form.address.governate" required />
 						</div>
 						<div class="mt-4">
-							<jet-label for="regionCity" value="Region/City" />
+							<jet-label for="regionCity" :value="__('Region/City')" />
 							<jet-input id="regionCity" type="text" class="mt-1 block w-full" v-model="form.address.regionCity" required />
 						</div>
 						<div class="mt-4">
-							<jet-label for="street" value="Street" />
+							<jet-label for="street" :value="__('Street')" />
 							<jet-input id="street" type="text" class="mt-1 block w-full" v-model="form.address.street" required />
 						</div>
 						<div class="mt-4">
-							<jet-label for="buildingNumber" value="Building Number" />
+							<jet-label for="buildingNumber" :value="__('Building Number')" />
 							<jet-input id="buildingNumber" type="number" class="mt-1 block w-full" v-model="form.address.buildingNumber" required />
 						</div>
 					</div>
@@ -59,11 +59,11 @@
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
 	    		<jet-secondary-button @click="CancelAddBranch()">
-   					Cancel
+   					{{__('Cancel')}}
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-    	    		Save
+	        	<jet-button class="ms-2" @click="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+    	    		{{__('Save')}}
 	        	</jet-button>
 			</div>
 	   </template>

@@ -38,7 +38,7 @@
                     </template>
                 </button>
 
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <jet-button class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </jet-button>
             </div>

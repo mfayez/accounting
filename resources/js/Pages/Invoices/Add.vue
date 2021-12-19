@@ -4,7 +4,7 @@
 			<dialog-invoice-line v-model="currentItem" ref="dlg1" @update:model-value="onClose"/>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 pb-4 pt-0">
-					<div class="flex items-center ml-0 mb-4 border-b border-gray-200">
+					<div class="flex items-center ms-0 mb-4 border-b border-gray-200">
 						<jet-button @click="tab_idx=1" :disabled="tab_idx==1" :isRounded="false">
 							Invoice Summary
 						</jet-button>
@@ -70,10 +70,10 @@
 										<jet-label class="mt-2 col-span-2">{{taxitem.value}}({{taxitem.percentage}}%)</jet-label>
 									</template>
 								</div>
-								<jet-secondary-button @click="EditItem(item, idx1)" class="h-12 mt-2 ml-2">
+								<jet-secondary-button @click="EditItem(item, idx1)" class="h-12 mt-2 ms-2">
 									Edit
 								</jet-secondary-button>				
-								<jet-danger-button @click="DeleteItem(idx1)" class="h-12 mt-2 ml-2">
+								<jet-danger-button @click="DeleteItem(idx1)" class="h-12 mt-2 ms-2">
 									Delete
 								</jet-danger-button>				
 							</template>
@@ -82,7 +82,7 @@
 							</jet-label>
 						</div>
 						<div class="flex items-center justify-end mt-4">
-							<jet-button class="ml-2" @click="AddItem()">
+							<jet-button class="ms-2" @click="AddItem()">
 								Add New Item
 							</jet-button>
 						</div>
@@ -95,7 +95,7 @@
    							Cancel
         				</jet-secondary-button>
 	
-		        		<jet-button class="ml-2" @click="onSave()" >
+		        		<jet-button class="ms-2" @click="onSave()" >
     		    			Save
 		        		</jet-button>
 					</div>

@@ -24,7 +24,7 @@
             <div class="block mt-4">
                 <label class="flex items-center">
                     <jet-checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
             </div>
 
@@ -33,7 +33,7 @@
                     Forgot your password?
                 </inertia-link>
 
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <jet-button class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </jet-button>
             </div>

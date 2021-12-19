@@ -1,7 +1,7 @@
 <template>
     <jet-dialog-modal :show="showDialog" @close="showDialog = false">
 		<template #title>
-        	Customer Information
+        	{{__('Customer Information')}}
         </template>
 
         <template #content>
@@ -10,18 +10,18 @@
 			<form @submit.prevent="submit">
 				<div class="grid grid-cols-3 gap-4">
 						<div>
-							<jet-label for="type"  value="Customer Type" />
+							<jet-label for="type"  :value="__('Customer Type')" />
 							<select id="type" v-model="form.type" class="mt-1 block w-full">
-							  <option value="P">Person</option>
-							  <option value="B">Business</option>
+							  <option value="P">{{__('Person')}}</option>
+							  <option value="B">{{__('Business')}}</option>
 							</select>
 						</div>
 						<div> 
-							<jet-label for="id" value="Tax Registration Number" />
+							<jet-label for="id" :value="__('Tax Registration Number')" />
 							<jet-input id="id" type="text" class="mt-1 block w-full" v-model="form.receiver_id" required />
 						</div>
 						<div> 
-							<jet-label for="name" value="Name" />
+							<jet-label for="name" :value="__('Name')" />
 							<jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required />
 						</div>
 				</div>
@@ -30,11 +30,11 @@
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
 	    		<jet-secondary-button @click="CancelAddBranch()">
-   					Cancel
+   					{{__('Cancel')}}
         		</jet-secondary-button>
 
-	        	<jet-button class="ml-2" @click="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-    	    		Save
+	        	<jet-button class="ms-2" @click="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+    	    		{{__('Save')}}
 	        	</jet-button>
 			</div>
 	   </template>

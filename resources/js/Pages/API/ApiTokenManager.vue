@@ -26,7 +26,7 @@
                         <div v-for="permission in availablePermissions" :key="permission">
                             <label class="flex items-center">
                                 <jet-checkbox :value="permission" v-model:checked="createApiTokenForm.permissions"/>
-                                <span class="ml-2 text-sm text-gray-600">{{ permission }}</span>
+                                <span class="ms-2 text-sm text-gray-600">{{ permission }}</span>
                             </label>
                         </div>
                     </div>
@@ -71,14 +71,14 @@
                                         Last used {{ token.last_used_ago }}
                                     </div>
 
-                                    <button class="cursor-pointer ml-6 text-sm text-gray-400 underline"
+                                    <button class="cursor-pointer ms-6 text-sm text-gray-400 underline"
                                         @click="manageApiTokenPermissions(token)"
                                         v-if="availablePermissions.length > 0"
                                     >
                                         Permissions
                                     </button>
 
-                                    <button class="cursor-pointer ml-6 text-sm text-red-500" @click="confirmApiTokenDeletion(token)">
+                                    <button class="cursor-pointer ms-6 text-sm text-red-500" @click="confirmApiTokenDeletion(token)">
                                         Delete
                                     </button>
                                 </div>
@@ -123,7 +123,7 @@
                     <div v-for="permission in availablePermissions" :key="permission">
                         <label class="flex items-center">
                             <jet-checkbox :value="permission" v-model:checked="updateApiTokenForm.permissions"/>
-                            <span class="ml-2 text-sm text-gray-600">{{ permission }}</span>
+                            <span class="ms-2 text-sm text-gray-600">{{ permission }}</span>
                         </label>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="updateApiToken" :class="{ 'opacity-25': updateApiTokenForm.processing }" :disabled="updateApiTokenForm.processing">
+                <jet-button class="ms-2" @click="updateApiToken" :class="{ 'opacity-25': updateApiTokenForm.processing }" :disabled="updateApiTokenForm.processing">
                     Save
                 </jet-button>
             </template>
@@ -155,7 +155,7 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="deleteApiToken" :class="{ 'opacity-25': deleteApiTokenForm.processing }" :disabled="deleteApiTokenForm.processing">
+                <jet-danger-button class="ms-2" @click="deleteApiToken" :class="{ 'opacity-25': deleteApiTokenForm.processing }" :disabled="deleteApiTokenForm.processing">
                     Delete
                 </jet-danger-button>
             </template>

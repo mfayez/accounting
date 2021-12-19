@@ -23,7 +23,7 @@
 					</div>
 
 					<div class="flex items-center justify-end mt-4">
-						<jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+						<jet-button class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
 							Save
 						</jet-button>
 					</div>
