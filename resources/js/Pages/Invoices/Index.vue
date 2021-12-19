@@ -39,7 +39,8 @@
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
 									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
-										<div v-for="rowVals in nestedIndex(item, key).split(',')">{{ rowVals }}</div>
+										<div v-for="rowVals in nestedIndex(item, key).split(',')">
+											{{ key == 'status' || key == 'statusReason' ? __(rowVals) : rowVals }}</div>
 									</td>
 									<td>
 										<div>
@@ -205,3 +206,8 @@
 		}
     }
 </script>
+<style scoped>
+:deep(table th) {
+  text-align: start;
+}
+</style>

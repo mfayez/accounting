@@ -397,20 +397,20 @@ class ETAController extends Controller
             'items' => $items,
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-				'internalId'	=>	'Internal ID',
-				'status'	=>	'Status'
+				'internalId'	=>	__('Internal ID'),
+				'status'	=>	__('Status')
 			])->addColumns([
-                'internalId'	=> 'Internal ID',
-				'issuerName' => 'Issuer',
-				'receiverId' => 'Receiver Registration Number',
-				'receiverName' => 'Receiver',
+                'internalId'	=> __('Internal ID'),
+				'issuerName' => __('Issuer'),
+				'receiverId' => __('Receiver Registration Number'),
+				'receiverName' => __('Receiver'),
 			#	'dateTimeIssued' => 'Issued At',
 			#	'dateTimeReceived' => 'Received At',
-				'totalSales' => 'Sales',
-				'totalDiscount' => 'Discount',
-				'netAmount' => 'Net',
-				'total' => 'Total',
-				'status' => 'Status',
+				'totalSales' => __('Sales'),
+				'totalDiscount' => __('Discount'),
+				'netAmount' => __('Net'),
+				'total' => __('Total'),
+				'status' => __('Status'),
             ]);
         });
     }
@@ -446,16 +446,16 @@ class ETAController extends Controller
             'items' => $items,
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-				'internalID'	=>	'Internal ID',
-				'status'	=>	'Status'
+				'internalID'	=>	__('Internal ID'),
+				'status'	=>	__('Status')
 			])->addColumns([
-                'internalID'	=> 'Internal ID',
-				'receiver.name' => 'Receiver',
-				'receiver.receiver_id'	=> 'Customer Registration Number',
-				'totalAmount' => 'Total Amount',
-				'netAmount' => 'Net Amount',
-				'status'		=> 'Status',
-				'statusReason'		=> 'ETA Comments',
+                'internalID'	=> __('Internal ID'),
+				'receiver.name' => __('Receiver'),
+				'receiver.receiver_id'	=> __('Customer Registration Number'),
+				'totalAmount' => __('Total Amount'),
+				'netAmount' => __('Net Amount'),
+				'status'		=> __('Status'),
+				'statusReason'		=> __('ETA Comments'),
             ]);
         });
     }
