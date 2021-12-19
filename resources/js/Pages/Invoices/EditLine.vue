@@ -1,54 +1,54 @@
 <template>
     <jet-dialog-modal :show="showDlg" max-width="3xl" @close="showDlg = false">
 		<template #title>
-        	Add item to the invoice
+        	{{__('Add item to the invoice')}}
         </template>
 
         <template #content>
 			<div class="grid grid-cols-4 gap-4 border-b border-gray-20 pb-4">
 				<div class="col-span-2">
-					<jet-label value="Item" />
-					<multiselect v-model="item.item" :options="items" label="codeNamePrimaryLang" />
+					<jet-label :value="__('Item')" />
+					<multiselect v-model="item.item" :options="items" label="codeNamePrimaryLang" :placeholder="__('Select item')"/>
 				</div>
 				<div class="col-span-2">
-					<jet-label value="Units" />
-					<multiselect v-model="item.unit" :options="units" label="desc_en" />
+					<jet-label :value="__('Units')" />
+					<multiselect v-model="item.unit" :options="units" label="desc_en" :placeholder="__('Select measurement unit')"/>
 				</div>
-				<TextField v-model="item.quantity" itemType="number" itemLabel="Quantity" @update:model-value="updateValues()" />
-				<TextField v-model="item.unitValue.amountEGP" itemType="number" itemLabel="Unit Price" @update:model-value="updateValues()" />
-				<TextField v-model="item.salesTotal" itemType="number" itemLabel="Sales Total" :active="false"/>
-				<TextField v-model="item.total" itemType="number" itemLabel="Total" :active="false"/>
-				<TextField v-model="item.valueDifference" itemType="number" itemLabel="Value Difference" />
-				<TextField v-model="item.totalTaxableFees" itemType="number" itemLabel="Total Taxable Fees" />
-				<TextField v-model="item.netTotal" itemType="number" itemLabel="Net Total" :active="false"/>
-				<TextField v-model="item.itemsDiscount" itemType="number" itemLabel="Items Discount" @update:model-value="updateValues()"/>
+				<TextField v-model="item.quantity" itemType="number" :itemLabel="__('Quantity')" @update:model-value="updateValues()" />
+				<TextField v-model="item.unitValue.amountEGP" itemType="number" :itemLabel="__('Unit Price')" @update:model-value="updateValues()" />
+				<TextField v-model="item.salesTotal" itemType="number" :itemLabel="__('Sales Total')" :active="false"/>
+				<TextField v-model="item.total" itemType="number" :itemLabel="__('Total')" :active="false"/>
+				<TextField v-model="item.valueDifference" itemType="number" :itemLabel="__('Value Difference')" />
+				<TextField v-model="item.totalTaxableFees" itemType="number" :itemLabel="__('Total Taxable Fees')" />
+				<TextField v-model="item.netTotal" itemType="number" :itemLabel="__('Net Total')" :active="false"/>
+				<TextField v-model="item.itemsDiscount" itemType="number" :itemLabel="__('Items Discount')" @update:model-value="updateValues()"/>
 			</div>
 			<div class="grid grid-cols-7 gap-2 mt-2 border-t border-b border-gray-20">
 				<multiselect class="col-span-3"
 					v-model="taxType" 
 					label="label" 
-					placeholder="Select Tax Type"
+					:placeholder="__('Select Tax Type')"
 					:options="taxTypes" 
 					@update:model-value="updateTaxSubtypes"
 				/>
 				<multiselect class="col-span-3"
 					v-model="taxSubtype" 
-					placeholder="Select Tax Subtype"
+					:placeholder="__('Select Tax Subtype')"
 					:options="taxSubtypes1" 
 					label="label" 
 				/>
 				<!--<pre> {{item}} </pre>-->
 				<div class="flex items-center justify-center">
 			    	<jet-secondary-button @click="AddTaxItem()">
-   						Add Tax
+   						{{__('Add Tax')}}
         			</jet-secondary-button>
 				</div>
 			</div>
 			<div class="grid grid-cols-7 gap-0 mt-2">
-				<div class="bg-gray-200 col-span-2">Tax Code</div>
-				<div class="bg-gray-200 col-span-2">Tax Subcode</div>
-				<div class="bg-gray-200 col-span-1">Tax Amount</div>
-				<div class="bg-gray-200 col-span-1">Tax Percentage</div>
+				<div class="bg-gray-200 col-span-2">{{__('Tax Code')}}</div>
+				<div class="bg-gray-200 col-span-2">{{__('Tax Subcode')}}</div>
+				<div class="bg-gray-200 col-span-1">{{__('Tax Amount')}}</div>
+				<div class="bg-gray-200 col-span-1">{{__('Tax Percentage')}}</div>
 				<div class="bg-gray-200 col-span-1"></div>
 				<template v-for="(taxitem, idx1) in item.taxItems" :key="taxitem.key">
 					<jet-label class="mt-2 col-span-2">{{taxitem.taxType.label}}</jet-label>
@@ -60,22 +60,22 @@
 						:isRounded="false" @update:model-value="updateValue(taxitem, $event)"
 						v-model="taxitem.percentage" required autofocus />
 		    		<jet-danger-button @click="item.taxItems.splice(idx1, 1)" class="mt-2 ms-2">
-   						Delete
+   						{{__('Delete')}}
 	        		</jet-danger-button>				
 				</template>
 				<jet-label class="col-span-7" v-if="!item.taxItems || item.taxItems.length == 0">
-					Please Add tax items if applicable
+					{{__('Please Add tax items if applicable')}}
 				</jet-label>
 			</div>
 		</template>
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
 	    		<jet-secondary-button @click="CancelDlg()">
-   					Cancel
+   					{{__('Cancel')}}
         		</jet-secondary-button>
 
 	        	<jet-button class="ms-2" @click="SaveItem()" >
-    	    		Save
+    	    		{{__('Save')}}
 	        	</jet-button>
 			</div>
 	   </template>

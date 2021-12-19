@@ -6,56 +6,56 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 pb-4 pt-0">
 					<div class="flex items-center ms-0 mb-4 border-b border-gray-200">
 						<jet-button @click="tab_idx=1" :disabled="tab_idx==1" :isRounded="false">
-							Invoice Summary
+							{{__('Invoice Summary')}}
 						</jet-button>
 						<jet-button @click="tab_idx=2" :disabled="tab_idx==2" :isRounded="false">
-							Optional Data (PO, SO)
+							{{__('Optional Data (PO, SO)')}}
 						</jet-button>
 						<jet-button @click="tab_idx=3" :disabled="tab_idx==3" :isRounded="false">
-							Invoice Items
+							{{__('Invoice Items')}}
 						</jet-button>
 					</div>
 					<!--First Tab-->
 					<div v-show="tab_idx==1" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
 						<div>
-							<jet-label value="Branch" />
+							<jet-label :value="__('Branch')" />
 							<multiselect v-model="form.issuer"   label="name" :options="branches" placeholder="Select branch" />
 						</div>
 						<div>
-							<jet-label value="Customer" />
+							<jet-label :value="__('Customer')" />
 							<multiselect v-model="form.receiver" label="name" :options="customers" placeholder="Select customer" />
 						</div>
 						<div class="lg:col-span-2">
-							<jet-label value="Branch Activity" />
+							<jet-label :value="__('Branch Activity')" />
 							<multiselect v-model="form.taxpayerActivityCode" label="Desc_ar" :options="activities" placeholder="Select activity" />
 						</div>
-						<TextField v-model="form.dateTimeIssued" itemType="datetime-local" itemLabel="Invoice Date" />
-						<TextField v-model="form.internalID" itemType="text" itemLabel="Internal Invoice ID" />
-						<TextField v-model="form.totalSalesAmount" itemType="number" itemLabel="Total Sales Amount" :active="false" />
-						<TextField v-model="form.totalDiscountAmount" itemType="number" itemLabel="Total Discount Amount" :active="false" />
-						<TextField v-model="form.netAmount" itemType="number" itemLabel="Net Amount" :active="false" />
-						<TextField v-model="form.totalAmount" itemType="number" itemLabel="Total Amount" :active="false" />
-						<TextField v-model="form.extraDiscountAmount" itemType="number" itemLabel="Extra Discount Amount" :active="false" />
-						<TextField v-model="form.totalItemsDiscountAmount" itemType="number" itemLabel="Total Items Discount Amount" :active="false" />
+						<TextField v-model="form.dateTimeIssued" itemType="datetime-local" :itemLabel="__('Invoice Date')" />
+						<TextField v-model="form.internalID" itemType="text" :itemLabel="__('Internal Invoice ID')" />
+						<TextField v-model="form.totalSalesAmount" itemType="number" :itemLabel="__('Total Sales Amount')" :active="false" />
+						<TextField v-model="form.totalDiscountAmount" itemType="number" :itemLabel="__('Total Discount Amount')" :active="false" />
+						<TextField v-model="form.netAmount" itemType="number" :itemLabel="__('Net Amount')" :active="false" />
+						<TextField v-model="form.totalAmount" itemType="number" :itemLabel="__('Total Amount')" :active="false" />
+						<TextField v-model="form.extraDiscountAmount" itemType="number" :itemLabel="__('Extra Discount Amount')" :active="false" />
+						<TextField v-model="form.totalItemsDiscountAmount" itemType="number" :itemLabel="__('Total Items Discount Amount')" :active="false" />
 					</div>
 					<!--second tab-->
 					<div v-show="tab_idx==2" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
-						<TextField v-model="form.purchaseOrderReference" itemType="text" itemLabel="Purchase Order" />
-						<TextField v-model="form.purchaseOrderDescription" itemType="text" itemLabel="Purchase Order Description" />
-						<TextField v-model="form.salesOrderReference" itemType="text" itemLabel="Sales Order" />
-						<TextField v-model="form.salesOrderDescription" itemType="text" itemLabel="Sales Order Description" />
-						<TextField v-model="form.purchaseOrderReference" itemType="text" itemLabel="Purchase Order Reference" />
-						<TextField v-model="form.proformaInvoiceNumber" itemType="text" itemLabel="Proforma Invoice Number" />
+						<TextField v-model="form.purchaseOrderReference" itemType="text" :itemLabel="__('Purchase Order')" />
+						<TextField v-model="form.purchaseOrderDescription" itemType="text" :itemLabel="__('Purchase Order Description')" />
+						<TextField v-model="form.salesOrderReference" itemType="text" :itemLabel="__('Sales Order')" />
+						<TextField v-model="form.salesOrderDescription" itemType="text" :itemLabel="__('Sales Order Description')" />
+						<TextField v-model="form.purchaseOrderReference" itemType="text" :itemLabel="__('Purchase Order Reference')" />
+						<TextField v-model="form.proformaInvoiceNumber" itemType="text" :itemLabel="__('Proforma Invoice Number')" />
 					</div>
 					<!--third tab-->
 					<div v-show="tab_idx==3">
 						<div class="grid grid-cols-10 gap-0 mt-2">
-							<div class="bg-gray-200 col-span-3">Item</div>
-							<div class="bg-gray-200 col-span-1">Unit Price</div>
-							<div class="bg-gray-200 col-span-1">Quantity</div>
-							<div class="bg-gray-200 col-span-1">Sales Total</div>
-							<div class="bg-gray-200 col-span-1">Net Total</div>
-							<div class="bg-gray-200 col-span-1">Tax Items</div>
+							<div class="bg-gray-200 col-span-3">{{__('Item')}}</div>
+							<div class="bg-gray-200 col-span-1">{{__('Unit Price')}}</div>
+							<div class="bg-gray-200 col-span-1">{{__('Quantity')}}</div>
+							<div class="bg-gray-200 col-span-1">{{__('Sales Total')}}</div>
+							<div class="bg-gray-200 col-span-1">{{__('Net Total')}}</div>
+							<div class="bg-gray-200 col-span-1">{{__('Tax Items')}}</div>
 							<div class="bg-gray-200 col-span-1"></div>
 							<div class="bg-gray-200 col-span-1"></div>
 							<template v-for="(item, idx1) in form.invoiceLines">
@@ -71,19 +71,19 @@
 									</template>
 								</div>
 								<jet-secondary-button @click="EditItem(item, idx1)" class="h-12 mt-2 ms-2">
-									Edit
+									{{__('Edit')}}
 								</jet-secondary-button>				
 								<jet-danger-button @click="DeleteItem(idx1)" class="h-12 mt-2 ms-2">
-									Delete
+									{{__('Delete')}}
 								</jet-danger-button>				
 							</template>
 							<jet-label class="col-span-8" v-if="!form.invoiceLines.length">
-								Please Add tax items if applicable
+								{{__('Please Add at least one item')}}
 							</jet-label>
 						</div>
 						<div class="flex items-center justify-end mt-4">
 							<jet-button class="ms-2" @click="AddItem()">
-								Add New Item
+								{{__('Add New Item')}}
 							</jet-button>
 						</div>
 						<div v-for="(item, idx1) in form.invoiceLines" class="border border-black">
@@ -92,11 +92,11 @@
 					</div>
 					<div class="flex items-center justify-end mt-20">
 			    		<jet-secondary-button @click="onCancel()">
-   							Cancel
+   							{{__('Cancel')}}
         				</jet-secondary-button>
 	
 		        		<jet-button class="ms-2" @click="onSave()" >
-    		    			Save
+    		    			{{__('Save')}}
 		        		</jet-button>
 					</div>
                 </div>

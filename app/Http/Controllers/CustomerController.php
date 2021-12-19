@@ -52,13 +52,13 @@ class CustomerController extends Controller
             'customers' => $customers,
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-                'name' => 'Name',
-                'receiver_id' => 'Tax Registration ID/National ID',
+                'name' => __('Name'),
+                'receiver_id' => __('Tax Registration Number'),// ID/National ID',
             ])->addColumns([
-				'Id' => 'ID',
-                'name' => 'Name',
-                'receiver_id' => 'Customer Identifier',
-				'type' => 'Customer Type'
+				'Id' => __('ID'),
+                'name' => __('Name'),
+                'receiver_id' => __('Tax Registration Number'),
+				'type' => __('Customer Type')
             ]);
         });
     }

@@ -53,13 +53,13 @@ class BranchController extends Controller
             'branches' => $branches,
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-                'name' => 'Name',
-                'issuer_id' => 'Tax Registration ID/National ID',
+                'name' => __('Name'),
+                'issuer_id' => __('Tax Registration ID/National ID'),
             ])->addColumns([
-                'Id' => 'ID',
-                'name' => 'Name',
-                'issuer_id' => 'Branch Identifier',
-				'type' => 'Branch Type'
+                'Id' => __('ID'),
+                'name' => __('Name'),
+                'issuer_id' => __('Branch Identifier'),
+				'type' => __('Branch Type')
             ]);
         });
     }

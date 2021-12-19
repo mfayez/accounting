@@ -1,7 +1,7 @@
 <template>
-        <jet-dialog-modal :show="showDialog" @close="closeModal">
+        <jet-dialog-modal :show="showDialog" @close="closeModal" max-width="xl">
             <template #title>
-                {{ title }}
+                {{ __(title) }}
             </template>
 
             <template #content>
@@ -10,11 +10,11 @@
 
             <template #footer>
                 <jet-secondary-button @click="closeModal">
-                    No
+                    {{__('No')}}
                 </jet-secondary-button>
 
                 <jet-button class="ms-2" @click="confirm">
-                    Yes
+                    {{__('Yes')}}
                 </jet-button>
             </template>
         </jet-dialog-modal>

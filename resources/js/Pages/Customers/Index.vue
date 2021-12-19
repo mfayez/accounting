@@ -2,11 +2,11 @@
     <app-layout>
 		<edit-customer ref="dlg2" :customer="customer"/>
 		<confirm ref="dlg1" @confirmed="remove()">
-			Are you sure you want to delete this customer?
+			{{__('Are you sure you want to delete this customer?')}}
 		</confirm>
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
+                <div class="wrapper Gbg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
 					<Table
 						:filters="queryBuilderProps.filters"
 						:search="queryBuilderProps.search"
@@ -16,12 +16,12 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th v-show="showColumn('Id')"  @click.prevent="sortBy('Id')">ID</th>
-								<th v-show="showColumn('name')"  @click.prevent="sortBy('name')">Name</th>
-								<th v-show="showColumn('receiver_id')" @click.prevent="sortBy('receiver_id')">Registration Number</th>
+								<th v-show="showColumn('Id')"  @click.prevent="sortBy('Id')">{{__('ID')}}</th>
+								<th v-show="showColumn('name')"  @click.prevent="sortBy('name')">{{__('Name')}}</th>
+								<th v-show="showColumn('receiver_id')" @click.prevent="sortBy('receiver_id')">{{__('Registration Number')}}</th>
 
-								<th v-show="showColumn('type')" @click.prevent="sortBy('type')">Type(B|I)</th>
-								<th @click.prevent="">Actions</th>
+								<th v-show="showColumn('type')" @click.prevent="sortBy('type')">{{__('Type(B|I)')}}</th>
+								<th @click.prevent="">{{__('Actions')}}</th>
 							</tr>
 						</template>
 
@@ -30,7 +30,7 @@
 									<td v-show="showColumn('Id')">{{ customer.Id }}</td>
 									<td v-show="showColumn('name')">{{ customer.name }}</td>
 									<td v-show="showColumn('receiver_id')">{{ customer.receiver_id }}</td>
-									<td v-show="showColumn('type')">{{ customer.type == 'B' ? 'Business' : 'Individual'  }}</td>
+									<td v-show="showColumn('type')">{{ customer.type == 'B' ? __('Business') : __('Person')  }}</td>
 									<td>
 										<button class="p-1 rounded-md bg-green-500 text-white hover:bg-green-600 mx-2" @click="editCustomer(customer)">
 											<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -92,3 +92,8 @@
 		},
     }
 </script>
+<style scoped>
+:deep(table th) {
+  text-align: start;
+}
+</style>
