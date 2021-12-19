@@ -8,6 +8,7 @@
 		<load-invoices-dialog ref="dlg5"/>
 		<upload-invoices-dialog ref="dlg6" />
 		<upload-items-dialog ref="dlg7" />
+		<new-user-dialog ref="dlg8" />
 
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -62,8 +63,16 @@
                                             {{ __('Profile')}}
                                         </jet-dropdown-link>
 
-                                        <jet-dropdown-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
+                                        <jet-dropdown-link :href="route('api-tokens.index')" v-if="$page.props.user.id == 1">
                                             {{ __('API Tokens')}}
+                                        </jet-dropdown-link>
+
+                                        <jet-dropdown-link :href="route('users.index')" v-if="$page.props.user.id == 1">
+                                            {{ __('Users')}}
+                                        </jet-dropdown-link>
+                                        
+										<jet-dropdown-link as="a" @click.prevent="openDlg8()" href="#">
+                                            {{ __('Add New User') }}
                                         </jet-dropdown-link>
 
                                         <div class="border-t border-gray-100"></div>
@@ -300,6 +309,7 @@
 	import LanguageSelector from '@/Language/LanguageSelector'
 	import NewCustomerDialog from '@/Pages/Customers/Edit'
 	import NewBranchDialog from '@/Pages/Branches/Edit'
+	import NewUserDialog from '@/Pages/Users/Edit'
 	import LoadItemsDialog from '@/Pages/Items/Load'
 	import LoadInvoicesDialog from '@/Pages/Invoices/Load'
 	import NewItemDialog from '@/Pages/Items/Edit'
@@ -312,6 +322,7 @@
 			UploadInvoicesDialog,
 			NewCustomerDialog,
 			NewItemDialog,
+			NewUserDialog,
 			NewBranchDialog,
 			LoadItemsDialog,
 			LoadInvoicesDialog,
@@ -351,6 +362,9 @@
 			},
 			openDlg7() {
 				this.$refs.dlg7.ShowDialog();
+			},
+			openDlg8() {
+				this.$refs.dlg8.ShowDialog();
 			},
             logout() {
                 this.$inertia.post(route('logout'));

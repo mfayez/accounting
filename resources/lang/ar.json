@@ -2,6 +2,7 @@
 	"Brand": "Invoice Master",
 	"password": "كلمة السر",
 	"email": "الأيميل",
+	"Password": "كلمة السر",
 	"Profile" : "معلوماتى",
 	"Log Out" : "خروج",
 	"API Tokens" : "كود الأتصال",
@@ -117,10 +118,10 @@
 	"ETA Comments" : "السبب",
 	"Manual Entry" : "أدخال يدوي",
 	"Excel Upload" : "ملف أكسيل",
-	"" : "",
-	"" : "",
-	"" : "",
-	"" : "",
+	"Users" : "المستخدمين",
+	"Add New User" : "أضافة مستخدم جديد",
+	"Email" : "البريد الألكترونى",
+	"User Information" : "بيانات المستخدم",
 	"" : "",
 	"Name" : "الأسم"
 }

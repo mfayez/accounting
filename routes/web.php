@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ETAController;
@@ -67,6 +68,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 		'customers' => CustomerController::class,
 		'branches' => BranchController::class,
 		'items' => ItemController::class,
+		'users' => UserController::class,
 	]);
 	
 	Route::get ('/json/branches' , [BranchController::class, 'index_json'])->name("json.branches");
