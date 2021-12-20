@@ -18,9 +18,19 @@
 							<jet-label for="Email" :value="__('Email')" />
 							<jet-input id="Email" type="Email" class="mt-1 block w-full" v-model="form.email" required />
 						</div>
-							<div class="mt-4">
+						<div class="mt-4">
 							<jet-label for="password" :value="__('Password')" />
 							<jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required />
+						</div>
+						<div class="mt-4">
+							<jet-label :value="__('Role')" />
+							<select id="type" v-model="form.current_team_id" class="mt-1 block w-full">
+							  <option value="1">{{__('Administrator')}}</option>
+							  <option value="2">{{__('Reviewer')}}</option>
+							  <option value="3">{{__('Data Entry')}}</option>
+							  <option value="4">{{__('ETA')}}</option>
+							  <option value="5">{{__('Viewer')}}</option>
+							</select>
 						</div>
 					</div>
 				</div>
@@ -55,6 +65,7 @@
     import JetSecondaryButton from '@/Jetstream/SecondaryButton'
     import JetSectionBorder from '@/Jetstream/SectionBorder'
     import JetValidationErrors from '@/Jetstream/ValidationErrors'
+	import Multiselect from '@suadelabs/vue3-multiselect'
 
     export default {
         components: {
@@ -72,6 +83,7 @@
             JetSecondaryButton,
             JetSectionBorder,
 			JetValidationErrors,
+			Multiselect,
         },
 
         props: {
@@ -98,6 +110,7 @@
 				if (this.branch !== null){
 					this.form.name = this.branch.name;
 					this.form.email = this.branch.email;
+					this.form.current_team_id = this.branch.current_team_id;
 				}
 				this.showDialog = true;
 			},

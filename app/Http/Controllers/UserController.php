@@ -85,6 +85,7 @@ class UserController extends Controller
             'name' 		=> ['required', 'string', 'max:255'],
 			'email' 	=> ['required', 'string', 'email', 'max:255', Rule::unique('users')],
             'password'	=> ['required', 'min:8'],
+            'current_team_id'	=> ['required', 'integer', Rule::in([1,2,3,4,5])]
         ]);
 		
         $item2 = new User($data);
@@ -128,12 +129,13 @@ class UserController extends Controller
 		$data = $request->validate([
             'name' 		=> ['required', 'string', 'max:255'],
 			'email' 	=> ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
-            'password'	=> ['required', 'min:8'],
+            'current_team_id'	=> ['required', 'integer', Rule::in([1,2,3,4,5])]
         ]);
-
+		
 		$item = User::findOrFail($id);
 		$item->update($data);
-		$item->password = Hash::make($item->password);
+		if ($request->has('password') && strlen($request->input('password')) > 0)
+			$item->password = Hash::make($request->input('password'));
 		$item->save();
         
 		return $item;
