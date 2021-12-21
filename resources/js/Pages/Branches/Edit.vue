@@ -12,7 +12,7 @@
 					<div>
 						<div>
 							<jet-label for="branchNo" :value="__('Branch Number')" />
-							<jet-input id="branchNo" type="number" class="mt-1 block w-full" v-model="form.address.branchId" required autofocus />
+							<jet-input id="branchNo" type="number" class="mt-1 block w-full" v-model="form.address.branchID" required autofocus />
 						</div>
 						<div class="mt-4">
 							<jet-label for="id" :value="__('Tax Registration Number')" />
@@ -119,7 +119,7 @@
                     issuer_id: '',
                     type: 'B',
 					address: {
-						branchId: '',
+						branchID: '',
 						country: '',
 						governate: '',
 						regionCity: '',
@@ -140,7 +140,7 @@
 					this.form.name = this.branch.name;
 					this.form.issuer_id = this.branch.issuer_id;
 					this.form.type = this.branch.type;
-					this.form.address.branchId = this.branch.address.branchID;
+					this.form.address.branchID = this.branch.address.branchID;
 					this.form.address.country = this.branch.address.country;
 					this.form.address.governate = this.branch.address.governate;
 					this.form.address.regionCity = this.branch.address.regionCity;

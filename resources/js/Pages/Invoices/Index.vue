@@ -160,9 +160,11 @@
 					reason: this.cancelReason
 				})
 				.then(response => {
-					location.reload();
-					//alert(response.data);
+					console.log(response);
+					alert(response.data);
+					//location.reload();
                 }).catch(error => {
+					console.log(error);
 					alert(error.response.data);
                     //this.$refs.password.focus()
                 });

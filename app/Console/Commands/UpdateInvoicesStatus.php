@@ -39,8 +39,8 @@ class UpdateInvoicesStatus extends Command
     public function handle()
     {
 		$eta = new ETAController();
-		//$eta->UpdateInvoices();
 		$eta->LoadMissingInvoices();
+		$eta->UpdateInvoices();
         return 0;
     }
 }

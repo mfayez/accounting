@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Models\Address;
 use App\Models\ETAItem;
 use App\Models\ETAInvoice;
 use App\Models\Invoice;
@@ -35,7 +36,7 @@ class ETAController extends Controller
 	
 	public function UploadItem(Request $request)
 	{
-		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
+		$url = env("ETA_URL")."/codetypes/requests/codes";
 		$temp = $this->csvToArray($request->file);
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => temp]);
@@ -148,7 +149,7 @@ class ETAController extends Controller
 
 	public function AddInvoice(StoreInvoiceRequest $request)
 	{
-		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/documentsubmissions";
+		$url = env("ETA_URL")."/documentsubmissions";
 		$data = $request->validated();
 		//remove extra attributes, no need but you can get them from git history
 		$data['dateTimeIssued'] = $data['dateTimeIssued'] . ":00Z";
@@ -218,7 +219,7 @@ class ETAController extends Controller
 
 	public function CancelInvoice(Request $request)
 	{
-		$url = "https://api.invoicing.eta.gov.eg/api/iv1.0/documents/%s/state";
+		$url = env("ETA_URL")."/documents/state/%s/state";
 		$url = sprintf($url, $request->input("uuid"));
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->put($url, [
@@ -229,7 +230,7 @@ class ETAController extends Controller
 			$inv1 = Invoice::where("uuid", "=", $request->input("uuid"))->first();
 			$inv2 = ETAInvoice::where("uuid", "=", $request->input("uuid"))->first();
 			if($inv1){
-				$inv1->status = $request->input("status");
+				$inv1->status = "processing"
 				$inv1->statusreason = $request->input("reason");
 				$inv1->save();
 			}
@@ -249,12 +250,12 @@ class ETAController extends Controller
 
 	public function SyncIssuedInvoices(Request $request)
 	{
-		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/documents/recent";
+		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"PageSize" => "10",
 			"PageNo" => $request->input("value")
-			//,"InvoiceDirection" => "sent"	
+			,"InvoiceDirection" => "sent"	
 		]);
 		//$collection = ETAItem::hydrate($response['result']);
 		$collection = $response['result'];
@@ -262,21 +263,25 @@ class ETAController extends Controller
     	//$collection->each(function ($item) {
 		foreach($collection as $item) {
 			try{
-			//$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
-			$invoice = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
-			if ($invoice)
-			{
-				$invoice->update($item);
-				$invoice->save();
-			}
-			//$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
-			$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
-			if ($invoice2)
-			{
-				$invoice2->status = $item['status'];
-				$invoice2->statusreason = $item['documentStatusReason'];
-				$invoice2->save();
-			}
+				//todo mfayez do not mix issued with received invoices in the same table.
+				//$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
+				//$invoice = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
+				//if ($invoice)
+				//{
+				//	$invoice->update($item);
+				//	$invoice->save();
+				//}
+				//$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
+				$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
+				if ($invoice2)
+				{
+					$invoice2->status = $item['status'];
+					$invoice2->statusreason = $item['documentStatusReason'];
+					$invoice2->save();
+				} else {
+					//recover missing item
+					$this->AddMissingInvoice($request, $item['uuid']);
+				}
 			} catch (Exception $e) {}
 
 			//$invoice->save();
@@ -286,7 +291,7 @@ class ETAController extends Controller
 
 	public function SyncItems(Request $request)
 	{
-		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/my";
+		$url = env("ETA_URL")."/codetypes/requests/my";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "10",
@@ -320,7 +325,7 @@ class ETAController extends Controller
 
 	public function AddItem(Request $request)
 	{
-		$url = "https://api.invoicing.eta.gov.eg/api/v1.0/codetypes/requests/codes";
+		$url = env("ETA_URL")."/codetypes/requests/codes";
 		$data = $request->validate([
 			'codeType'		=> ['required', 'string', Rule::in(['EGS', 'GS1'])],
 			'parentCode'	=> ['required', 'integer'],
@@ -341,7 +346,7 @@ class ETAController extends Controller
 	private function AuthenticateETA2()
 	{
 		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = "https://id.eta.gov.eg/connect/token";
+			$url = env("LOGIN_URL");
 			$response = Http::asForm()->post($url, [
 				"grant_type" => "client_credentials",
 				"scope" => "InvoicingAPI",
@@ -358,7 +363,7 @@ class ETAController extends Controller
 		$this->token = $request->session()->get('eta_token', null);
 		$this->token_expires_at = $request->session()->get('eta_token_expires_at', null);
 		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = "https://id.eta.gov.eg/connect/token";
+			$url = env("LOGIN_URL");
 			$response = Http::asForm()->post($url, [
 				"grant_type" => "client_credentials",
 				"scope" => "InvoicingAPI",
@@ -550,7 +555,7 @@ class ETAController extends Controller
 	}
 
 	public function UpdateInvoices(){
-		$urlbase = "https://api.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
+		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$invoices = Invoice::where('status', '=', 'Invalid')
 					->where('statusReason', '=', '')
 					->get();
@@ -576,8 +581,82 @@ class ETAController extends Controller
 		
 		//error_log(json_encode($invoices));
 	}
+
+	public function AddMissingInvoice($request, $uuid) {
+		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$this->AuthenticateETA($request);
+		$url = sprintf($urlbase, $uuid);
+		$response = Http::withToken($this->token)->get($url);
+		$document = json_decode($response['document']);
+		error_log($response['uuid']);
+		$invoice = new Invoice((array)$document);
+
+		$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
+		$receiver = Receiver::where('receiver_id', '=', $document->receiver->id)->first();
+		$invoice->status = $response['status'];
+		$invoice->uuid = $response["uuid"];
+		$invoice->submissionUUID = $response["submissionUUID"];
+		$invoice->longId = $response["longId"];
+		if (!$issuer)
+		{
+			$item2 = new Address((array)$document->issuer->address);
+        	$item2->save();
+	        $item = new Issuer((array)$document->issuer);
+			$item->issuer_id = $document->issuer->id;
+			$item->id = null;
+        	$item2->issuer()->save($item);
+			$issuer = $item;
+		}
+		$invoice->issuer_id = $issuer->Id;
+
+		if (!$receiver)
+		{
+			$item2 = new Address((array)$document->receiver->address);
+        	$item2->save();
+	        $item = new Receiver((array)$document->receiver);
+			$item->receiver_id = $document->issuer->id;
+			$item->id = null;
+        	$item2->receiver()->save($item);
+			$receiver = $item;
+		}
+		$invoice->receiver_id = $receiver->Id;
+		
+		$errors = "";
+		$steps = $response['validationResults']['validationSteps'];
+		foreach($steps as $step) {
+			if ($step['status'] != "Invalid")
+				continue;
+			//if(!$step['error']) continue;
+			$errors = $errors . "," .  $step['error']['error'];
+			if ($step['error']['innerError'])
+				foreach($step['error']['innerError'] as $inner)
+					$errors = $errors . "," .  $inner['error'];
+		}
+		$invoice->statusreason = $errors;
+		$invoice->save();
+
+		foreach($document->invoiceLines as $line) {
+			$unitValue = new Value((array)$line->unitValue);
+			$unitValue->save();
+			$invoiceline = new InvoiceLine((array)$line);
+			$invoiceline->invoice_id = $invoice->Id;
+			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->save();
+			foreach($line->taxableItems as $taxitem) {
+				$item = new TaxableItem((array)$taxitem);
+				$item->invoiceline_id = $invoiceline->Id;
+				$item->save();
+			}
+		}
+		foreach($document->taxTotals as $totalTax) {
+			$taxTotal = new TaxTotal((array)$totalTax);
+			$taxTotal->invoice_id = $invoice->Id;
+			$taxTotal->save();
+		}
+	}
+
 	public function LoadMissingInvoices() {
-		$urlbase = "https://api.invoicing.eta.gov.eg/api/v1.0/documents/%s/raw";
+		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$oldinv = Invoice::whereNotNull('uuid')->pluck('uuid');
 		$missing = ETAInvoice::whereNotIn('uuid', $oldinv)->pluck('uuid');
 		
@@ -695,4 +774,5 @@ class ETAController extends Controller
 		$inv->delete();
 		return "Invoice Deleted";
 	}
+
 }

@@ -91,7 +91,7 @@ class BranchController extends Controller
             'name' 							=> ['required', 'string', 'max:255'],
             'issuer_id' 					=> ['required', 'integer'],
             'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
-            'address.branchId' 				=> ['required', 'integer'],
+            'address.branchID' 				=> ['required', 'integer'],
 			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
 			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
 			'address.regionCity' 			=> ['required', 'string'],
@@ -103,7 +103,7 @@ class BranchController extends Controller
 
 		
         $item2 = new Address();
-		$item2->branchId = $request->input('address.branchId');
+		$item2->branchID = $request->input('address.branchID');
         $item2->country = $request->input('address.country');
         $item2->governate = $request->input('address.governate');
         $item2->regionCity = $request->input('address.regionCity');
@@ -156,7 +156,7 @@ class BranchController extends Controller
             'name' 							=> ['required', 'string', 'max:255'],
             'issuer_id' 					=> ['required', 'integer'],
             'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
-            'address.branchId' 				=> ['required', 'integer'],
+            'address.branchID' 				=> ['required', 'integer'],
 			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
 			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
 			'address.regionCity' 			=> ['required', 'string'],
