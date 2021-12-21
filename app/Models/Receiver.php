@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Eloquent class to describe the Receiver table.
  *
@@ -23,5 +25,20 @@ class Receiver extends \Illuminate\Database\Eloquent\Model
     public function invoice()
     {
         return $this->hasMany('App\Models\Invoice', 'receiver_id', 'Id');
+    }
+
+    public function getTopReceiversStats($hasFilter = false)
+    {
+        $query = $this->select(DB::raw('Receiver.name as name, sum(Invoice.netAmount) as value'))
+            ->join('Invoice', 'Invoice.receiver_id', '=', 'Receiver.id');
+
+        if ($hasFilter) {
+            $query->whereIn('Invoice.status', request('statusList'));
+        }
+
+        return $query->groupBy('name')
+            ->orderBY('value', 'DESC')
+            ->limit(10)
+            ->get();
     }
 }

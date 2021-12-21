@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 //use App\Models\Item;
 
 /**
@@ -14,10 +16,10 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
     protected $table = 'InvoiceLine';
 
     public $primaryKey = 'Id';
-	//protected $appends = ['item'];
+    //protected $appends = ['item'];
 
     protected $fillable = ['description', 'itemType', 'itemCode', 'unitType', 'quantity', 'internalCode', 'salesTotal',
-        'total', 'valueDifference', 'totalTaxableFees', 'netTotal', 'itemsDiscount', 'invoice_id' ];
+        'total', 'valueDifference', 'totalTaxableFees', 'netTotal', 'itemsDiscount', 'invoice_id'];
 
     public function discount()
     {
@@ -27,8 +29,8 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
     //public function getItemAttribute()
     public function item()
     {
-		//return Item::firstWhere('itemCode', $this->itemCode);
-		return $this->belongsTo('App\Models\ETAItem', 'itemCode', 'itemCode');
+        //return Item::firstWhere('itemCode', $this->itemCode);
+        return $this->belongsTo('App\Models\ETAItem', 'itemCode', 'itemCode');
     }
 
     public function invoice()
@@ -44,5 +46,23 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
     public function taxableItems()
     {
         return $this->hasMany('App\Models\TaxableItem', 'invoiceline_id', 'Id');
+    }
+
+    public function topItemsStats($hasFilter = false)
+    {
+
+        $query = $this
+            ->select(DB::raw("ETAItems.codeNamePrimaryLang as name, sum(InvoiceLine.salesTotal) as value"))
+            ->join('ETAItems', 'InvoiceLine.itemCode', '=', 'ETAItems.itemCode');
+
+        if ($hasFilter) {
+            $query->join('invoice', 'invoice.id', '=', 'InvoiceLine.invoice_id')
+                ->whereIn('invoice.status', request('statusList'));
+        }
+
+        return $query->groupByRaw('ETAItems.codeNamePrimaryLang')
+            ->orderBy('value', 'desc')
+            ->limit(10)
+            ->get();
     }
 }
