@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\TaxableItem;
 use App\Models\TaxTotal;
-use App\Models\Value;
+use Illuminate\Support\Facades\DB;
+
 /**
  * Eloquent class to describe the Invoice table.
  *
@@ -17,14 +17,14 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     public $primaryKey = 'Id';
 
     public $timestamps = false;
-	protected $casts = [
+    protected $casts = [
         'Id' => 'integer',
-		'totalDiscountAmount' => 'decimal:2',
-		'totalSalesAmount' => 'decimal:2',
-		'netAmount' => 'decimal:2',
-		'totalAmount' => 'decimal:2',
-		'extraDiscountAmount' => 'decimal:2',
-		'totalItemsDiscountAmount' => 'decimal:2',
+        'totalDiscountAmount' => 'decimal:2',
+        'totalSalesAmount' => 'decimal:2',
+        'netAmount' => 'decimal:2',
+        'totalAmount' => 'decimal:2',
+        'extraDiscountAmount' => 'decimal:2',
+        'totalItemsDiscountAmount' => 'decimal:2',
     ];
 
     protected $fillable = ['issuer_id', 'receiver_id', 'documentType', 'documentTypeVersion', 'dateTimeIssued', 'taxpayerActivityCode',
@@ -37,39 +37,41 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
         return ['dateTimeIssued'];
     }
 
-	public function normalize()
-	{
-		$salesTotal = 0;
-		$total = 0;
-		foreach($this->invoiceLines as $line) {
-			$salesTotal += $line->salesTotal;
-			$total += $line->total;
-		}
-		$this->netAmount = $salesTotal;
-		$this->totalSalesAmount = $salesTotal;
-		$this->totalAmount = $total;
-	}
+    public function normalize()
+    {
+        $salesTotal = 0;
+        $total = 0;
+        foreach ($this->invoiceLines as $line) {
+            $salesTotal += $line->salesTotal;
+            $total += $line->total;
+        }
+        $this->netAmount = $salesTotal;
+        $this->totalSalesAmount = $salesTotal;
+        $this->totalAmount = $total;
+    }
 
-	public function updateTaxTotals()
-	{
-		$this->taxTotals()->delete();
-		$taxTotals = array();
-		foreach($this->invoiceLines as $line) {
-			foreach($line->taxableItems as $item) {
-				if (isset($taxTotals[$item->taxType]))
-					$taxTotals[$item->taxType] += $item->amount; 
-				else
-					$taxTotals[$item->taxType] = $item->amount; 
-			}
-		}
-		foreach($taxTotals as $key=>$item) {
-			$totalTax = new TaxTotal();
-			$totalTax->taxType = $key;
-			$totalTax->amount = $item;
-			$totalTax->invoice_id = $this->Id;
-			$totalTax->save();	
-		}
-	}
+    public function updateTaxTotals()
+    {
+        $this->taxTotals()->delete();
+        $taxTotals = array();
+        foreach ($this->invoiceLines as $line) {
+            foreach ($line->taxableItems as $item) {
+                if (isset($taxTotals[$item->taxType])) {
+                    $taxTotals[$item->taxType] += $item->amount;
+                } else {
+                    $taxTotals[$item->taxType] = $item->amount;
+                }
+
+            }
+        }
+        foreach ($taxTotals as $key => $item) {
+            $totalTax = new TaxTotal();
+            $totalTax->taxType = $key;
+            $totalTax->amount = $item;
+            $totalTax->invoice_id = $this->Id;
+            $totalTax->save();
+        }
+    }
 
     public function delivery()
     {
@@ -100,4 +102,35 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     {
         return $this->hasMany('App\Models\TaxTotal', 'invoice_id', 'Id');
     }
+
+    public function getDashboardStatisticsByDate($from, $to)
+    {
+
+        return DB::select("SELECT
+		count(*) as invoicesCount,
+		sum(totalSalesAmount) totalSalesAmount,
+		sum(totalAmount) totalAmount,
+		ifnull(sum(t2.amount), 0) taxTotal,
+		ifnull(Status, 'pending') as Status
+	from
+		Invoice t1
+		left outer join (
+			select
+				invoice_id,
+				sum(amount) as amount
+			from
+				TaxTotal
+			WHERE
+				DATE(created_at) >= :from
+				AND DATE(created_at) <= :to
+			group by
+				invoice_id
+		) t2 on t1.Id = t2.invoice_id
+	WHERE
+		DATE(t1.created_at) >= :from2
+		AND DATE(t1.created_at) <= :to2
+	group by
+		Status", ['from' => $from, 'to' => $to, 'from2' => $from, 'to2' => $to]);
+    }
+
 }
