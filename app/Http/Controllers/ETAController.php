@@ -230,7 +230,7 @@ class ETAController extends Controller
 			$inv1 = Invoice::where("uuid", "=", $request->input("uuid"))->first();
 			$inv2 = ETAInvoice::where("uuid", "=", $request->input("uuid"))->first();
 			if($inv1){
-				$inv1->status = "processing"
+				$inv1->status = "processing";
 				$inv1->statusreason = $request->input("reason");
 				$inv1->save();
 			}
