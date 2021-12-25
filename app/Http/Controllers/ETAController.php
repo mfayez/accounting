@@ -37,7 +37,10 @@ class ETAController extends Controller
 		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
 		$template = str_replace($values, $repalcements, env("INVOICE_TEMPALTE"));
 		$branchNum = $invoice->issuer_id;
-		$invNum = $invoice->issuer->invoice()->count();
+		$inv = DB::select('SELECT max(convert(internalID, integer)) as LastInv FROM `Invoice` WHERE issuer_id', [$branchNum]);
+		$invNum = 1;
+		if (!empty($inv))
+			$invNum = 1 + $inv[0]->LastInv%100000;
 		$year = intval(date("Y"));
 		$year2 = $year % 100;
 		$invoice->internalID = sprintf($template, $year, $year2, $branchNum, $invNum);
