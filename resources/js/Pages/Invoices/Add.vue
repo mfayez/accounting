@@ -30,7 +30,7 @@
 							<multiselect v-model="form.taxpayerActivityCode" label="Desc_ar" :options="activities" placeholder="Select activity" />
 						</div>
 						<TextField v-model="form.dateTimeIssued" itemType="datetime-local" :itemLabel="__('Invoice Date')" />
-						<TextField v-model="form.internalID" itemType="text" :itemLabel="__('Internal Invoice ID')" />
+						<TextField v-model="form.internalID" itemType="text" :itemLabel="__('Internal Invoice ID')" :active="false"/>
 						<TextField v-model="form.totalSalesAmount" itemType="number" :itemLabel="__('Total Sales Amount')" :active="false" />
 						<TextField v-model="form.totalDiscountAmount" itemType="number" :itemLabel="__('Total Discount Amount')" :active="false" />
 						<TextField v-model="form.netAmount" itemType="number" :itemLabel="__('Net Amount')" :active="false" />
@@ -151,7 +151,7 @@
 					name: '',
 					dateTimeIssued: new Date().toISOString().slice(0, 16),
 					taxpayerActivityCode: '',
-					internalID: '',
+					internalID: 'Automatic',
 					purchaseOrderReference: '',
 					purchaseOrderDescription: '',
 					salesOrderReference: '',
@@ -204,7 +204,7 @@
 			},
 			AddItem: function() {
 				this.addingNewLine = true;
-				this.currentItem = { quantity: 1, itemsDiscount: 0, valueDifference: 0, unitValue:{amountEGP: 0}};
+				this.currentItem = { quantity: 1, totalTaxableFees: 0, itemsDiscount: 0, valueDifference: 0, unitValue:{amountEGP: 0}};
 				this.$nextTick(() => {
 					this.$refs.dlg1.ShowDialog();
 				});

@@ -123,7 +123,7 @@ class StoreInvoiceRequest extends FormRequest
 			'totalDiscountAmount' 					=> ['required', 'numeric'],
 			'totalSalesAmount' 						=> ['required', 'numeric'],
 			'netAmount' 							=> ['required', 'numeric'],
-			'taxTotals' 							=> ['required', 'array'],
+			'taxTotals' 							=> ['array'],
 			'taxTotals.*.taxType' 					=> ['required', Rule::in(['T1','T2','T3','T4','T5',
 																			'T6','T7','T8','T9','T10','T11',
 																			'T12','T13','T14','T15','T16','T17',

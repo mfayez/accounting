@@ -198,6 +198,8 @@
 			SaveItem() {
 				this.item.isDirty = true;
 				this.showDlg = false;
+				if (!this.item.taxItems || this.item.taxItems.length == 0)
+					this.item.taxItems = [];
 				this.$emit('update:modelValue',this.item);
 			},
         },

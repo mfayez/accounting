@@ -31,6 +31,17 @@ use App\Http\Requests\StoreInvoiceRequest;
 
 class ETAController extends Controller
 {
+
+	public function generateInvoiceNumber($invoice){
+		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
+		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
+		$template = str_replace($values, $repalcements, env("INVOICE_TEMPALTE"));
+		$branchNum = $invoice->issuer_id;
+		$invNum = $invoice->issuer->invoice()->count();
+		$year = intval(date("Y"));
+		$year2 = $year % 100;
+		$invoice->internalID = sprintf($template, $year, $year2, $branchNum, $invNum);
+	}
 	protected $token = '';
 	protected $token_expires_at = null;
 	
@@ -76,6 +87,7 @@ class ETAController extends Controller
 			$invoice->status = "In Review";	
 			$invoice->statusreason = "Excel Upload";
 			$invoice->upload_id = $upload->Id;
+			$this->generateInvoiceNumber($invoice);
 			$invoice->save();
 			$temp[$key]["invoice_id"] = $invoice->Id;
 			$inserted[$invoice_data['internalID']] = $invoice->Id;
@@ -175,6 +187,10 @@ class ETAController extends Controller
 		$data['issuer_id'] = $data['issuer']['Id'];
 		$data['receiver_id'] = $data['receiver']['Id'];
 		$invoice = Invoice::updateOrCreate(['Id' => $request->input('Id', -1)], $data);
+		if ($request->isMethod('post')) {
+			$this->generateInvoiceNumber($invoice);
+			$invoice->save();
+		}
 		foreach($invoice->invoiceLines as $line)
 		{
 			//if($line->discount)
