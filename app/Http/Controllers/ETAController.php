@@ -37,7 +37,7 @@ class ETAController extends Controller
 		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
 		$template = str_replace($values, $repalcements, env("INVOICE_TEMPALTE"));
 		$branchNum = $invoice->issuer_id;
-		$inv = DB::select('SELECT max(convert(internalID, integer)) as LastInv FROM `Invoice` WHERE issuer_id', [$branchNum]);
+		$inv = DB::select('SELECT max(convert(internalID, unsigned integer)%100000) as LastInv FROM Invoice WHERE issuer_id = ?', [$branchNum]);
 		$invNum = 1;
 		if (!empty($inv))
 			$invNum = 1 + $inv[0]->LastInv%100000;
@@ -190,7 +190,7 @@ class ETAController extends Controller
 		$data['issuer_id'] = $data['issuer']['Id'];
 		$data['receiver_id'] = $data['receiver']['Id'];
 		$invoice = Invoice::updateOrCreate(['Id' => $request->input('Id', -1)], $data);
-		if ($request->isMethod('post')) {
+		if ($request->isMethod('post') || $invoice->internalID == 'Automatic') {
 			$this->generateInvoiceNumber($invoice);
 			$invoice->save();
 		}
