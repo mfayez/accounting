@@ -8,6 +8,7 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Address;
 use App\Models\Delivery;
@@ -65,7 +66,7 @@ class CustomerController extends Controller
 	
 	public function index_json()
 	{
-		return Receiver::with('address')->get()->toArray();
+		return Auth::user()->receivers()->with('address')->get()->toArray();
 	}
 
     /**

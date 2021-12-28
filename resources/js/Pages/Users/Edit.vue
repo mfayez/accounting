@@ -1,5 +1,5 @@
 <template>
-    <jet-dialog-modal :show="showDialog" max-width="sm" @close="showDialog = false">
+    <jet-dialog-modal :show="showDialog" max-width="lg" @close="showDialog = false">
 		<template #title>
         	{{__('User Information')}}
         </template>
@@ -8,37 +8,43 @@
 			<jet-validation-errors class="mb-4" />
 
 			<form @submit.prevent="submit">
-				<div class="grid grid-cols-1 gap-4">
+				<div class="grid grid-cols-2 gap-4">
 					<div>
-						<div>
-							<jet-label for="name" :value="__('Name')" />
-							<jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus />
-						</div>
-						<div class="mt-4">
-							<jet-label for="Email" :value="__('Email')" />
-							<jet-input id="Email" type="Email" class="mt-1 block w-full" v-model="form.email" required />
-						</div>
-						<div class="mt-4">
-							<jet-label for="password" :value="__('Password')" />
-							<jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required />
-						</div>
-						<div class="mt-4">
-							<jet-label :value="__('Role')" />
-							<select id="type" v-model="form.current_team_id" class="mt-1 block w-full">
-							  <option value="1">{{__('Administrator')}}</option>
-							  <option value="2">{{__('Reviewer')}}</option>
-							  <option value="3">{{__('Data Entry')}}</option>
-							  <option value="4">{{__('ETA')}}</option>
-							  <option value="5">{{__('Viewer')}}</option>
-							</select>
-						</div>
+						<jet-label for="name" :value="__('Name')" />
+						<jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus />
+					</div>
+					<div>
+						<jet-label for="Email" :value="__('Email')" />
+						<jet-input id="Email" type="Email" class="mt-1 block w-full" v-model="form.email" required />
+					</div>
+					<div>
+						<jet-label for="password" :value="__('Password')" />
+						<jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required />
+					</div>
+					<div>
+						<jet-label :value="__('Role')" />
+						<select id="type" v-model="form.current_team_id" class="mt-1 block w-full">
+						  <option value="1">{{__('Administrator')}}</option>
+						  <option value="2">{{__('Reviewer')}}</option>
+						  <option value="3">{{__('Data Entry')}}</option>
+						  <option value="4">{{__('ETA')}}</option>
+						  <option value="5">{{__('Viewer')}}</option>
+						</select>
+					</div>
+					<div class="col-span-2">
+						<jet-label :value="__('Branches')" />
+						<multiselect v-model="issuers" :options="branches" label="name" :placeholder="__('Select item')" :multiple="true"/>
+					</div>
+					<div class="col-span-2">
+						<jet-label :value="__('Receivers and Vendors')" />
+						<multiselect v-model="receivers" :options="customers" label="name" :placeholder="__('Select item')" :multiple="true"/>
 					</div>
 				</div>
 			</form>
 		</template>
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
-	    		<jet-secondary-button @click="CancelAddBranch()">
+	    		<jet-secondary-button @click="CancelAddUser()">
    					{{__('Cancel')}}
         		</jet-secondary-button>
 
@@ -49,6 +55,8 @@
 	   </template>
 	</jet-dialog-modal>
 </template>
+
+<style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
 
 <script>
     import JetActionMessage from '@/Jetstream/ActionMessage'
@@ -87,7 +95,7 @@
         },
 
         props: {
-            branch: {
+            pUser: {
 				Type: Object,
 				default:null
 			},
@@ -95,11 +103,17 @@
 
         data() {
             return {
+				branches: [],
+				customers: [],
+				issuers: [],
+				receivers: [],
 				errors: [],
                 form: this.$inertia.form({
                     name: '',
                     email: '',
                     password: '',
+					issuers: [],
+					receivers: [],
                 }),
 				showDialog: false,
             }
@@ -107,18 +121,30 @@
 
         methods: {
 			ShowDialog() {
-				if (this.branch !== null){
-					this.form.name = this.branch.name;
-					this.form.email = this.branch.email;
-					this.form.current_team_id = this.branch.current_team_id;
+				this.issuers = [];
+				this.receivers = [];
+				if (this.pUser !== null){
+					this.form.name = this.pUser.name;
+					this.form.email = this.pUser.email;
+					this.form.current_team_id = this.pUser.current_team_id;
+					for(var i = 0; i < this.pUser.issuers.length; i++)
+						this.issuers.push(this.branches.find(option => option.Id === this.pUser.issuers[i].Id));
+					for(var i = 0; i < this.pUser.receivers.length; i++)
+						this.receivers.push(this.customers.find(option => option.Id === this.pUser.receivers[i].Id));
 				}
 				this.showDialog = true;
 			},
-			CancelAddBranch() {
+			CancelAddUser() {
 				this.showDialog = false;
 			},
-			SaveBranch() {
-                axios.put(route('users.update', {'user': this.branch.id}), this.form)
+			SaveUser() {
+				this.form.issuers = [];
+				this.form.receivers = [];
+				for(var i = 0; i < this.issuers.length; i++)
+					this.form.issuers.push(this.issuers[i].Id);
+				for(var i = 0; i < this.receivers.length; i++)
+					this.form.receivers.push(this.receivers[i].Id);
+                axios.put(route('users.update', {'user': this.pUser.id}), this.form)
 				.then(response => {
 					location.reload();
                 }).catch(error => {
@@ -128,7 +154,14 @@
                     //this.$refs.password.focus()
                 });
 			},
-			SaveNewBranch() {
+			SaveNewUser() {
+				this.form.issuers = [];
+				this.form.receivers = [];
+				for(var i = 0; i < this.issuers.length; i++)
+					this.form.issuers.push(this.issuers[i].Id);
+				for(var i = 0; i < this.receivers.length; i++)
+					this.form.receivers.push(this.receivers[i].Id);
+					
                 axios.post(route('users.store'), this.form)
 				.then(response => {
                     this.processing = false;
@@ -144,12 +177,35 @@
                 });
 			},
             submit() {
-				if (this.branch == null)
-					this.SaveNewBranch();
+				if (this.pUser == null)
+					this.SaveNewUser();
 				else
-					this.SaveBranch();
+					this.SaveUser();
             }
         },
+		created: function created() {
+			axios.get(route('json.branches'))
+			.then(response => {
+				this.branches = response.data;
+				if (this.pUser)
+					for(var i = 0; i < this.pUser.issuers.length; i++)
+						this.issuers.push(this.branches.find(option => option.Id === this.pUser.issuers[i].Id));
+            }).catch(error => {
+
+            });
+			axios.get(route('json.customers'))
+			.then(response => {
+				this.customers = response.data;
+				if (this.pUser)
+					for(var i = 0; i < this.pUser.receivers.length; i++)
+						this.receivers.push(this.customers.find(option => option.Id === this.pUser.receivers[i].Id));
+            }).catch(error => {
+
+            });
+		},
+
+
+
     }
 </script>
 

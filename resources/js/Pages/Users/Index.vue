@@ -1,6 +1,6 @@
 <template>
     <app-layout>
-		<edit-user ref="dlg2" :branch="user"/>
+		<edit-user ref="dlg2" :p-user="user"/>
 		<confirm ref="dlg1" @confirmed="remove()">
 			{{__('Are you sure you want to delete this user?')}}
 		</confirm>
@@ -80,7 +80,7 @@
 			remove() {
                 axios.delete(route('users.destroy', {'user': this.user.id}))
 				.then(response => {
-					location.reload();
+					//location.reload();
                 }).catch(error => {
                     //this.$refs.password.focus()
                 });

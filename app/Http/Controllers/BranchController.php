@@ -9,6 +9,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Address;
 use App\Models\Delivery;
@@ -66,7 +67,7 @@ class BranchController extends Controller
 
 	public function index_json()
 	{
-		return Issuer::with('address')->get()->toArray();
+		return Auth::user()->issuers()->with('address')->get()->toArray();
 	}
 
     /**
