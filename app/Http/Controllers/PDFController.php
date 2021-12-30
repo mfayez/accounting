@@ -27,6 +27,7 @@ class PDFController extends Controller
 			->with("invoiceLines.unitValue")
 			->with("taxTotals")
 			->with("invoiceLines.taxableItems")
+			->with('receiver.address')
 			->find($id);
 		return view('pdf.bill', compact('data'));
 	}
