@@ -1,197 +1,120 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Invoice Master</title>
-    
-    <style>
-	.logo {
-		width: 30%;
-	}
-
-    .invoice-box {
-        max-width: 800px;
-        margin: auto;
-        padding: 30px;
-        border: 1px solid #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, .15);
-        font-size: 16px;
-        line-height: 24px;
-        font-family: 'DejaVu Sans';
-        color: #555;
-    }
-    
-    .invoice-box table {
-        width: 100%;
-        line-height: inherit;
-        text-align: left;
-    }
-    
-    .invoice-box table td {
-        padding: 5px;
-        vertical-align: top;
-    }
-    
-    .invoice-box table tr td:nth-child(4) {
-        text-align: left;
-    }
-    
-    .invoice-box table tr td:nth-child(3) {
-        text-align: left;
-    }
-    .invoice-box table tr td:nth-child(3) {
-        text-align: left;
-    }
-    .invoice-box table tr.top table td {
-        padding-bottom: 20px;
-    }
-    
-    .invoice-box table tr.top table td.title {
-        font-size: 45px;
-        line-height: 45px;
-        color: #333;
-    }
-    
-    .invoice-box table tr.information table td {
-        padding-bottom: 40px;
-    }
-    
-    .invoice-box table tr.heading td {
-        background: #eee;
-        border-bottom: 1px solid #ddd;
-        font-weight: bold;
-    }
-    
-    .invoice-box table tr.details td {
-        padding-bottom: 20px;
-    }
-    
-    .invoice-box table tr.item td{
-        border-bottom: 1px solid #eee;
-    }
-    
-    .invoice-box table tr.item.last td {
-        border-bottom: none;
-    }
-    
-    .invoice-box table tr.total td:nth-child(4) {
-        border-top: 2px solid #eee;
-        font-weight: bold;
-    }
-    
-    @media only screen and (max-width: 600px) {
-        .invoice-box table tr.top table td {
-            width: 100%;
-            display: block;
-            text-align: center;
-        }
-        
-        .invoice-box table tr.information table td {
-            width: 100%;
-            display: block;
-            text-align: center;
-        }
-    }
-    
-	body{font-family: 'DejaVu Sans';}
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 
 <body>
-    <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="4">
-                    <table>
-                        <tr>
-                            <td class="title">
-								<img src="/images/invoice_logo.jpg" class="logo" alt="Fat Hens For Trading"/>
-                            </td>
-                           <td /> 
-                            <td style="font-family: DejaVu Sans;text-align:left;">
-                                Invoice #: {{$data->internalID}}<br>
-                                Invoice ETA #: {{$data->uuid}}<br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            
-            <tr class="information">
-                <td colspan="4">
-                    <table>
-                        <tr>
-                            <td>
-                                Buyer: {{$data->receiver->name}}<br>
-                                Type: {{$data->receiver->type}}<br>
-								ID: {{$data->receiver->receiver_id}}
-                            </td>
-                            <td style="font-family: 'DejaVu Sans' text-aligh:left;">
-                                Issuer: {{$data->issuer->name}}<br>
-                                Type: {{$data->issuer->type}}<br>
-								Tax Registration #: {{$data->issuer->issuer_id}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            
-            <tr class="heading">
-                <td>Item
-                </td>
-                <td>Quantity
-                </td>
-                <td>Unit Price
-                </td>
-                <td>Sales
-                </td>
-                <td>Tax
-                </td>
-                <td>Total
-                </td>
-            </tr>
-			@foreach($data->invoiceLines ?? '' as $line)
-				@php
-					$total = 0;
-					if (!$line->taxableItems)
-						$line->taxableItems = [];
-				@endphp
-				
-				@foreach($line->taxableItems as $tax)
-			    @php
-		        	$total = $total + $tax->amount;
-    			@endphp
-				@endforeach
-            <tr class="item">
-                <td>{{$line->description}}
-                </td>
-                <td>{{$line->quantity}}
-                </td>
-                <td>{{$line->unitValue->amountEGP}}
-                </td>
-                <td>{{$line->salesTotal}}
-                </td>
-                <td>{{$total}}
-                </td>
-                <td>{{$line->total}}
-                </td>
-            </tr>
-  			@endforeach 
-            
-            <tr class="total">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                
-                <td>
-                   Total
-                </td>
-                <td>
-                   {{$data->totalAmount}}
-                </td>
-            </tr>
-        </table>
+    <div class="invoice w-full lg:w-4/6 my-5 mx-auto shadow-lg rounded-xl">
+        <div class="invoice-header flex justify-between p-5">
+            <div class="invoice-details self-center">
+                <div class="mb-2">
+                    <h2 class="text-3xl uppercase">Invoice</h2>
+                </div>
+                <div>
+                    <ul>
+                        <li class="pb-2 text-gray-600">Invoice Number: {{ $data->internalID }}</li>
+                        <li class="text-gray-600 pb-2">Date Of Issue: {{
+                            \Carbon\Carbon::parse($data->dateTimeIssued)->toDateString() }}</li>
+                        <li class="text-gray-600 pb-2">Time Of Issue: {{
+                            \Carbon\Carbon::parse($data->dateTimeIssued)->toTimeString() }}</li>
+                        <li class="text-gray-600">Invoice ETA: {{ $data->uuid ?? '-' }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="logo self-center">
+                <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="w-32 h-32">
+            </div>
+        </div>
+        <hr>
+        <div class="invoice-company-address flex justify-between p-5">
+            <div class="billed-to">
+                <h4 class="mb-2 text-2xl">Billed To:</h4>
+                <ul>
+                    <li class="text-gray-600">
+                        {{ $data->receiver->name }}
+                    </li>
+                    <li class="text-gray-600">
+                        {{ $data->receiver->address->street }}
+                    </li>
+                    <li class="text-gray-600 pb-2">
+                        {{ $data->receiver->address->regionCity }} , {{ $data->receiver->address->country }}
+                    </li>
+                    <li class="text-gray-600 pb-2">
+                        Buyer Type: {{ $data->receiver->type }}
+                    </li>
+                    <li class="text-gray-600">
+                        Buyer ID : {{ $data->receiver->receiver_id }}
+                    </li>
+                </ul>
+            </div>
+            <div class="company-details">
+                <h4 class="mb-2 text-2xl">Issuer Details:</h4>
+                <ul>
+                    <li class="text-gray-600">
+                        Issuer: {{ $data->issuer->name }}
+                    </li>
+                    <li class="text-gray-600">
+                        {{ $data->issuer->address->street }}
+                    </li>
+                    <li class="text-gray-600 pb-2">
+                        {{ $data->issuer->address->regionCity }} , {{ $data->issuer->address->country }}
+                    </li>
+                    <li class="text-gray-600 pb-2">
+                        Issuer Type: {{ $data->issuer->type }}
+                    </li>
+                    <li class="text-gray-600">
+                        Tax Registration: {{ $data->issuer->issuer_id }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="items p-5">
+            <table class="w-full">
+                <thead class="text-center bg-gray-300">
+                    <tr>
+                        <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">Item</th>
+                        <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">Quantity</th>
+                        <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">Unit Price</th>
+                        <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">Sales</th>
+                        <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">Tax</th>
+                        <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">Total</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center border border-[#eceeef]">
+                    @foreach($data->invoiceLines ?? '' as $line)
+                    @php
+                    $total = 0;
+                    if (!$line->taxableItems)
+                    $line->taxableItems = [];
+                    @endphp
+
+                    @foreach($line->taxableItems as $tax)
+                    @php
+                    $total = $total + $tax->amount;
+                    @endphp
+                    @endforeach
+                    <tr>
+                        <td class="p-2 border border-[#eceeef]">{{ $line->description }}</td>
+                        <td class="p-2 border border-[#eceeef]">{{ $line->quantity }}</td>
+                        <td class="p-2 border border-[#eceeef]">{{ $line->unitValue->amountEGP }}</td>
+                        <td class="p-2 border border-[#eceeef]">{{ $line->salesTotal }}</td>
+                        <td class="p-2 border border-[#eceeef]">{{ $total }}</td>
+                        <td class="p-2 border border-[#eceeef]">{{ $line->total }}</td>
+                    </tr>
+                    @endforeach
+
+                </tbody>
+            </table>
+            <div class="invoice-total py-5 text-right">
+                <h4 class="capitalize text-gray-600 text-xl font-bold">invoice total: EGP {{ $data->totalAmount }}</h4>
+            </div>
+        </div>
     </div>
 </body>
+
 </html>
