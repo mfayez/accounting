@@ -66,6 +66,8 @@ class CustomerController extends Controller
 	
 	public function index_json()
 	{
+		if (Auth::user()->isAdmin)
+			return Receiver::with('address')->get();
 		return Auth::user()->receivers()->with('address')->get()->toArray();
 	}
 

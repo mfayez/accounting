@@ -88,7 +88,7 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Upload', 'userId', 'Id');
     }
 
-	public function getIssuers()
+	public function issuers()
 	{
 		return $this->belongsToMany(Issuer::class, 'user_issuer');
 	}

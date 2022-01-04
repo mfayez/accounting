@@ -67,6 +67,8 @@ class BranchController extends Controller
 
 	public function index_json()
 	{
+		if (Auth::user()->isAdmin)
+			return Issuer::with('address')->get();
 		return Auth::user()->issuers()->with('address')->get()->toArray();
 	}
 
