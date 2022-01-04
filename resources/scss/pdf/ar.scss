@@ -1,0 +1,35 @@
+.invoice {
+    & .invoice-header {
+        & .invoice-details {
+            width: 100%;
+
+            ul {
+                width: 84%;
+
+                float: right;
+
+                li {
+                    padding-bottom: 5px;
+                }
+            }
+
+            .logo {
+                width: 16%;
+
+                float: left;
+            }
+        }
+    }
+
+    & .invoice-company-address {
+        width: 100%;
+
+        & .billed-to {
+            float: right;
+        }
+
+        & .company-details {
+            float: left;
+        }
+    }
+}

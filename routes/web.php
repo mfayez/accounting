@@ -76,20 +76,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/ETA/Invoices/Received/Index', [ETAController::class, 'indexInvoices'])->name("eta.invoices.received.index");
     Route::get('/ETA/Invoices/Issued/Index/{upload_id?}', [ETAController::class, 'indexIssued'])->name("eta.invoices.sent.index");
 #excel exports
-	Route::get('/excel/items', function() {
-		return App\Models\ETAItem::get()
-			->downloadExcel("items.xlsx", $writerType = null, $headings = true);
-	})->name('excel.items');
-	Route::get('/excel/customers', function() {
-		return App\Models\Receiver::get()
-			->downloadExcel("customers.xlsx", $writerType = null, $headings = true);
-	})->name('excel.customers');
+    Route::get('/excel/items', function () {
+        return App\Models\ETAItem::get()
+            ->downloadExcel("items.xlsx", $writerType = null, $headings = true);
+    })->name('excel.items');
+    Route::get('/excel/customers', function () {
+        return App\Models\Receiver::get()
+            ->downloadExcel("customers.xlsx", $writerType = null, $headings = true);
+    })->name('excel.customers');
 
 #charts data
     Route::post('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");
     Route::post('/json/top/receivers', [ChartsController::class, 'topReceivers'])->name("json.top.receivers");
 #pdf stuff
     Route::get('/pdf/invoice/{Id}', [PDFController::class, 'previewInvoice'])->name('pdf.invoice.preview');
+    Route::get('/pdf/invoice/download/{id}', [PDFController::class, 'downloadInvoice'])->name('pdf.invoice.download');
 });
 
 Route::middleware(['web'])->group(function () {

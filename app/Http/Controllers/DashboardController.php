@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use Carbon\Carbon;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -15,7 +16,7 @@ class DashboardController extends Controller
 
         $firstDayOfTheLastMonth = now()->startOfMonth()->subMonth()->toDateString();
 
-        $lastDayOfTheLastMonth = now()->lastOfMonth()->subMonth()->subDay()->toDateString();
+        $lastDayOfTheLastMonth = Carbon::parse('last day of last month')->toDateString();
 
         $firstDayOfTheCurrentMonth = now()->startOfMonth()->toDateString();
 
