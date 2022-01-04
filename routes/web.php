@@ -75,6 +75,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 #todo mfayez change the controller method and implement it later
     Route::get('/ETA/Invoices/Received/Index', [ETAController::class, 'indexInvoices'])->name("eta.invoices.received.index");
     Route::get('/ETA/Invoices/Issued/Index/{upload_id?}', [ETAController::class, 'indexIssued'])->name("eta.invoices.sent.index");
+#excel exports
+	Route::get('/excel/items', function() {
+		return App\Models\ETAItem::get()
+			->downloadExcel("items.xlsx", $writerType = null, $headings = true);
+	})->name('excel.items');
+	Route::get('/excel/customers', function() {
+		return App\Models\Receiver::get()
+			->downloadExcel("customers.xlsx", $writerType = null, $headings = true);
+	})->name('excel.customers');
 
 #charts data
     Route::post('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");
