@@ -33,6 +33,7 @@
         "chart.js": "^2.9.4",
         "echarts": "^5.2.2",
         "formvuelate": "^3.5.0",
+        "sweetalert": "^2.1.2",
         "vue-echarts": "^6.0.0",
         "webpack": "^5.51.1"
     }
