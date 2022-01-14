@@ -1,0 +1,72 @@
+body {
+  border: 2px solid #000;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+ul li {
+  list-style: none;
+}
+
+.invoice .invoice-header {
+  display: -webkit-box;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.invoice .invoice-header h2 {
+  text-align: center;
+}
+.invoice .invoice-header .invoice-details {
+  width: 100%;
+}
+.invoice .invoice-header .invoice-details ul {
+  width: 84%;
+}
+.invoice .invoice-header .invoice-details ul li {
+  padding-bottom: 5px;
+}
+.invoice .invoice-header .invoice-details .logo {
+  width: 16%;
+}
+.invoice .invoice-company-address {
+  width: 100%;
+}
+.invoice .invoice-company-address .billed-to {
+  width: 60%;
+}
+.invoice .invoice-company-address .company-details {
+  width: 40%;
+}
+.invoice .items {
+  margin-top: 15px;
+}
+.invoice .items table {
+  width: 100%;
+  border-spacing: 0;
+}
+.invoice .items table thead {
+  text-align: center;
+  background-color: #d2d6dc;
+}
+.invoice .items table thead tr th {
+  background-color: #f8f9fa;
+  border: 1px solid #eceeef;
+  padding: 0.75rem;
+}
+.invoice .items table tbody {
+  text-align: center;
+  border: 1px solid #eceeef;
+}
+.invoice .items table tbody tr td {
+  border: 1px solid #eceeef;
+  padding: 0.75rem;
+  text-align: center;
+}
+.invoice .items .invoice-total {
+  text-align: right;
+}
+.invoice .items .invoice-total h4 {
+  font-weight: bold;
+}

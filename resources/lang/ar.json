@@ -135,5 +135,18 @@
 	"Invoices Count": "عدد الفواتير",
 	"Last 7 days Invoices Statistics" : "إحصاءات فواتير الاسبوع الماضي",
 	"From": "من",
-	"To": "إلي"
+	"To": "إلي",
+	"Invoice": "الفاتورة",
+	"Invoice Number": "رقم الفاتورة",
+	"Date Of Issue": "تاريخ الاصدار",
+	"Time Of Issue": "توقيت الاصدار",
+	"Invoice ETA": "رقم الفاتورة في مصلحة الضرائب",
+	"Billed To": "مقدمة إلي",
+	"Buyer Type": "تصنيف البائع",
+	"Buyer ID": "رقم البائع",
+	"Issuer Details": "جهة الاصدار",
+	"Issuer Type": "تصنيف جهة الاصدار",
+	"Invoice Total": "اجمالي الفاتورة",
+	"EGP" : "جنيه",
+	"Print": "طباعة"
 }
