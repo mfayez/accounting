@@ -12,14 +12,20 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js').vue()
-    .postCss('resources/css/app.css', 'public/css', [
-        require('postcss-import'),
-        require('tailwindcss'),
-    ])
-    .webpackConfig(require('./webpack.config'));
+  .postCss('resources/css/app.css', 'public/css', [
+    require('postcss-import'),
+    require('tailwindcss'),
+  ])
+
+  .sass('resources/scss/pdf/pdf.scss', 'public/css/pdf')
+
+  .sass('resources/scss/pdf/ar.scss', 'public/css/pdf')
+
+  .sass('resources/scss/pdf/en.scss', 'public/css/pdf')
+  .webpackConfig(require('./webpack.config'));
 
 if (mix.inProduction()) {
-    mix.version();
+  mix.version();
 }
 
 /*
