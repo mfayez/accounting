@@ -796,4 +796,54 @@ class ETAController extends Controller
 		return "Invoice Deleted";
 	}
 
+	public function saveCopy(Request $request) {
+
+		$request->validate([
+			'Id' => 'required|integer'
+		]);
+
+		$invoice = Invoice::find($request->Id);
+
+		$invoiceClone = $invoice->replicate();
+
+		$invoiceClone->created_at = now();
+
+		$invoiceClone->updated_at = now();
+
+		$invoiceClone->save();
+
+		foreach($invoice->invoiceLines as $line) {
+			
+			$unitValue = Value::find($line->unitValue_id);
+			
+			$unitValueClone = $unitValue->replicate();
+
+			$unitValueClone->save();
+
+			$invoiceline = InvoiceLine::find($line->Id);
+			
+			$invoiceLineClone = $invoiceline->replicate();
+
+			$invoiceLineClone->invoice_id = $invoiceClone->Id;
+			
+			$invoiceLineClone->unitValue_id = $unitValueClone->id;
+			
+			$invoiceLineClone->save();
+			
+			foreach($line['taxableItems'] as $taxitem) {
+				
+				$item = TaxableItem::find($taxitem->Id);
+
+				$itemClone = $item->replicate();
+
+				$itemClone->invoiceline_id = $invoiceLineClone->Id;
+				
+				$itemClone->save();
+			}
+
+		}
+
+		return $invoiceClone;
+	}
+
 }
