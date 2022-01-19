@@ -63,7 +63,7 @@
                                 <td class="p-2 border border-[#eceeef]">
                                     <span
                                         class="text-white py-1 px-5 inline-block my-1 rounded-xl capitalize"
-                                        :class="String(row.Status).toLowerCase()"
+                                        :class="String(row.Status).replace(' ' , '-').toLowerCase()"
                                     >
                                         {{ __(row.Status) }}</span
                                     >
@@ -126,5 +126,11 @@ const props = defineProps({
 }
 .pending {
     background-color: #34495e;
+}
+.in-review {
+    background-color: #f1c40f;
+}
+.approved {
+    background-color: #27ae60;
 }
 </style>
