@@ -9,6 +9,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -75,6 +76,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 #todo mfayez change the controller method and implement it later
     Route::get('/ETA/Invoices/Received/Index', [ETAController::class, 'indexInvoices'])->name("eta.invoices.received.index");
     Route::get('/ETA/Invoices/Issued/Index/{upload_id?}', [ETAController::class, 'indexIssued'])->name("eta.invoices.sent.index");
+
+#reports, each report should have 3 functions
+    Route::get('/reports/summary', [ReportsController::class, 'summary'])->name("reports.summary.details");
+    Route::post('/reports/summary/data', [ReportsController::class, 'summaryData'])->name("reports.summary.details.data");
+    Route::post('/reports/summary/download', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
+
 #excel exports
     Route::get('/excel/items', function () {
         return App\Models\ETAItem::get()

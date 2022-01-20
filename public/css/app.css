@@ -1314,9 +1314,6 @@ select {
 .mt-1 {
 	margin-top: 0.25rem;
 }
-.ml-2 {
-	margin-left: 0.5rem;
-}
 .mb-6 {
 	margin-bottom: 1.5rem;
 }
@@ -1334,6 +1331,9 @@ select {
 }
 .ml-1 {
 	margin-left: 0.25rem;
+}
+.ml-2 {
+	margin-left: 0.5rem;
 }
 .-mr-0\.5 {
 	margin-right: -0.125rem;
@@ -1998,6 +1998,10 @@ select {
 	--tw-bg-opacity: 1;
 	background-color: rgba(185, 28, 28, var(--tw-bg-opacity));
 }
+.bg-gray-500 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(107, 114, 128, var(--tw-bg-opacity));
+}
 .bg-indigo-600 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(126, 58, 242, var(--tw-bg-opacity));
@@ -2017,10 +2021,6 @@ select {
 .bg-gray-50 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(249, 250, 251, var(--tw-bg-opacity));
-}
-.bg-gray-500 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(107, 114, 128, var(--tw-bg-opacity));
 }
 .bg-indigo-50 {
 	--tw-bg-opacity: 1;
@@ -2126,14 +2126,17 @@ select {
 .to-blue-100 {
 	--tw-gradient-to: #e5edff;
 }
-.bg-contain {
-	background-size: contain;
-}
 .bg-cover {
 	background-size: cover;
 }
+.bg-contain {
+	background-size: contain;
+}
 .bg-center {
 	background-position: center;
+}
+.bg-no-repeat {
+	background-repeat: no-repeat;
 }
 .fill-current {
 	fill: currentColor;
@@ -3850,10 +3853,6 @@ select {
 
 	.lg\:h-full {
 		height: 100%;
-	}
-
-	.lg\:w-4\/6 {
-		width: 66.666667%;
 	}
 
 	.lg\:w-5\/6 {
