@@ -52,8 +52,8 @@ class ReportsController extends Controller
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 							inner join Issuer t3 on t3.Id = t1.issuer_id
 							inner join Receiver t4 on t4.Id = t1.receiver_id
-						    inner join TaxTotal t5 on t5.invoice_id = t1.Id
-						    inner join TaxableItem t6 on t6.invoiceline_id = t2.Id
+						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
+						    left outer join TaxableItem t6 on t6.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and ?
@@ -76,7 +76,7 @@ class ReportsController extends Controller
 							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total
 						from Invoice t1  
 							inner join Receiver t4 on t4.Id = t1.receiver_id
-						    inner join TaxTotal t5 on t5.invoice_id = t1.Id
+						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and ?
