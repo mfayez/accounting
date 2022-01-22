@@ -1,0 +1,2 @@
+$controller = app()->make('App\Http\Controllers\ReportsController');
+app()->call([$controller, 'summaryDownload']);

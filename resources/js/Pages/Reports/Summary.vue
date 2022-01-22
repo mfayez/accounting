@@ -160,11 +160,19 @@
 
 			},
 			onDownload: function() {
-				axios.post(route('reports.summary.details.download'), this.form)
-                .then(response => {
-                }).catch(error => {
-                });
-
+				axios({
+					url: route('reports.summary.details.download'), 
+					method: 'POST',
+					data: this.form,
+					responseType: 'blob',
+				}).then((response) => {
+					const url = window.URL.createObjectURL(new Blob([response.data]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'report.xlsx');
+					document.body.appendChild(link);
+					link.click();
+				});
 			},
 		},
 		created: function created() {
