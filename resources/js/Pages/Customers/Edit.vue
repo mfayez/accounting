@@ -8,7 +8,7 @@
 			<jet-validation-errors class="mb-4" />
 
 			<form @submit.prevent="submit">
-				<div class="grid grid-cols-3 gap-4">
+				<div class="grid grid-cols-2 gap-4">
 						<div>
 							<jet-label for="type"  :value="__('Customer Type')" />
 							<select id="type" v-model="form.type" class="mt-1 block w-full">
@@ -23,6 +23,10 @@
 						<div> 
 							<jet-label for="name" :value="__('Name')" />
 							<jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required />
+						</div>
+						<div> 
+							<jet-label for="code" :value="__('Internal Code')" />
+							<jet-input id="code" type="text" class="mt-1 block w-full" v-model="form.code" required />
 						</div>
 				</div>
 			</form>
@@ -91,6 +95,7 @@
                     name: '',
                     receiver_id: '',
                     type: 'B',
+					code: ''
 				}),
 				showDialog: false,
             }
@@ -102,6 +107,7 @@
 					this.form.name = this.customer.name;
 					this.form.type = this.customer.type;
 					this.form.receiver_id = this.customer.receiver_id;
+					this.form.code = this.customer.code;
 				}
 				this.showDialog = true;
 			},

@@ -58,6 +58,7 @@ class CustomerController extends Controller
             ])->addColumns([
 				'Id' => __('ID'),
                 'name' => __('Name'),
+                'code' => __('Internal Code'),
                 'receiver_id' => __('Tax Registration Number'),
 				'type' => __('Customer Type')
             ]);
@@ -90,9 +91,10 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
 		$data = $request->validate([
-            'name' 							=> ['required', 'string', 'max:255'],
-            'receiver_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
+            'name' 			=> ['required', 'string', 'max:255'],
+            'code' 			=> ['required', 'string', 'max:255'],
+            'receiver_id' 	=> ['required', 'integer'],
+            'type' 			=> ['required',  'string', Rule::in(['B', 'P'])],
         ]);
 
 		$item2 = new Address();
@@ -141,9 +143,10 @@ class CustomerController extends Controller
     {
 		$customer = Receiver::findOrFail($id);
 		$data = $request->validate([
-            'name' 							=> ['required', 'string', 'max:255'],
-            'receiver_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
+            'name' 			=> ['required', 'string', 'max:255'],
+            'code' 			=> ['required', 'string', 'max:255'],
+            'receiver_id' 	=> ['required', 'integer'],
+            'type' 			=> ['required',  'string', Rule::in(['B', 'P'])],
         ]);
 		
 		$customer->update($data);

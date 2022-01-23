@@ -18,6 +18,7 @@
 						  	<tr>
 								<th v-show="showColumn('Id')"  @click.prevent="sortBy('Id')">{{__('ID')}}</th>
 								<th v-show="showColumn('name')"  @click.prevent="sortBy('name')">{{__('Name')}}</th>
+								<th v-show="showColumn('code')"  @click.prevent="sortBy('code')">{{__('Internal Code')}}</th>
 								<th v-show="showColumn('receiver_id')" @click.prevent="sortBy('receiver_id')">{{__('Registration Number')}}</th>
 
 								<th v-show="showColumn('type')" @click.prevent="sortBy('type')">{{__('Type(B|I)')}}</th>
@@ -29,6 +30,7 @@
 					  		<tr v-for="customer in customers.data" :key="customer.Id">
 									<td v-show="showColumn('Id')">{{ customer.Id }}</td>
 									<td v-show="showColumn('name')">{{ customer.name }}</td>
+									<td v-show="showColumn('code')">{{ customer.code }}</td>
 									<td v-show="showColumn('receiver_id')">{{ customer.receiver_id }}</td>
 									<td v-show="showColumn('type')">{{ customer.type == 'B' ? __('Business') : __('Person')  }}</td>
 									<td>
