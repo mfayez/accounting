@@ -148,5 +148,8 @@
 	"Issuer Type": "تصنيف جهة الاصدار",
 	"Invoice Total": "اجمالي الفاتورة",
 	"EGP" : "جنيه",
-	"Print": "طباعة"
+	"Print": "طباعة",
+	"Record Created": "تم اضافة البيانات",
+	"Record Was Updated" : "تم تعديل البيانات",
+	"Record Was Deleted": "تم حذف البيانات"
 }

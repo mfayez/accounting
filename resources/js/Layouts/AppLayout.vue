@@ -18,11 +18,30 @@
             @open:dlg7="openDlg7"
             @open:dlg8="openDlg8"
         />
+
+        <div v-if="$page.props.flash.message" class="alert">
+            {{ $page.props.flash.message }}
+        </div>
+
         <div class="min-h-screen bg-gray-100">
             <main>
+                <div class="pt-6">
+                    <flash-message
+                        type="success"
+                        v-if="$page.props.flash.success"
+                        :message="$page.props.flash.success"
+                    />
+
+                    <flash-message
+                        type="error"
+                        v-if="$page.props.flash.error"
+                        :message="$page.props.flash.error"
+                    />
+                </div>
                 <slot></slot>
             </main>
         </div>
+        <app-footer />
     </div>
 </template>
 
@@ -37,6 +56,8 @@ import NewItemDialog from "@/Pages/Items/Edit";
 import UploadInvoicesDialog from "@/Pages/Invoices/Upload";
 import UploadItemsDialog from "@/Pages/Items/Upload";
 import NavBar from "@/shared/NavBar";
+import AppFooter from "@/shared/AppFooter";
+import FlashMessage from "@/shared/FlashMessage";
 
 export default {
     components: {
@@ -49,6 +70,8 @@ export default {
         LoadItemsDialog,
         LoadInvoicesDialog,
         NavBar,
+        AppFooter,
+        FlashMessage,
     },
 
     data() {

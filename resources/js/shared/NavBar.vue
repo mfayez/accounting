@@ -295,7 +295,6 @@ export default {
     },
     methods: {
         logout() {
-            // to prevent session fixation
             axios.post(route("logout")).then((res) => {
                 window.location.reload();
             });

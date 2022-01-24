@@ -1,50 +1,58 @@
 <template>
-    <modal :show="show" :max-width="maxWidth" :closeable="closeable" @close="close">
+    <modal
+        :show="show"
+        :max-width="maxWidth"
+        :closeable="closeable"
+        @close="close"
+    >
         <div>
-            <div class="text-lg px-6 py-4 bg-gray-100">
-                <slot name="title">
-                </slot>
+            <div class="text-lg px-6 py-3 relative">
+                <slot name="title"> </slot>
+                <button
+                    class="self-center bg-gray-200 px-5 py-1 absolute top-0 rtl:left-0 ltr:right-0 bottom-0"
+                    @click="close"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
             </div>
-
+            <hr class="mb-5" />
             <div class="mt-4 px-6 pb-4">
-                <slot name="content">
-                </slot>
+                <slot name="content"> </slot>
             </div>
         </div>
-
-        <div class="px-6 py-4 bg-gray-100 text-right">
-            <slot name="footer">
-            </slot>
+        <hr class="mt-5" />
+        <div class="px-6 py-4 text-right">
+            <slot name="footer"> </slot>
         </div>
     </modal>
 </template>
 
 <script>
-    import Modal from './Modal'
+import Modal from "./Modal";
 
-    export default {
-        emits: ['close'],
+export default {
+    emits: ["close"],
 
-        components: {
-            Modal,
+    components: {
+        Modal,
+    },
+
+    props: {
+        show: {
+            default: false,
         },
-
-        props: {
-            show: {
-                default: false
-            },
-            maxWidth: {
-                default: '2xl'
-            },
-            closeable: {
-                default: true
-            },
+        maxWidth: {
+            default: "2xl",
         },
+        closeable: {
+            default: true,
+        },
+    },
 
-        methods: {
-            close() {
-                this.$emit('close')
-            },
-        }
-    }
+    methods: {
+        close() {
+            this.$emit("close");
+        },
+    },
+};
 </script>
