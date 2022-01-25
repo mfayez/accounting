@@ -6,10 +6,10 @@
         @close="close"
     >
         <div>
-            <div class="text-lg px-6 py-3 relative">
+            <div class="text-lg px-6 py-3 relative bg-[#ecf0f1]">
                 <slot name="title"> </slot>
                 <button
-                    class="self-center bg-gray-200 px-5 py-1 absolute top-0 rtl:left-0 ltr:right-0 bottom-0"
+                    class="self-center px-5 py-1 absolute top-0 rtl:left-0 ltr:right-0 bottom-0"
                     @click="close"
                 >
                     <i class="fa fa-times"></i>

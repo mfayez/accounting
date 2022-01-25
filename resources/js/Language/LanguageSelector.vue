@@ -28,7 +28,7 @@ export default {
             return "ar";
         },
         classes() {
-            return "inline-flex items-center px-1 pt-1 text-sm font-medium leading-5 text-black hover:text-red-700 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out";
+            return "inline-flex items-center px-1 pt-1 text-sm font-medium leading-5 text-black hover:text-[#4099de] focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out";
         },
     },
 };

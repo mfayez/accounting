@@ -144,6 +144,7 @@ export default {
             this.form.put(
                 route("customers.update", { customer: this.customer.Id }),
                 {
+                    preserveState: false,
                     onSuccess: () => (this.showDialog = false),
                 }
             );
@@ -151,6 +152,7 @@ export default {
         SaveNewBranch() {
             this.form.clearErrors();
             this.form.post(route("customers.store"), {
+                preserveState: false,
                 onSuccess: () => {
                     this.showDialog = false;
                     this.$nextTick(() => this.$emit("dataUpdated"));

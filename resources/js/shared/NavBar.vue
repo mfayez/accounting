@@ -5,11 +5,7 @@
                 <div class="flex items-center justify-between">
                     <div class="text-xl font-semibold text-gray-700">
                         <Link :href="route('dashboard')" class="flex">
-                            <img
-                                src="/images/invoice_logo.jpg"
-                                alt="Merchant Logo"
-                                class="w-14 h-14"
-                            />
+                            <jet-application-mark class="w-10"/>
                             <span class="self-center ltr:ml-2 rtl:mr-2"
                                 >Invoice Master</span
                             >
@@ -41,14 +37,15 @@
                     class="flex-1 md:flex md:items-center md:justify-between"
                 >
                     <div
-                        class="flex flex-col -mx-4 md:flex-row md:items-center md:mx-8 mt-3 lg:mt-0"
+                        class="flex flex-col -mx-4 md:flex-row md:items-center md:mx-5 mt-3 lg:mt-0"
                     >
+                        <Link :href="route('dashboard')" :class="{'text-[#4099de]': $page.url === '/'}"><i class="fas fa-chart-pie"></i> Dashboard</Link>
                         <dropdown
                             :align="alignDropDown()"
                             class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-red-700">
+                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': $page.url.startsWith('/customers')}">
                                     <i class="fa fa-user-tie"></i>
                                     {{ __("Customers") }}
                                 </span>
@@ -73,7 +70,7 @@
                             class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-red-700">
+                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': $page.url.startsWith('/branches')}">
                                     <i class="fa fa-code-branch"></i>
                                     {{ __("Branches") }}
                                 </span>
@@ -99,7 +96,7 @@
                             class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-red-700">
+                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': invoiceConditions}">
                                     <i class="fa fa-file"></i>
                                     {{ __("Invoices") }}
                                 </span>
@@ -147,7 +144,7 @@
                             class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-red-700">
+                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': itemConditions}">
                                     <i class="fa fa-cube"></i>
                                     {{ __("Items") }}
                                 </span>
@@ -191,7 +188,7 @@
                             class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-red-700">
+                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': $page.url.startsWith('/reports')}">
                                     <i class="fa fa-file-invoice"></i>
                                     {{ __("Reports") }}
                                 </span>
@@ -207,7 +204,7 @@
                     </div>
 
                     <div
-                        class="flex flex-col md:flex-row md:items-center -mx-4 md:mx-8"
+                        class="flex flex-col md:flex-row md:items-center -mx-4 md:mx-5"
                     >
                         <language-selector />
                         <dropdown
@@ -215,7 +212,7 @@
                             class="ltr:ml-3 rtl:mr-3"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-red-700">
+                                <span class="cursor-pointer hover:text-blue-600">
                                     <i class="fa fa-user"></i>
                                     {{ $page.props.user.name }}
                                 </span>
@@ -267,9 +264,11 @@ import { Link } from "@inertiajs/inertia-vue3";
 
 import LanguageSelector from "@/Language/LanguageSelector";
 
-import Dropdown from "../Jetstream/Dropdown.vue";
+import Dropdown from "@/Jetstream/Dropdown";
 
 import DropdownLink from "@/Jetstream/DropdownLink";
+
+import JetApplicationMark from "@/Jetstream/ApplicationMark";
 
 export default {
     emits: [
@@ -292,6 +291,7 @@ export default {
         LanguageSelector,
         Dropdown,
         DropdownLink,
+        JetApplicationMark,
     },
     methods: {
         logout() {
@@ -327,5 +327,13 @@ export default {
             this.$emit("open:dlg8");
         },
     },
+    computed: {
+        invoiceConditions() {
+            return this.$page.url.startsWith('/invoices') || this.$page.url.startsWith('/ETA/Invoices');
+        },
+        itemConditions() {
+            return this.$page.url.startsWith('/ETA/Items');
+        }
+    }
 };
 </script>

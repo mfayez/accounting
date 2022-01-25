@@ -57,7 +57,7 @@
 			</form>
 		</template>
 		<template #footer>
-			<div class="flex items-center justify-end mt-4">
+			<div class="flex items-center justify-end">
 	    		<jet-secondary-button @click="CancelAddBranch()">
    					{{__('Cancel')}}
         		</jet-secondary-button>
