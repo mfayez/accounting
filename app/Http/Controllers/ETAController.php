@@ -558,7 +558,7 @@ class ETAController extends Controller
 	        {
     	        if (!$header_en){
 					foreach($row as $key=>$item){
-						$row[$key] = iconv('UTF-8', 'ASCII//TRANSLIT', $item);	
+						$row[$key] = trim(iconv('UTF-8', 'ASCII//TRANSLIT', $item));
 					}
 					$header_en = $row;
 				}
