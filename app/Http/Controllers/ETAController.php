@@ -53,7 +53,7 @@ class ETAController extends Controller
 		$url = env("ETA_URL")."/codetypes/requests/codes";
 		$temp = $this->csvToArray($request->file);
 		$this->AuthenticateETA($request);
-		$response = Http::withToken($this->token)->post($url, ["items" => temp]);
+		$response = Http::withToken($this->token)->post($url, ["items" => $temp]);
 		return $response;
 		
 	}
