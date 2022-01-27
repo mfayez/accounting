@@ -1,7 +1,7 @@
 require('./bootstrap');
 
 // Import modules...
-import { createApp, h } from 'vue';
+import { createApp, h, nextTick } from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 
@@ -15,7 +15,7 @@ createApp({
         }),
 })
     .mixin({ methods: { route } })
-	.mixin(require('./base'))
+    .mixin(require('./base'))
     .use(InertiaPlugin)
     .mount(el);
 

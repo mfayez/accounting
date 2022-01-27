@@ -1,3 +1,54 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* add spacing to inertia table in rtl direction */
+
+html:lang(ar) .wrapper > div > div {
+    @apply space-x-reverse;
+}
+
+/* fix search icon direction in rtl */
+html:lang(ar) .wrapper > div > div .flex-grow > div > div {
+    @apply left-0 right-auto me-3;
+}
+
+/* fix toggle column visibilty button direction in rtl */
+html:lang(ar)
+    .wrapper
+    > div
+    > div
+    div:last-child
+    div[role="menu"]
+    li
+    button.bg-gray-200
+    span:last-child {
+    @apply -translate-x-5;
+}
+
+html:lang(ar)
+    .wrapper
+    > div
+    > div
+    div:last-child
+    div[role="menu"]
+    li
+    button.bg-green-500
+    span:last-child {
+    @apply translate-x-0;
+}
+
+/* fix (x) icon direction in rtl */
+html:lang(ar) .wrapper > div .bg-gradient-to-r input[type="text"] ~ div {
+    @apply left-0 right-auto me-3;
+}
+
+/* fix spacing between input and label in filter */
+html:lang(ar) .wrapper > div .bg-gradient-to-r > div {
+    @apply space-x-reverse;
+}
+
+/* fix (+) icon spacing in filter button rtl  */
+html:lang(ar) .wrapper > div > div div.w-auto svg {
+    @apply ml-2;
+}
