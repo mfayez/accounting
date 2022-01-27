@@ -2748,11 +2748,11 @@ select {
 	text-align: left;
 }
 /* add spacing to inertia table in rtl direction */
-html:lang(ar) .wrapper > div > div > :not([hidden]) ~ :not([hidden]) {
+html:lang(ar) .max-w-7xl > div > div > div > :not([hidden]) ~ :not([hidden]) {
 	--tw-space-x-reverse: 1;
 }
 /* fix search icon direction in rtl */
-html:lang(ar) .wrapper > div > div .flex-grow > div > div {
+html:lang(ar) .max-w-7xl > div > div > div .flex-grow > div > div {
 	left: 0px;
 	right: auto;
 	-webkit-margin-end: 0.75rem;
@@ -2760,7 +2760,8 @@ html:lang(ar) .wrapper > div > div .flex-grow > div > div {
 }
 /* fix toggle column visibilty button direction in rtl */
 html:lang(ar)
-    .wrapper
+    .max-w-7xl
+    > div
     > div
     > div
     div:last-child
@@ -2772,7 +2773,8 @@ html:lang(ar)
 	transform: var(--tw-transform);
 }
 html:lang(ar)
-    .wrapper
+    .max-w-7xl
+    > div
     > div
     > div
     div:last-child
@@ -2784,18 +2786,24 @@ html:lang(ar)
 	transform: var(--tw-transform);
 }
 /* fix (x) icon direction in rtl */
-html:lang(ar) .wrapper > div .bg-gradient-to-r input[type="text"] ~ div {
+html:lang(ar)
+    .max-w-7xl
+    > div
+    > div
+    .bg-gradient-to-r
+    input[type="text"]
+    ~ div {
 	left: 0px;
 	right: auto;
 	-webkit-margin-end: 0.75rem;
 	        margin-inline-end: 0.75rem;
 }
 /* fix spacing between input and label in filter */
-html:lang(ar) .wrapper > div .bg-gradient-to-r > div > :not([hidden]) ~ :not([hidden]) {
+html:lang(ar) .max-w-7xl > div > div .bg-gradient-to-r > div > :not([hidden]) ~ :not([hidden]) {
 	--tw-space-x-reverse: 1;
 }
 /* fix (+) icon spacing in filter button rtl  */
-html:lang(ar) .wrapper > div > div div.w-auto svg {
+html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 	margin-left: 0.5rem;
 }
 .focus-within\:border-blue-500:focus-within {

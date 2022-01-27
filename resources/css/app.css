@@ -4,18 +4,19 @@
 
 /* add spacing to inertia table in rtl direction */
 
-html:lang(ar) .wrapper > div > div {
+html:lang(ar) .max-w-7xl > div > div > div {
     @apply space-x-reverse;
 }
 
 /* fix search icon direction in rtl */
-html:lang(ar) .wrapper > div > div .flex-grow > div > div {
+html:lang(ar) .max-w-7xl > div > div > div .flex-grow > div > div {
     @apply left-0 right-auto me-3;
 }
 
 /* fix toggle column visibilty button direction in rtl */
 html:lang(ar)
-    .wrapper
+    .max-w-7xl
+    > div
     > div
     > div
     div:last-child
@@ -27,7 +28,8 @@ html:lang(ar)
 }
 
 html:lang(ar)
-    .wrapper
+    .max-w-7xl
+    > div
     > div
     > div
     div:last-child
@@ -39,16 +41,22 @@ html:lang(ar)
 }
 
 /* fix (x) icon direction in rtl */
-html:lang(ar) .wrapper > div .bg-gradient-to-r input[type="text"] ~ div {
+html:lang(ar)
+    .max-w-7xl
+    > div
+    > div
+    .bg-gradient-to-r
+    input[type="text"]
+    ~ div {
     @apply left-0 right-auto me-3;
 }
 
 /* fix spacing between input and label in filter */
-html:lang(ar) .wrapper > div .bg-gradient-to-r > div {
+html:lang(ar) .max-w-7xl > div > div .bg-gradient-to-r > div {
     @apply space-x-reverse;
 }
 
 /* fix (+) icon spacing in filter button rtl  */
-html:lang(ar) .wrapper > div > div div.w-auto svg {
+html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
     @apply ml-2;
 }
