@@ -163,5 +163,7 @@ class CustomerController extends Controller
     {
         $customer = Receiver::findOrFail($id);
 		$customer->delete(); 
+
+        return $customer;
     }
 }

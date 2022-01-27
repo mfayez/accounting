@@ -34,9 +34,6 @@
                     class="font-semibold capitalize text-emerald-500 dark:text-emerald-400"
                     >{{ type }}</span
                 >
-                <p class="text-sm text-gray-600 dark:text-gray-200">
-                    {{ message }}
-                </p>
             </div>
         </div>
     </div>
@@ -46,7 +43,7 @@ export default {
     props: ["type", "message"],
     mounted() {
         setTimeout(() => {
-            this.$el.remove();
+            this.$store.dispatch("setSuccessFlashMessage", false);
         }, 1000);
     },
 };

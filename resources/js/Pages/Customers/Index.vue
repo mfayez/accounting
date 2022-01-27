@@ -76,7 +76,7 @@
                                         {{ __("Edit") }}
                                     </secondary-button>
                                     <jet-button
-                                        class="bg-red-500 hover:bg-red-400 ltr:ml-2 rtl:mr-2"
+                                        class="ms-2"
                                         @click="removeCustomer(customer)"
                                     >
                                         <i class="fa fa-trash"></i>
@@ -137,7 +137,10 @@ export default {
                     route("customers.destroy", { customer: this.customer.Id })
                 )
                 .then((response) => {
-                    location.reload();
+                    this.$store.dispatch("setSuccessFlashMessage", true);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
                 })
                 .catch((error) => {
                     //this.$refs.password.focus()

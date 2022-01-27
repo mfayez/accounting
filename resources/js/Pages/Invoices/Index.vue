@@ -1,4 +1,5 @@
 <template>
+    <!-- prettier-ignore -->
     <app-layout>
 		<preview-invoice ref="dlg3" v-model="invItem" />
 		<confirm ref="dlg1" @confirmed="rejectInv2()">
@@ -44,38 +45,59 @@
 									</td>
 									<td>
 										<div>
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="rejectInvoice(item)"
+
+										<secondary-button
+											class="me-2"
+                                        	@click="rejectInvoice(item)" 
 											v-show="route().current('eta.invoices.received.index') && item.status =='Valid'"
-										>
-											<div>{{__('Reject')}}</div>
-										</button>	
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="cancelInvoice(item)"
+											>
+                                        	{{ __("Reject") }}
+                                    	</secondary-button>
+
+										<jet-button
+											class="me-2"
+                                        	@click="cancelInvoice(item)" 
 											v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
-										>
-											<div>{{__('Cancel')}}</div>
-										</button>	
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="deleteInvoice(item)"
+											>
+                                        	{{ __("Cancel") }}
+                                    	</jet-button>
+
+										<secondary-button
+											class="me-2"
+                                        	@click="deleteInvoice(item)" 
 											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
-										>
-											<div>{{__('Delete')}}</div>
-										</button>	
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="editInvoice(item)"
+											>
+                                        	{{ __("Delete") }}
+                                    	</secondary-button>
+
+										<jet-button
+										class="me-2"
+                                        	@click="editInvoice(item)" 
 											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
-										>
-											<div>{{__('Edit')}}</div>
-										</button>	
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="viewInvoice(item)">
-											<div>{{__('View')}}</div>
-										</button>	
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="downloadPDF(item)"
-										>
-											<div>PDF</div>
-										</button>	
-										<button class="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 mx-2" @click="openExternal(item)"
-											v-show="item.status=='Valid'"
-										>
-											<div>ETA</div>
-										</button>	
+											>
+                                        	{{ __("Edit") }}
+                                    	</jet-button>
+
+										<secondary-button
+										class="me-2"
+                                        	@click="viewInvoice(item)">
+                                        	{{ __("View") }}
+                                    	</secondary-button>
+										
+
+										<jet-button
+										class="me-2"
+                                        	@click="downloadPDF(item)" >
+                                        	{{ __("PDF") }}
+                                    	</jet-button>
+
+										<secondary-button
+										class="me-2"
+										v-show="item.status=='Valid'"
+                                        	@click="openExternal(item)">
+                                        	{{ __("ETA") }}
+                                    	</secondary-button>
+									
 <!--											<jet-button @click.prevent="editItem(item)">
 											</jet-button> -->
 								 	 	</div>
@@ -90,126 +112,136 @@
 </template>
 
 <script>
-    import AppLayout from '@/Layouts/AppLayout'
-	import { InteractsWithQueryBuilder, Tailwind2 } from '@protonemedia/inertiajs-tables-laravel-query-builder';
-    import JetButton from '@/Jetstream/Button';
-	import AddEditItem from '@/Pages/Items/AddEdit';
-	import Confirm from '@/UI/Confirm'
-    import JetLabel from '@/Jetstream/Label'
-	import PreviewInvoice from '@/Pages/Invoices/Preview';
+import AppLayout from "@/Layouts/AppLayout";
+import {
+    InteractsWithQueryBuilder,
+    Tailwind2,
+} from "@protonemedia/inertiajs-tables-laravel-query-builder";
+import AddEditItem from "@/Pages/Items/AddEdit";
+import Confirm from "@/UI/Confirm";
+import JetLabel from "@/Jetstream/Label";
+import PreviewInvoice from "@/Pages/Invoices/Preview";
+import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import JetButton from "@/Jetstream/Button.vue";
 
-    export default {
-		mixins: [InteractsWithQueryBuilder],
-        components: {
-            AppLayout,
-			Confirm,
-			PreviewInvoice,
-			JetLabel,
-			Table: Tailwind2.Table,
-			JetButton,
-			AddEditItem,
+export default {
+    mixins: [InteractsWithQueryBuilder],
+    components: {
+        AppLayout,
+        Confirm,
+        PreviewInvoice,
+        JetLabel,
+        Table: Tailwind2.Table,
+        JetButton,
+        AddEditItem,
+        SecondaryButton,
+    },
+    props: {
+        items: Object,
+    },
+    data() {
+        return {
+            invItem: { quantity: 1009 },
+            cancelReason: "",
+        };
+    },
+    methods: {
+        openExternal(item) {
+            window.open(
+                "https://invoicing.eta.gov.eg/print/documents/" +
+                    item.uuid +
+                    "/share/" +
+                    item.longId
+            );
         },
-		props: {
-			items: Object
-  		},
-        data() {
-            return {
-				invItem: {quantity: 1009 },
-				cancelReason: ''
-            }
+        downloadPDF(item) {
+            this.invItem = item;
+            window.open(route("pdf.invoice.preview", [item.Id]));
         },
-		methods: {
-			openExternal(item) {
-				window.open("https://invoicing.eta.gov.eg/print/documents/"+item.uuid+"/share/"+item.longId);
-			},
-			downloadPDF(item) {
-				this.invItem = item;
-				window.open(route('pdf.invoice.preview', [item.Id]));
-			},
-			editInvoice(item) {
-				this.invItem = item;
-				window.location.href = route('invoices.edit', [item.Id]);
-			},
-			viewInvoice(item) {
-				this.invItem = item;
-				this.$nextTick(() => {
-					this.$refs.dlg3.ShowDialog();
-				});
-			},
-			deleteInvoice(item) {
-				this.invItem = item;
-				this.$refs.dlg4.ShowModal();
-			},
-			deleteInv() {
-                axios.post(route('eta.invoices.delete'), {Id: this.invItem.Id, 
-				})
-				.then(response => {
-					location.reload();
-                }).catch(error => {
-					alert(error.response.data);
+        editInvoice(item) {
+            this.invItem = item;
+            window.location.href = route("invoices.edit", [item.Id]);
+        },
+        viewInvoice(item) {
+            this.invItem = item;
+            this.$nextTick(() => {
+                this.$refs.dlg3.ShowDialog();
+            });
+        },
+        deleteInvoice(item) {
+            this.invItem = item;
+            this.$refs.dlg4.ShowModal();
+        },
+        deleteInv() {
+            axios
+                .post(route("eta.invoices.delete"), { Id: this.invItem.Id })
+                .then((response) => {
+                    location.reload();
+                })
+                .catch((error) => {
+                    alert(error.response.data);
                 });
-				
-			},
-			cancelInvoice(item) {
-				this.invItem = item;
-				this.$refs.dlg2.ShowModal();
-			},
-			cancelInv2() {
-                axios.post(route('eta.invoices.cancel'), {uuid: this.invItem.uuid, 
-					status: 'cancelled',
-					reason: this.cancelReason
-				})
-				.then(response => {
-					console.log(response);
-					alert(response.data);
-					//location.reload();
-                }).catch(error => {
-					console.log(error);
-					alert(error.response.data);
+        },
+        cancelInvoice(item) {
+            this.invItem = item;
+            this.$refs.dlg2.ShowModal();
+        },
+        cancelInv2() {
+            axios
+                .post(route("eta.invoices.cancel"), {
+                    uuid: this.invItem.uuid,
+                    status: "cancelled",
+                    reason: this.cancelReason,
+                })
+                .then((response) => {
+                    console.log(response);
+                    alert(response.data);
+                    //location.reload();
+                })
+                .catch((error) => {
+                    console.log(error);
+                    alert(error.response.data);
                     //this.$refs.password.focus()
                 });
-				
-			},
-			rejectInvoice(item) {
-				this.invItem = item;
-				this.$refs.dlg1.ShowModal();
-			},
-			rejectInv2() {
-                axios.post(route('eta.invoices.cancel'), {uuid: this.invItem.uuid, 
-					status: 'rejected',
-					reason: this.cancelReason
-				})
-				.then(response => {
-					alert(response.data);
-                }).catch(error => {
-					alert(error.response.data);
+        },
+        rejectInvoice(item) {
+            this.invItem = item;
+            this.$refs.dlg1.ShowModal();
+        },
+        rejectInv2() {
+            axios
+                .post(route("eta.invoices.cancel"), {
+                    uuid: this.invItem.uuid,
+                    status: "rejected",
+                    reason: this.cancelReason,
+                })
+                .then((response) => {
+                    alert(response.data);
+                })
+                .catch((error) => {
+                    alert(error.response.data);
                     //this.$refs.password.focus()
                 });
-				
-			},
-			nestedIndex: function(item, key) {
-				try {
-					var keys = key.split(".");
-					if (keys.length == 1)
-						return item[key].toString();;
-					if (keys.length == 2)
-						return item[keys[0]][keys[1]].toString();
-					if (keys.length == 3)
-						return item[keys[0]][keys[1]][keys[2]].toString();
-					return "Unsupported Nested Index";
-				}
-				catch(err) {
-				}
-				return "N/A";
-			},
-			editItem: function(item_id) {
-				//alert(JSON.stringify(item_id));
-			}
-		}
-    }
+        },
+        nestedIndex: function (item, key) {
+            try {
+                var keys = key.split(".");
+                if (keys.length == 1) return item[key].toString();
+                if (keys.length == 2) return item[keys[0]][keys[1]].toString();
+                if (keys.length == 3)
+                    return item[keys[0]][keys[1]][keys[2]].toString();
+                return "Unsupported Nested Index";
+            } catch (err) {}
+            return "N/A";
+        },
+        editItem: function (item_id) {
+            //alert(JSON.stringify(item_id));
+        },
+    },
+};
 </script>
 <style scoped>
 :deep(table th) {
-  text-align: start;
+    text-align: start;
 }
 </style>

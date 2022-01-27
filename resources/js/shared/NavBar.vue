@@ -5,10 +5,8 @@
                 <div class="flex items-center justify-between">
                     <div class="text-xl font-semibold text-gray-700">
                         <Link :href="route('dashboard')" class="flex">
-                            <jet-application-mark class="w-10"/>
-                            <span class="self-center ltr:ml-2 rtl:mr-2"
-                                >Invoice Master</span
-                            >
+                            <jet-application-mark class="w-10" />
+                            <span class="self-center ms-3">Invoice Master</span>
                         </Link>
                     </div>
 
@@ -39,13 +37,23 @@
                     <div
                         class="flex flex-col -mx-4 md:flex-row md:items-center md:mx-5 mt-3 lg:mt-0"
                     >
-                        <Link :href="route('dashboard')" :class="{'text-[#4099de]': $page.url === '/'}"><i class="fas fa-chart-pie"></i> Dashboard</Link>
+                        <Link
+                            :href="route('dashboard')"
+                            :class="{ 'text-[#4099de]': $page.url === '/' }"
+                            ><i class="fas fa-chart-pie"></i> Dashboard</Link
+                        >
                         <dropdown
                             :align="alignDropDown()"
-                            class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
+                            class="ms-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': $page.url.startsWith('/customers')}">
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]':
+                                            $page.url.startsWith('/customers'),
+                                    }"
+                                >
                                     <i class="fa fa-user-tie"></i>
                                     {{ __("Customers") }}
                                 </span>
@@ -67,10 +75,16 @@
                         <dropdown
                             :align="alignDropDown()"
                             width="48"
-                            class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
+                            class="ms-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': $page.url.startsWith('/branches')}">
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]':
+                                            $page.url.startsWith('/branches'),
+                                    }"
+                                >
                                     <i class="fa fa-code-branch"></i>
                                     {{ __("Branches") }}
                                 </span>
@@ -93,10 +107,15 @@
                         <dropdown
                             :align="alignDropDown()"
                             width="48"
-                            class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
+                            class="ms-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': invoiceConditions}">
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': invoiceConditions,
+                                    }"
+                                >
                                     <i class="fa fa-file"></i>
                                     {{ __("Invoices") }}
                                 </span>
@@ -141,10 +160,15 @@
                         <dropdown
                             :align="alignDropDown()"
                             width="48"
-                            class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
+                            class="ms-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': itemConditions}">
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': itemConditions,
+                                    }"
+                                >
                                     <i class="fa fa-cube"></i>
                                     {{ __("Items") }}
                                 </span>
@@ -185,10 +209,16 @@
                         <dropdown
                             :align="alignDropDown()"
                             width="48"
-                            class="ltr:ml-3 rtl:mr-3 mb-3 lg:mb-0"
+                            class="ms-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-[#4099de]" :class="{'text-[#4099de]': $page.url.startsWith('/reports')}">
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]':
+                                            $page.url.startsWith('/reports'),
+                                    }"
+                                >
                                     <i class="fa fa-file-invoice"></i>
                                     {{ __("Reports") }}
                                 </span>
@@ -208,11 +238,15 @@
                     >
                         <language-selector />
                         <dropdown
-                            :align="alignDropDown()"
-                            class="ltr:ml-3 rtl:mr-3"
+                            :align="
+                                $page.props.locale == 'en' ? 'right' : 'left'
+                            "
+                            class="ms-3"
                         >
                             <template #trigger>
-                                <span class="cursor-pointer hover:text-blue-600">
+                                <span
+                                    class="cursor-pointer hover:text-blue-600"
+                                >
                                     <i class="fa fa-user"></i>
                                     {{ $page.props.user.name }}
                                 </span>
@@ -300,7 +334,7 @@ export default {
             });
         },
         alignDropDown() {
-            return this.$page.props.locale == "en" ? "right" : "left";
+            return this.$page.props.locale == "en" ? "left" : "right";
         },
         openDlg1() {
             this.$emit("open:dlg1");
@@ -329,11 +363,14 @@ export default {
     },
     computed: {
         invoiceConditions() {
-            return this.$page.url.startsWith('/invoices') || this.$page.url.startsWith('/ETA/Invoices');
+            return (
+                this.$page.url.startsWith("/invoices") ||
+                this.$page.url.startsWith("/ETA/Invoices")
+            );
         },
         itemConditions() {
-            return this.$page.url.startsWith('/ETA/Items');
-        }
-    }
+            return this.$page.url.startsWith("/ETA/Items");
+        },
+    },
 };
 </script>

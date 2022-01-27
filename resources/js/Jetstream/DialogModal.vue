@@ -6,7 +6,7 @@
         @close="close"
     >
         <div>
-            <div class="text-lg px-6 py-3 relative bg-[#ecf0f1]">
+            <div class="text-lg px-6 py-3 relative bg-[#4099de] text-white">
                 <slot name="title"> </slot>
                 <button
                     class="self-center px-5 py-1 absolute top-0 rtl:left-0 ltr:right-0 bottom-0"

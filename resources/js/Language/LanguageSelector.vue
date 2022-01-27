@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-2 md:mx-4 mb-3 lg:mb-0">
+    <div class="mx-2 md:mx-2 mb-3 lg:mb-0">
         <inertia-link
             :href="route('language', [selectable_locale])"
             :class="classes"

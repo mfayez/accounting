@@ -38,6 +38,7 @@
         "formvuelate": "^3.5.0",
         "sweetalert": "^2.1.2",
         "vue-echarts": "^6.0.0",
+        "vuex": "^4.0.2",
         "webpack": "^5.51.1"
     }
 }

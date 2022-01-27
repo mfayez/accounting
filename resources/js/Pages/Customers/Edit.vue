@@ -145,7 +145,10 @@ export default {
                 route("customers.update", { customer: this.customer.Id }),
                 {
                     preserveState: false,
-                    onSuccess: () => (this.showDialog = false),
+                    onSuccess: () => {
+                        this.showDialog = false;
+                        this.$store.dispatch("setSuccessFlashMessage", true);
+                    },
                 }
             );
         },
@@ -156,6 +159,7 @@ export default {
                 onSuccess: () => {
                     this.showDialog = false;
                     this.$nextTick(() => this.$emit("dataUpdated"));
+                    this.$store.dispatch("setSuccessFlashMessage", true);
                 },
             });
         },

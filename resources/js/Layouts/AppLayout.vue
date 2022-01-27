@@ -19,24 +19,10 @@
             @open:dlg8="openDlg8"
         />
 
-        <div v-if="$page.props.flash.message" class="alert">
-            {{ $page.props.flash.message }}
-        </div>
-
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 pb-5">
             <main>
                 <div class="pt-6">
-                    <flash-message
-                        type="success"
-                        v-if="$page.props.flash.success"
-                        :message="$page.props.flash.success"
-                    />
-
-                    <flash-message
-                        type="error"
-                        v-if="$page.props.flash.error"
-                        :message="$page.props.flash.error"
-                    />
+                    <flash-message type="success" v-if="successFlashMessage" />
                 </div>
                 <slot></slot>
             </main>
@@ -58,7 +44,7 @@ import UploadItemsDialog from "@/Pages/Items/Upload";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
 import FlashMessage from "@/shared/FlashMessage";
-
+import { mapGetters } from "vuex";
 export default {
     components: {
         UploadItemsDialog,
@@ -104,6 +90,9 @@ export default {
         openDlg8() {
             this.$refs.dlg8.ShowDialog();
         },
+    },
+    computed: {
+        ...mapGetters(["successFlashMessage"]),
     },
 };
 </script>
