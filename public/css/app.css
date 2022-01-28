@@ -2055,13 +2055,13 @@ select {
 	--tw-bg-opacity: 1;
 	background-color: rgba(88, 80, 236, var(--tw-bg-opacity));
 }
-.bg-gray-900 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(22, 30, 46, var(--tw-bg-opacity));
-}
 .bg-\[\#4099de\] {
 	--tw-bg-opacity: 1;
 	background-color: rgba(64, 153, 222, var(--tw-bg-opacity));
+}
+.bg-gray-900 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(22, 30, 46, var(--tw-bg-opacity));
 }
 .bg-red-500 {
 	--tw-bg-opacity: 1;
@@ -2316,6 +2316,9 @@ select {
 .pb-2 {
 	padding-bottom: 0.5rem;
 }
+.pb-5 {
+	padding-bottom: 1.25rem;
+}
 .pt-0 {
 	padding-top: 0px;
 }
@@ -2345,9 +2348,6 @@ select {
 }
 .pr-3 {
 	padding-right: 0.75rem;
-}
-.pb-5 {
-	padding-bottom: 1.25rem;
 }
 .text-left {
 	text-align: left;
@@ -2822,10 +2822,6 @@ select {
 .hover\:bg-gray-600:hover {
 	--tw-bg-opacity: 1;
 	background-color: rgba(75, 85, 99, var(--tw-bg-opacity));
-}
-.hover\:bg-red-400:hover {
-	--tw-bg-opacity: 1;
-	background-color: rgba(248, 113, 113, var(--tw-bg-opacity));
 }
 .hover\:bg-green-600:hover {
 	--tw-bg-opacity: 1;
