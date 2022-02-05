@@ -15,8 +15,10 @@
 export default {
     methods: {
         changeDocumentDirection() {
-            document.querySelector("html").dir =
-                this.$page.props.locale == "ar" ? "rtl" : "ltr";
+            const html = document.querySelector("html");
+            html.dir = this.$page.props.locale == "ar" ? "rtl" : "ltr";
+
+            html.lang = this.$page.props.locale;
         },
     },
     computed: {
