@@ -117,6 +117,9 @@
 										<jet-dropdown-link as="a" :href="route('customers.index')">
                                             {{ __('Show Customer') }}
                                         </jet-dropdown-link>
+										<jet-dropdown-link as="a" :href="route('excel.customers')">
+                                            {{ __('Download') }}
+                                        </jet-dropdown-link>
 										
                                     </template>
                                 </jet-dropdown>
@@ -228,6 +231,9 @@
                                         </jet-dropdown-link>
                                         <jet-dropdown-link as="a" @click.prevent="openDlg3()" href="#">
                                             {{ __('Load from ETA') }}
+                                        </jet-dropdown-link>
+										<jet-dropdown-link as="a" :href="route('excel.items')">
+                                            {{ __('Download') }}
                                         </jet-dropdown-link>
 										
                                     </template>

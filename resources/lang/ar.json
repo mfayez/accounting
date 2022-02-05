@@ -148,5 +148,12 @@
 	"Issuer Type": "تصنيف جهة الاصدار",
 	"Invoice Total": "اجمالي الفاتورة",
 	"EGP" : "جنيه",
-	"Print": "طباعة"
+	"Print": "طباعة",
+	"Internal Code": "الكود الداخلى",
+	"Reports": "تقارير",
+	"Detailed Summary": "ماخص مفصل",
+	"Start Date" :"من تاريخ",
+	"End Date": "الى تاريخ",
+	"Show": "عرض",
+	"Download": "تحميل"
 }
