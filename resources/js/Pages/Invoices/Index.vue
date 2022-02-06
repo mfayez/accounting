@@ -33,7 +33,6 @@
 								<th 
 									v-for="(col, key) in queryBuilderProps.columns" 
 									:key="key" v-show="showColumn(key)" 
-									@click.prevent="sortBy(key)"
 								>
 									{{ col.label }}
 								</th>
