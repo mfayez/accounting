@@ -1,96 +1,114 @@
 <template>
-    <jet-authentication-card>
-        <template #logo>
-            <jet-authentication-card-logo />
-        </template>
+    <div class="px-3 py-6 w-screen h-screen flex justify-center items-center">
+        <div
+            class="flex w-full mx-auto overflow-hidden bg-white rounded-lg shadow-xl lg:w-8/12"
+        >
+            <div
+                class="hidden bg-cover lg:block lg:w-1/2"
+                style="background-image: url('/images/logo-1.jpg')"
+            ></div>
 
-        <jet-validation-errors class="mb-4" />
+            <div class="w-full px-6 py-8 md:px-8 lg:w-1/2">
+                <h2 class="text-2xl font-semibold text-center text-gray-700">
+                    Invoice Master
+                </h2>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+                <p class="text-xl text-center text-gray-600">Welcome back!</p>
+
+                <div class="mt-4">
+                    <label
+                        class="block mb-2 text-sm font-medium text-gray-600"
+                        for="LoggingEmailAddress"
+                        >Email Address</label
+                    >
+                    <input
+                        id="LoggingEmailAddress"
+                        class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:outline-none focus:border-black"
+                        type="email"
+                        v-model="form.email"
+                    />
+                    <input-error :message="form.errors.email" />
+                </div>
+
+                <div class="mt-4">
+                    <div class="flex justify-between">
+                        <label
+                            class="block mb-2 text-sm font-medium text-gray-600"
+                            for="loggingPassword"
+                            >Password</label
+                        >
+                        <a
+                            href="#"
+                            class="text-xs text-gray-500 hover:underline"
+                            >Forget Password?</a
+                        >
+                    </div>
+
+                    <input
+                        id="loggingPassword"
+                        class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:outline-none focus:border-black"
+                        type="password"
+                        v-model="form.password"
+                    />
+                    <input-error :message="form.errors.password" />
+                </div>
+
+                <div class="mt-8">
+                    <button
+                        class="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+                        :disabled="formIsProcessing"
+                        @click="submit"
+                    >
+                        {{ formIsProcessing ? "Loading !" : "Login" }}
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <jet-label for="email"> {{ __('email') }} </jet-label>
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
-            </div>
-
-            <div class="mt-4">
-                <jet-label for="password"> {{ __('password') }} </jet-label>
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <jet-checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
-                </inertia-link>
-
-                <jet-button class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </jet-button>
-            </div>
-        </form>
-    </jet-authentication-card>
+    </div>
 </template>
 
 <script>
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
-    import JetButton from '@/Jetstream/Button'
-    import JetInput from '@/Jetstream/Input'
-    import JetCheckbox from '@/Jetstream/Checkbox'
-    import JetLabel from '@/Jetstream/Label'
-    import JetValidationErrors from '@/Jetstream/ValidationErrors'
-	import LanguageSelector from '@/Language/LanguageSelector'
+import InputError from "@/Jetstream/InputError";
+export default {
+    components: {
+        InputError,
+    },
+    props: {},
+    data() {
+        return {
+            form: this.$inertia.form({
+                email: "",
+                password: "",
+                remember: false,
+            }),
+        };
+    },
+    methods: {
+        submit() {
+            this.form.clearErrors();
 
-    export default {
-        components: {
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
-            JetCheckbox,
-            JetLabel,
-            JetValidationErrors,
-			LanguageSelector
+            this.form
+                .transform((data) => ({
+                    ...data,
+                    remember: this.form.remember ? "on" : "",
+                }))
+                .post(this.route("login"), {
+                    onFinish: () => this.form.reset("password"),
+                });
         },
-
-        props: {
-			language: String,
-			locale: String,
-            canResetPassword: Boolean,
-            status: String
+    },
+    computed: {
+        formIsProcessing() {
+            return this.form.processing;
         },
-
-        data() {
-            return {
-                form: this.$inertia.form({
-                    email: '',
-                    password: '',
-                    remember: false
-                })
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form
-                    .transform(data => ({
-                        ... data,
-                        remember: this.form.remember ? 'on' : ''
-                    }))
-                    .post(this.route('login'), {
-                        onFinish: () => this.form.reset('password'),
-                    })
-            }
-        }
-    }
+    },
+};
 </script>
+<style scoped>
+button:disabled {
+    cursor: not-allowed;
+}
+input:focus {
+    box-shadow: none;
+}
+</style>

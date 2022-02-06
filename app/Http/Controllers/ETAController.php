@@ -826,7 +826,7 @@ class ETAController extends Controller
 
 			$invoiceLineClone->invoice_id = $invoiceClone->Id;
 			
-			$invoiceLineClone->unitValue_id = $unitValueClone->id;
+			$invoiceLineClone->unitValue_id = $unitValueClone->Id;
 			
 			$invoiceLineClone->save();
 			

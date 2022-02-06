@@ -36,14 +36,19 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share the translations data in the props of the components.
         Inertia::share([
-			'locale' => function () {
-				return Session()->get('locale', app()->getLocale());
-			},
+        'locale' => function () {
+          return Session()->get('locale', app()->getLocale());
+        },
     		'language' => function () {
         		return translations(
             				resource_path('lang/'. Session()->get('locale', app()->getLocale()) .'.json')
         		);
     		},
+        'flash' => function() {
+          return [
+            'success' => request()->get('success')
+          ];
+        }
         ]);
     }
 }

@@ -107,7 +107,9 @@ class CustomerController extends Controller
         $item = new Receiver($data);
         $item->save();
 		$item2->receiver()->save($item);
-        return $item;
+
+        return \redirect()->route('customers.index')->with('success' , __('Record Created'));
+
     }
 
     /**
@@ -150,7 +152,8 @@ class CustomerController extends Controller
         ]);
 		
 		$customer->update($data);
-		return $customer;
+
+		return \redirect()->route('customers.index')->with('success' , __('Record Was Updated'));
     }
 
     /**
@@ -163,5 +166,7 @@ class CustomerController extends Controller
     {
         $customer = Receiver::findOrFail($id);
 		$customer->delete(); 
+
+        return $customer;
     }
 }

@@ -149,6 +149,9 @@
 	"Invoice Total": "اجمالي الفاتورة",
 	"EGP" : "جنيه",
 	"Print": "طباعة",
+	"Record Created": "تم اضافة البيانات",
+	"Record Was Updated" : "تم تعديل البيانات",
+	"Record Was Deleted": "تم حذف البيانات",
 	"Internal Code": "الكود الداخلى",
 	"Reports": "تقارير",
 	"Detailed Summary": "ماخص مفصل",
@@ -156,4 +159,3 @@
 	"End Date": "الى تاريخ",
 	"Show": "عرض",
 	"Download": "تحميل"
-}

@@ -144,13 +144,13 @@
 
             @if(App::getLocale() == 'en')
             <a href="{{ route('language' , 'ar') }}">
-                <button class="text-white bg-blue-600 px-5 py-2 rounded mt-2">
+                <button class="text-white bg-[#4099de] px-5 py-2 rounded mt-2">
                     <i class="fa fa-flag"></i> AR
                 </button>
             </a>
             @else
             <a href="{{ route('language' , 'en') }}">
-                <button class="text-white bg-blue-600 px-5 py-2 rounded mt-2">
+                <button class="text-white bg-[#4099de] px-5 py-2 rounded mt-2">
                     <i class="fa fa-flag"></i> EN
                 </button>
             </a>

@@ -4,10 +4,12 @@ require('./bootstrap');
 import { createApp, h, nextTick } from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
+// vuex vue state management
+import store from "./store";
 
 const el = document.getElementById('app');
 
-createApp({
+const app = createApp({
     render: () =>
         h(InertiaApp, {
             initialPage: JSON.parse(el.dataset.page),
@@ -17,7 +19,9 @@ createApp({
     .mixin({ methods: { route } })
     .mixin(require('./base'))
     .use(InertiaPlugin)
+    .use(store)
     .mount(el);
 
-InertiaProgress.init({ color: '#4B5563' });
+
+InertiaProgress.init({ color: '#4099de', });
 
