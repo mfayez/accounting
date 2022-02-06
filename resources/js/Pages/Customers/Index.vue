@@ -42,6 +42,12 @@
                                 >
                                     {{ __("Type(B|I)") }}
                                 </th>
+                                <th
+                                    v-show="showColumn('code')"
+                                    @click.prevent="sortBy('code')"
+                                >
+                                    {{ __("Internal Code") }}
+                                </th>
                                 <th @click.prevent="">{{ __("Actions") }}</th>
                             </tr>
                         </template>
@@ -66,6 +72,9 @@
                                             ? __("Business")
                                             : __("Person")
                                     }}
+                                </td>
+                                <td v-show="showColumn('code')">
+                                    {{ customer.code }}
                                 </td>
                                 <td>
                                     <secondary-button

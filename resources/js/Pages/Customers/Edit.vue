@@ -48,6 +48,17 @@
                         />
                         <input-error :message="form.errors.name" />
                     </div>
+                    <div>
+                        <jet-label for="code" :value="__('Internal Code')" />
+                        <jet-input
+                            id="code"
+                            type="text"
+                            class="mt-1 block w-full"
+                            v-model="form.code"
+                            required
+                        />
+                        <input-error :message="form.errors.code" />
+                    </div>
                 </div>
             </form>
         </template>
@@ -133,7 +144,9 @@ export default {
                 this.form.name = this.customer.name;
                 this.form.type = this.customer.type;
                 this.form.receiver_id = this.customer.receiver_id;
+				this.form.code = this.customer.code;
 			}
+            this.showDialog = true;
         },
         CancelAddBranch() {
             this.showDialog = false;

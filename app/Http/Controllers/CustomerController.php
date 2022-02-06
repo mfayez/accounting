@@ -37,7 +37,9 @@ class CustomerController extends Controller
     {
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
-                $query->where('name', 'LIKE', "%{$value}%")->orWhere('receiver_id', 'LIKE', "%{$value}%");
+                $query->where('name', 'LIKE', "%{$value}%")
+					->orWhere('receiver_id', 'LIKE', "%{$value}%")
+					->orWhere('code', 'LIKE', "%{$value}%");
             });
         });
 
@@ -45,7 +47,7 @@ class CustomerController extends Controller
 			->with('address')
         	->defaultSort('name')
             ->allowedSorts(['Id', 'name', 'receiver_id', 'type'])
-            ->allowedFilters(['name', 'receiver_id', 'type', $globalSearch])
+            ->allowedFilters(['name', 'receiver_id', 'type', 'code', $globalSearch])
             ->paginate(10)
             ->withQueryString();
 
@@ -55,6 +57,7 @@ class CustomerController extends Controller
             $table->addSearchRows([
                 'name' => __('Name'),
                 'receiver_id' => __('Tax Registration Number'),// ID/National ID',
+				'code' => __('Internal Code'),
             ])->addColumns([
 				'Id' => __('ID'),
                 'name' => __('Name'),

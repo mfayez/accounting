@@ -41,7 +41,7 @@
                             :href="route('dashboard')"
                             :class="{ 'text-[#4099de]': $page.url === '/' }"
                             class="ms-3 mb-3 lg:mb-0"
-                            ><i class="fas fa-chart-pie"></i> Dashboard</Link
+                            ><i class="fas fa-chart-pie"></i>{{__("Dashboard")}}</Link
                         >
                         <dropdown
                             :align="alignDropDown()"
