@@ -110,6 +110,7 @@ class CustomerController extends Controller
         $item = new Receiver($data);
         $item->save();
 		$item2->receiver()->save($item);
+		Auth::user()->receivers()->attach($item->Id);
 
         return \redirect()->route('customers.index')->with('success' , __('Record Created'));
 
