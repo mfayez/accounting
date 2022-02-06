@@ -56,15 +56,15 @@
                 <jet-secondary-button @click="CancelAddBranch()">
                     {{ __("Cancel") }}
                 </jet-secondary-button>
-
-                <jet-button
-                    class="ms-2"
-                    @click="submit"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    {{ form.processing ? __("Loading !") : __("Save") }}
-                </jet-button>
+				<jet-validation-errors class="mb-4" />
+    	        <jet-button
+        	    	class="ms-2"
+            	    @click="submit"
+                	:class="{ 'opacity-25': form.processing }"
+	                :disabled="form.processing"
+    	        >
+            		{{ form.processing ? __("Loading !") : __("Save") }}
+        	    </jet-button>
             </div>
         </template>
     </jet-dialog-modal>
@@ -122,19 +122,18 @@ export default {
                 name: "",
                 receiver_id: "",
                 type: "B",
+				code: ''
             }),
             showDialog: false,
         };
     },
-
     methods: {
         ShowDialog() {
             if (this.customer !== null) {
                 this.form.name = this.customer.name;
                 this.form.type = this.customer.type;
                 this.form.receiver_id = this.customer.receiver_id;
-            }
-            this.showDialog = true;
+			}
         },
         CancelAddBranch() {
             this.showDialog = false;

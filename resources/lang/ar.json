@@ -151,5 +151,12 @@
 	"Print": "طباعة",
 	"Record Created": "تم اضافة البيانات",
 	"Record Was Updated" : "تم تعديل البيانات",
-	"Record Was Deleted": "تم حذف البيانات"
+	"Record Was Deleted": "تم حذف البيانات",
+	"Internal Code": "الكود الداخلى",
+	"Reports": "تقارير",
+	"Detailed Summary": "ماخص مفصل",
+	"Start Date" :"من تاريخ",
+	"End Date": "الى تاريخ",
+	"Show": "عرض",
+	"Download": "تحميل"
 }

@@ -36,7 +36,6 @@
                                 >
                                     {{ __("Registration Number") }}
                                 </th>
-
                                 <th
                                     v-show="showColumn('type')"
                                     @click.prevent="sortBy('type')"
@@ -102,7 +101,6 @@ import {
 } from "@protonemedia/inertiajs-tables-laravel-query-builder";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
-
 export default {
     mixins: [InteractsWithQueryBuilder],
     components: {
@@ -143,7 +141,6 @@ export default {
                     }, 500);
                 })
                 .catch((error) => {
-                    //this.$refs.password.focus()
                 });
         },
     },

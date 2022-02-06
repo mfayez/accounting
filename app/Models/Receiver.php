@@ -15,7 +15,7 @@ class Receiver extends \Illuminate\Database\Eloquent\Model
 
     public $primaryKey = 'Id';
 
-    protected $fillable = ['type', 'receiver_id', 'name'];
+    protected $fillable = ['type', 'receiver_id', 'name', 'code'];
 
     public function address()
     {

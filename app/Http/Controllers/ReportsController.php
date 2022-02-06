@@ -73,14 +73,14 @@ class ReportsController extends Controller
 		//$startDate  = "2019-10-10";
 		//$endDate    = "2030-10-10";
 		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
-							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total
+							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total, t4.code as Code
 						from Invoice t1  
 							inner join Receiver t4 on t4.Id = t1.receiver_id
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and ?
-						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount";
+						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount, t4.code";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 2) as Quantity,
 							round(sum(t2.total), 2) as Total, round(sum(t7.amountEGP), 2) as UnitValue
@@ -120,15 +120,16 @@ class ReportsController extends Controller
 			$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Month);
 			$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $row->Date);
 			$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $row->TaxTotal);
+			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->Code);
 			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->Client);
 			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->Total);
 			$colIdx = 9;
 			foreach($items as $col){
 				if (array_key_exists($col, $row->lines)){
 					$file->getActiveSheet()->setCellValue($this->index($colIdx,2), $row->lines[$col]->Desc);
-					$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col]->UnitValue);
+					$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col]->Total);
 					$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col]->Quantity);
-					$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col]->Total);
+					$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col]->UnitValue);
 				}
 				$colIdx += 3;
 			}
