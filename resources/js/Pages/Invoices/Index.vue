@@ -30,12 +30,18 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th 
+                                  <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
+                                      <th v-show="showColumn(key)" 
+                                      v-if="notSortableCols.includes(key)">{{ col.label }}</th>
+                                      <th class="cursor-pointer" v-show="showColumn(key)" @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
+                                  </template>
+								<!-- <th 
 									v-for="(col, key) in queryBuilderProps.columns" 
 									:key="key" v-show="showColumn(key)" 
+                                    @click.prevent="sortBy(key)"
 								>
 									{{ col.label }}
-								</th>
+								</th> -->
 								<th @click.prevent="">{{__('Actions')}}</th>
 							</tr>
 						</template>
@@ -146,6 +152,14 @@ export default {
         return {
             invItem: { quantity: 1009 },
             cancelReason: "",
+            notSortableCols: [
+                "statusReason",
+                "receiver.name",
+                "receiver.receiver_id",
+                "issuerName",
+                "receiverId",
+                "receiverName",
+            ],
         };
     },
     methods: {
