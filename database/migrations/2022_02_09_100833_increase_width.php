@@ -27,6 +27,7 @@ class IncreaseWidth extends Migration
 		DB::unprepared("alter table Invoice change totalItemsDiscountAmount totalItemsDiscountAmount decimal(15,5) NOT NULL;");
 		DB::unprepared("alter table TaxableItem change amount amount decimal(15,5) NOT NULL;");
 		DB::unprepared("alter table TaxableItem change rate rate decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table TaxTotal change amount amount decimal(15,5) NOT NULL;");
     }
 
     /**
@@ -50,5 +51,6 @@ class IncreaseWidth extends Migration
 		DB::unprepared("alter table Invoice change totalItemsDiscountAmount totalItemsDiscountAmount decimal(11,3) NOT NULL;");
 		DB::unprepared("alter table TaxableItem change amount amount decimal(9,3) NOT NULL;");
 		DB::unprepared("alter table TaxableItem change rate rate decimal(9,3) NOT NULL;");
+		DB::unprepared("alter table TaxTotal change amount amount decimal(9,3) NOT NULL;");
     }
 }
