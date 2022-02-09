@@ -13,20 +13,20 @@ class IncreaseWidth extends Migration
      */
     public function up()
     {
-		DB::unprepared("alter table InvoiceLine change salesTotal salesTotal  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table InvoiceLine change total total  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table InvoiceLine change valueDifference valueDifference  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table InvoiceLine change totalTaxableFees totalTaxableFees  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table InvoiceLine change netTotal netTotal  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table InvoiceLine change itemsDiscount itemsDiscount  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table Invoice change totalSalesAmount  totalSalesAmount decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table Invoice change netAmount netAmount  decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table Invoice change totalAmount totalAmount decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table Invoice change totalDiscountAmount totalDiscountAmount decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table Invoice change extraDiscountAmount extraDiscountAmount decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table Invoice change totalItemsDiscountAmount totalItemsDiscountAmount decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table TaxableItem change amount amount decimal(22,14) NOT NULL;");
-		DB::unprepared("alter table TaxableItem change rate rate decimal(22,14) NOT NULL;");
+		DB::unprepared("alter table InvoiceLine change salesTotal salesTotal  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table InvoiceLine change total total  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table InvoiceLine change valueDifference valueDifference  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table InvoiceLine change totalTaxableFees totalTaxableFees  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table InvoiceLine change netTotal netTotal  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table InvoiceLine change itemsDiscount itemsDiscount  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Invoice change totalSalesAmount  totalSalesAmount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Invoice change netAmount netAmount  decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Invoice change totalAmount totalAmount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Invoice change totalDiscountAmount totalDiscountAmount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Invoice change extraDiscountAmount extraDiscountAmount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Invoice change totalItemsDiscountAmount totalItemsDiscountAmount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table TaxableItem change amount amount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table TaxableItem change rate rate decimal(15,5) NOT NULL;");
     }
 
     /**
