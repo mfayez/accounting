@@ -28,6 +28,8 @@ class IncreaseWidth extends Migration
 		DB::unprepared("alter table TaxableItem change amount amount decimal(15,5) NOT NULL;");
 		DB::unprepared("alter table TaxableItem change rate rate decimal(15,5) NOT NULL;");
 		DB::unprepared("alter table TaxTotal change amount amount decimal(15,5) NOT NULL;");
+		DB::unprepared("alter table Receiver change name name varchar(100);");
+		DB::unprepared("alter table Issuer change name name varchar(100);");
     }
 
     /**
@@ -52,5 +54,7 @@ class IncreaseWidth extends Migration
 		DB::unprepared("alter table TaxableItem change amount amount decimal(9,3) NOT NULL;");
 		DB::unprepared("alter table TaxableItem change rate rate decimal(9,3) NOT NULL;");
 		DB::unprepared("alter table TaxTotal change amount amount decimal(9,3) NOT NULL;");
+		DB::unprepared("alter table Receiver change name name varchar(50);");
+		DB::unprepared("alter table Issuer change name name varchar(50);");
     }
 }
