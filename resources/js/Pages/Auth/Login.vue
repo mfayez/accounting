@@ -15,6 +15,7 @@
 
                 <p class="text-xl text-center text-gray-600">Welcome back!</p>
 
+			<form @submit.prevent="submit">
                 <div class="mt-4">
                     <label
                         class="block mb-2 text-sm font-medium text-gray-600"
@@ -62,6 +63,7 @@
                         {{ formIsProcessing ? "Loading !" : "Login" }}
                     </button>
                 </div>
+			</form>
             </div>
         </div>
     </div>
