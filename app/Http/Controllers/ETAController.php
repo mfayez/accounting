@@ -846,4 +846,22 @@ class ETAController extends Controller
 		return $invoiceClone;
 	}
 
+	public function SetItemsActiveDate($activeFromDate, $activeToDate) {
+		$urlbase = env("ETA_URL")."/codetypes/EGS/codes/%s";
+		$items = ETAItem::all();
+		$this->AuthenticateETA2();
+
+		error_log("updating all items with active date from ".$activeFromDate." to date".$activeToDate);
+		foreach($items as $item) {
+			$url = sprintf($urlbase, $item->itemCode);
+			$response = Http::withToken($this->token)->put($url, [
+				'activeFrom' => $activeFromDate,
+				'activeTo'	=> $activeToDate,
+			]);
+			if (array_key_exists("error", $response))
+				error_log("updating ".$item->itemCode." failed with error :".$response["error"]["details"][0]["message"]);
+			else
+				error_log("updating ".$item->itemCode." succeeded!");
+		}
+	}
 }
