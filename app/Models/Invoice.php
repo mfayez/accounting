@@ -19,12 +19,12 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     public $timestamps = false;
     protected $casts = [
         'Id' => 'integer',
-        'totalDiscountAmount' => 'decimal:2',
-        'totalSalesAmount' => 'decimal:2',
-        'netAmount' => 'decimal:2',
-        'totalAmount' => 'decimal:2',
-        'extraDiscountAmount' => 'decimal:2',
-        'totalItemsDiscountAmount' => 'decimal:2',
+        'totalDiscountAmount' => 'decimal:5',
+        'totalSalesAmount' => 'decimal:5',
+        'netAmount' => 'decimal:5',
+        'totalAmount' => 'decimal:5',
+        'extraDiscountAmount' => 'decimal:5',
+        'totalItemsDiscountAmount' => 'decimal:5',
     ];
 
     protected $fillable = ['issuer_id', 'receiver_id', 'documentType', 'documentTypeVersion', 'dateTimeIssued', 'taxpayerActivityCode',
