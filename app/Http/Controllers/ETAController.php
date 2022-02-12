@@ -133,7 +133,7 @@ class ETAController extends Controller
 			}*/
 			if ($invoice_data["T1(V009)"] > 0) {
 				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($invoice_data["T1(V009)"])]);
-				$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
+				$item1->rate = round($item1->amount * 100 / $invoiceline->salesTotal, 2);
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
 			}
