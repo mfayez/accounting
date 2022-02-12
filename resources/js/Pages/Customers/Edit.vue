@@ -1,81 +1,168 @@
 <template>
-    <jet-dialog-modal
-        :show="showDialog"
-        @close="showDialog = false"
-        maxWidth="3xl"
-    >
+    <jet-dialog-modal :show="showDialog" @close="showDialog = false">
         <template #title>
-            {{ __("Customer Information") }}
+            {{ __("customer Information") }}
         </template>
 
         <template #content>
+            <jet-validation-errors class="mb-4" />
+
             <form @submit.prevent="submit">
-                <div class="grid grid-cols-3 gap-4">
-                    <div>
-                        <jet-label for="type" :value="__('Customer Type')" />
-                        <select
-                            id="type"
-                            v-model="form.type"
-                            class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
-                        >
-                            <option value="P">{{ __("Person") }}</option>
-                            <option value="B">{{ __("Business") }}</option>
-                        </select>
-                        <input-error :message="form.errors.type" />
+                <div class="grid grid-cols-2 gap-4">
+					<div>
+                        <div>
+							<jet-label for="type" :value="__('Customer Type')" />
+							<select
+	                            id="type"
+    	                        v-model="form.type"
+        	                    class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
+            	            >
+                  	          <option value="P">{{ __("Person") }}</option>
+                    	        <option value="B">{{ __("Business") }}</option>
+                        	</select>
+                        </div>
+
+                        <div class="mt-4">
+                            <jet-label
+                                for="id"
+                                :value="__('Tax Registration Number')"
+                            />
+                            <jet-input
+                                id="id"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.receiver_id"
+                                required
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label for="name" :value="__('customer Name')" />
+                            <jet-input
+                                id="name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.name"
+                                required
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label
+                                for="customerNo"
+                                :value="__('Customer Number')"
+                            />
+                            <jet-input
+                                id="customerNo"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.code"
+                                required
+                                autofocus
+                            />
+                        </div>
+
+                        <div class="mt-4">
+                            <jet-label
+                                for="additionalInformation"
+                                :value="__('Additional Information (Location)')"
+                            />
+                            <jet-input
+                                id="additionalInformation"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.address.additionalInformation"
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label
+                                for="postalCode"
+                                :value="__('Postal Code')"
+                            />
+                            <jet-input
+                                id="postalCode"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.address.postalCode"
+                            />
+                        </div>
                     </div>
                     <div>
-                        <jet-label
-                            for="id"
-                            :value="__('Tax Registration Number')"
-                        />
-                        <jet-input
-                            id="id"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.receiver_id"
-                            required
-                        />
-                        <input-error :message="form.errors.receiver_id" />
-                    </div>
-                    <div>
-                        <jet-label for="name" :value="__('Name')" />
-                        <jet-input
-                            id="name"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.name"
-                            required
-                        />
-                        <input-error :message="form.errors.name" />
-                    </div>
-                    <div>
-                        <jet-label for="code" :value="__('Internal Code')" />
-                        <jet-input
-                            id="code"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.code"
-                            required
-                        />
-                        <input-error :message="form.errors.code" />
+                        <div>
+                            <jet-label for="country" :value="__('Country')" />
+                            <jet-input
+                                id="country"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.address.country"
+                                required
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label
+                                for="governate"
+                                :value="__('Governate/State')"
+                            />
+                            <jet-input
+                                id="governate"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.address.governate"
+                                required
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label
+                                for="regionCity"
+                                :value="__('Region/City')"
+                            />
+                            <jet-input
+                                id="regionCity"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.address.regionCity"
+                                required
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label for="street" :value="__('Street')" />
+                            <jet-input
+                                id="street"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.address.street"
+                                required
+                            />
+                        </div>
+                        <div class="mt-4">
+                            <jet-label
+                                for="buildingNumber"
+                                :value="__('Building Number')"
+                            />
+                            <jet-input
+                                id="buildingNumber"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.address.buildingNumber"
+                                required
+                            />
+                        </div>
                     </div>
                 </div>
             </form>
         </template>
         <template #footer>
             <div class="flex items-center justify-end">
-                <jet-secondary-button @click="CancelAddBranch()">
+                <jet-secondary-button @click="CancelAddcustomer()">
                     {{ __("Cancel") }}
                 </jet-secondary-button>
-				<jet-validation-errors class="mb-4" />
-    	        <jet-button
-        	    	class="ms-2"
-            	    @click="submit"
-                	:class="{ 'opacity-25': form.processing }"
-	                :disabled="form.processing"
-    	        >
-            		{{ form.processing ? __("Loading !") : __("Save") }}
-        	    </jet-button>
+
+                <jet-button
+                    class="ms-2"
+                    @click="submit"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
+                    {{ __("Save") }}
+                </jet-button>
             </div>
         </template>
     </jet-dialog-modal>
@@ -96,12 +183,9 @@ import JetLabel from "@/Jetstream/Label";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import JetValidationErrors from "@/Jetstream/ValidationErrors";
-import Multiselect from "@suadelabs/vue3-multiselect";
-import InputError from "@/Jetstream/InputError";
 
 export default {
     components: {
-        Multiselect,
         JetActionMessage,
         JetActionSection,
         JetButton,
@@ -116,7 +200,6 @@ export default {
         JetSecondaryButton,
         JetSectionBorder,
         JetValidationErrors,
-        InputError,
     },
 
     props: {
@@ -133,51 +216,90 @@ export default {
                 name: "",
                 receiver_id: "",
                 type: "B",
-				code: ''
+				code: "",
+                address: {
+                    customerID: "",
+                    country: "",
+                    governate: "",
+                    regionCity: "",
+                    street: "",
+                    buildingNumber: "",
+                    postalCode: "",
+                    additionalInformation: "",
+                },
             }),
             showDialog: false,
         };
     },
+
     methods: {
         ShowDialog() {
             if (this.customer !== null) {
                 this.form.name = this.customer.name;
-                this.form.type = this.customer.type;
                 this.form.receiver_id = this.customer.receiver_id;
-				this.form.code = this.customer.code;
-			}
+                this.form.type = this.customer.type;
+                this.form.code = this.customer.code;
+                this.form.address.customerID = this.customer.address.customerID;
+                this.form.address.country = this.customer.address.country;
+                this.form.address.governate = this.customer.address.governate;
+                this.form.address.regionCity = this.customer.address.regionCity;
+                this.form.address.street = this.customer.address.street;
+                this.form.address.buildingNumber =
+                    this.customer.address.buildingNumber;
+                this.form.address.postalCode = this.customer.address.postalCode;
+                this.form.address.additionalInformation =
+                    this.customer.address.additionalInformation;
+            }
             this.showDialog = true;
         },
-        CancelAddBranch() {
+        CancelAddcustomer() {
             this.showDialog = false;
         },
-        SaveBranch() {
-            this.form.clearErrors();
-            this.form.put(
-                route("customers.update", { customer: this.customer.Id }),
-                {
-                    preserveState: false,
-                    onSuccess: () => {
-                        this.showDialog = false;
-                        this.$store.dispatch("setSuccessFlashMessage", true);
-                    },
-                }
-            );
-        },
-        SaveNewBranch() {
-            this.form.clearErrors();
-            this.form.post(route("customers.store"), {
-                preserveState: false,
-                onSuccess: () => {
-                    this.showDialog = false;
-                    this.$nextTick(() => this.$emit("dataUpdated"));
+        SaveCustomer() {
+            axios
+                .put(
+                    route("customers.update", { customer: this.customer.Id }),
+                    this.form
+                )
+                .then((response) => {
                     this.$store.dispatch("setSuccessFlashMessage", true);
-                },
-            });
+                    this.showDialog = false;
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.form.processing = false;
+                    this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors; //.password[0];
+                    //this.$refs.password.focus()
+                });
+        },
+        SaveNewCustomer() {
+            axios
+                .post(route("customers.store"), this.form)
+                .then((response) => {
+                    this.$store.dispatch("setSuccessFlashMessage", true);
+                    this.processing = false;
+                    this.$nextTick(() => this.$emit("dataUpdated"));
+                    this.form.reset();
+                    this.form.processing = false;
+                    this.showDialog = false;
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                })
+                .catch((error) => {
+                    this.form.processing = false;
+                    this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors; //.password[0];
+                    //this.$refs.password.focus()
+                });
         },
         submit() {
-            if (this.customer == null) this.SaveNewBranch();
-            else this.SaveBranch();
+            if (this.customer == null) this.SaveNewCustomer();
+            else this.SaveCustomer();
         },
     },
 };
