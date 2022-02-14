@@ -93,7 +93,7 @@
                                 type="text"
                                 class="mt-1 block w-full"
                                 v-model="form.address.country"
-                                required
+								disabled required
                             />
                         </div>
                         <div class="mt-4">
@@ -101,13 +101,15 @@
                                 for="governate"
                                 :value="__('Governate/State')"
                             />
-                            <jet-input
-                                id="governate"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.address.governate"
-                                required
-                            />
+							<select
+	                            id="governate"
+    	                        v-model="form.address.governate"
+        	                    class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
+            	            >
+                  	          <option value="Cairo">{{ __("Cairo") }}</option>
+                  	          <option value="Giza">{{ __("Giza") }}</option>
+                  	          <option value="Gharbia">{{ __("Gharbia") }}</option>
+                        	</select>
                         </div>
                         <div class="mt-4">
                             <jet-label
@@ -219,7 +221,7 @@ export default {
 				code: "",
                 address: {
                     customerID: "",
-                    country: "",
+                    country: "EG",
                     governate: "",
                     regionCity: "",
                     street: "",
