@@ -165,7 +165,7 @@ export default {
     methods: {
         openExternal(item) {
             window.open(
-                "https://invoicing.eta.gov.eg/print/documents/" +
+                this.$page.props.preview_url + 
                     item.uuid +
                     "/share/" +
                     item.longId
