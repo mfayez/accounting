@@ -574,7 +574,6 @@ class ETAController extends Controller
 	        fclose($handle);
     	}
 
-		dd($data);
     	return $data;
 	}
 
