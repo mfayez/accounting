@@ -272,7 +272,7 @@ class ETAController extends Controller
 		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
-			"PageSize" => "10",
+			"PageSize" => "100",
 			"PageNo" => $request->input("value")
 			,"InvoiceDirection" => "sent"	
 		]);
@@ -313,7 +313,7 @@ class ETAController extends Controller
 		$url = env("ETA_URL")."/codetypes/requests/my";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
-			"Ps" => "10",
+			"Ps" => "100",
 			"Pn" => $request->input("value")
 		]);
 		$collection = $response['result'];
