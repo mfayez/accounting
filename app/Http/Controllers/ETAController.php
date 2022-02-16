@@ -557,6 +557,10 @@ class ETAController extends Controller
         	while (($row = fgetcsv($handle, 10000, $delimiter)) !== false)
 	        {
     	        if (!$header_en){
+					if (count($row) == 1){
+						$delimiter = ';';
+						$row = str_getcsv($row[0], $delimiter);
+					}
 					foreach($row as $key=>$item){
 						$row[$key] = trim(iconv('UTF-8', 'ASCII//TRANSLIT', $item));
 					}
@@ -570,6 +574,7 @@ class ETAController extends Controller
 	        fclose($handle);
     	}
 
+		dd($data);
     	return $data;
 	}
 
