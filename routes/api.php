@@ -35,6 +35,16 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
 
+Route::middleware('auth:sanctum')->get('/configurations', function (Request $request) {
+    $temp = [
+		"production" => strpos(env("LOGIN_URL"), "preprod") > 1 ? False : True,
+		"client_id" => env("CLIENT_ID"),
+		"client_secret" => env("CLIENT_SECRET") 
+	];
+	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
+});
+
+
 Route::middleware('auth:sanctum')->post('/invoices/upload', [ETAController::class, 'UploadInvoice']);
 
 Route::middleware('auth:sanctum')->post('/invoices/update', [APIController::class, 'updateInvoices']);
