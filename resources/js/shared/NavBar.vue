@@ -71,6 +71,10 @@
                                 <dropdown-link :href="route('customers.index')">
                                     {{ __("Show Customer") }}
                                 </dropdown-link>
+
+                                <dropdown-link as="a" :href="route('excel.customers')">
+                                    {{ __("Download") }}
+                                </dropdown-link>
                             </template>
                         </dropdown>
                         <dropdown
@@ -204,6 +208,10 @@
                                     href="#"
                                 >
                                     {{ __("Load from ETA") }}
+                                </dropdown-link>
+
+                                <dropdown-link as="a" :href="route('excel.items')">
+                                    {{ __("Download") }}
                                 </dropdown-link>
                             </template>
                         </dropdown>

@@ -272,7 +272,7 @@ class ETAController extends Controller
 		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
-			"PageSize" => "100",
+			"PageSize" => "10",
 			"PageNo" => $request->input("value")
 			,"InvoiceDirection" => "sent"	
 		]);
@@ -611,9 +611,9 @@ class ETAController extends Controller
 		$url = sprintf($urlbase, $uuid);
 		$response = Http::withToken($this->token)->get($url);
 		$document = json_decode($response['document']);
-		error_log($response['uuid']);
+		//error_log($response['uuid']);
 		$invoice = new Invoice((array)$document);
-		if ($invoice->status != 'Valid') return;
+		//if ($invoice->status !== 'Valid') return;
 
 		$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
 		$receiver = Receiver::where('name', '=', $document->receiver->name)->first();
@@ -622,6 +622,7 @@ class ETAController extends Controller
 		$invoice->uuid = $response["uuid"];
 		$invoice->submissionUUID = $response["submissionUUID"];
 		$invoice->longId = $response["longId"];
+		//dd($invoice);
 		if (!$issuer)
 		{
 			$item2 = new Address((array)$document->issuer->address);
@@ -639,8 +640,9 @@ class ETAController extends Controller
 			$item2 = new Address((array)$document->receiver->address);
         	$item2->save();
 	        $item = new Receiver((array)$document->receiver);
-			$item->receiver_id = $document->issuer->id;
+			$item->receiver_id = isset($document->receiver->id) ? $document->receiver->id : 0;
 			$item->id = null;
+			$item->code = 0;
         	$item2->receiver()->save($item);
 			$receiver = $item;
 		}
