@@ -613,7 +613,7 @@ class ETAController extends Controller
 		$document = json_decode($response['document']);
 		//error_log($response['uuid']);
 		$invoice = new Invoice((array)$document);
-		//if ($invoice->status !== 'Valid') return;
+		if ($invoice->status !== 'Valid') return;
 
 		$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
 		$receiver = Receiver::where('name', '=', $document->receiver->name)->first();
