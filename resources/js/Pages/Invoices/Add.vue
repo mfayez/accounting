@@ -224,7 +224,9 @@
 				this.RecalculateTax();
 			},
 			onClose: function() {
-				this.currentItem.description = this.currentItem.item.descriptionPrimaryLang;
+                this.currentItem.description = this.$page.props.locale == "ar" ? 
+					this.currentItem.item.descriptionPrimaryLang : this.currentItem.item.descriptionSecondaryLang;
+
 				this.currentItem.itemType= this.currentItem.item.codeTypeName;
 				this.currentItem.itemCode= this.currentItem.item.itemCode;
 				this.currentItem.unitType= this.currentItem.unit.code;
