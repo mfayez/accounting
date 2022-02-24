@@ -93,27 +93,40 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-		$data = $request->validate([
-            'name' 			=> ['required', 'string', 'max:255'],
-            'code' 			=> ['required', 'string', 'max:255'],
-            'receiver_id' 	=> ['required', 'integer'],
-            'type' 			=> ['required',  'string', Rule::in(['B', 'P'])],
+		$request->validate([
+            'name' 							=> ['required', 'string', 'max:255'],
+            'receiver_id' 					=> ['required', 'integer'],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
+            'code'				 			=> ['nullable', 'string', 'max:255'],
+			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
+			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
+			'address.regionCity' 			=> ['required', 'string'],
+			'address.street' 				=> ['required', 'string'],
+			'address.buildingNumber' 		=> ['required', 'integer'],
+			'address.postalCode' 			=> ['nullable', 'integer'],
+			'address.additionalInformation' => ['nullable', 'string'],
         ]);
 
-		$item2 = new Address();
-		$item2->country = 'EG';
-		$item2->governate = 'Cairo';
-		$item2->regionCity = 'City';
-		$item2->street = 'Street';
-		$item2->buildingNumber = '0';
-		$item2->save();
-        $item = new Receiver($data);
-        $item->save();
-		$item2->receiver()->save($item);
+		
+        $item2 = new Address();
+		$item2->branchID = 0;
+        $item2->country = $request->input('address.country');
+        $item2->governate = $request->input('address.governate');
+        $item2->regionCity = $request->input('address.regionCity');
+        $item2->street = $request->input('address.street');
+        $item2->buildingNumber = $request->input('address.buildingNumber');
+		$item2->postalCode = $request->input('address.postalCode');
+		$item2->additionalInformation = $request->input('address.additionalInformation');
+        $item2->save();
+        $item = new Receiver();
+        $item->type = $request->input('type');
+        $item->name = $request->input('name');
+		$item->receiver_id = $request->input('receiver_id');
+		$item->code = $request->input('code');
+        $item2->receiver()->save($item);
 		Auth::user()->receivers()->attach($item->Id);
 
         return \redirect()->route('customers.index')->with('success' , __('Record Created'));
-
     }
 
     /**
@@ -147,17 +160,27 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-		$customer = Receiver::findOrFail($id);
 		$data = $request->validate([
-            'name' 			=> ['required', 'string', 'max:255'],
-            'code' 			=> ['required', 'string', 'max:255'],
-            'receiver_id' 	=> ['required', 'integer'],
-            'type' 			=> ['required',  'string', Rule::in(['B', 'P'])],
+            'name' 							=> ['required', 'string', 'max:255'],
+            'receiver_id' 					=> ['required', 'integer'],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
+            'code'				 			=> ['nullable', 'string', 'max:255'],
+			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
+			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
+			'address.regionCity' 			=> ['required', 'string'],
+			'address.street' 				=> ['required', 'string'],
+			'address.buildingNumber' 		=> ['required', 'integer'],
+			'address.postalCode' 			=> ['nullable', 'integer'],
+			'address.additionalInformation' => ['nullable', 'string'],
         ]);
-		
-		$customer->update($data);
 
-		return \redirect()->route('customers.index')->with('success' , __('Record Was Updated'));
+		$item = Receiver::findOrFail($id);
+		$item->update($data);
+		$item2 = $item->address;
+		$item2->update($data['address']);
+        
+		return $item;
+		//return \redirect()->route('customers.index')->with('success' , __('Record Was Updated'));
     }
 
     /**

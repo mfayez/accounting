@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share the translations data in the props of the components.
         Inertia::share([
+		'preview_url' => env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"),
         'locale' => function () {
           return Session()->get('locale', app()->getLocale());
         },

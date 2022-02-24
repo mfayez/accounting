@@ -118,8 +118,8 @@
                             <td class="p-2 border border-[#eceeef]">{{ $line->quantity }}</td>
                             <td class="p-2 border border-[#eceeef]">{{ $line->unitValue->amountEGP }}</td>
                             <td class="p-2 border border-[#eceeef]">{{ $line->salesTotal }}</td>
-                            <td class="p-2 border border-[#eceeef]">{{ $total }}</td>
-                            <td class="p-2 border border-[#eceeef]">{{ $line->total }}</td>
+                            <td class="p-2 border border-[#eceeef]">{{ sprintf("%0.2f", $total) }}</td>
+                            <td class="p-2 border border-[#eceeef]">{{ sprintf("%0.2f", $line->total) }}</td>
                         </tr>
                         @endforeach
 
@@ -128,7 +128,7 @@
                 <div class="invoice-total py-5 text-right">
                     <h4 class="capitalize text-gray-600 text-xl font-bold">{{ __('Invoice Total') }}: {{ __('EGP')
                         }} {{
-                        $data->totalAmount }}
+                        sprintf("%0.2f", $data->totalAmount)}}
                     </h4>
                 </div>
             </div>

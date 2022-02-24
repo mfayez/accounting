@@ -133,7 +133,7 @@ class ETAController extends Controller
 			}*/
 			if ($invoice_data["T1(V009)"] > 0) {
 				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($invoice_data["T1(V009)"])]);
-				$item1->rate = $item1->amount * 100 / $invoiceline->salesTotal;
+				$item1->rate = round($item1->amount * 100 / $invoiceline->salesTotal, 2);
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
 			}
@@ -265,6 +265,29 @@ class ETAController extends Controller
 
 	public function SyncReceivedInvoices(Request $request)
 	{
+		$url = env("ETA_URL")."/documents/recent";
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->get($url, [
+			"PageSize" => "10",
+			"PageNo" => "1",
+			"InvoiceDirection" => "received"	
+		]);
+		$collection = $response['result'];
+		foreach($collection as $item) {
+			try{
+				$invoice2 = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
+				if ($invoice2)
+				{
+					$invoice2->status = $item['status'];
+					//$invoice2->statusreason = $item['documentStatusReason'];
+					$invoice2->save();
+				} else {
+					//recover missing item
+					$this->AddMissingETAInvoice($request, $item['uuid']);
+				}
+			} catch (Exception $e) {}
+		};
+		return $response['metadata'];
 	}
 
 	public function SyncIssuedInvoices(Request $request)
@@ -313,7 +336,7 @@ class ETAController extends Controller
 		$url = env("ETA_URL")."/codetypes/codes/my";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
-			"Ps" => "10",
+			"Ps" => "100",
 			"Pn" => $request->input("value")
 		]);
 		$collection = $response['result'];
@@ -561,6 +584,10 @@ class ETAController extends Controller
         	while (($row = fgetcsv($handle, 10000, $delimiter)) !== false)
 	        {
     	        if (!$header_en){
+					if (count($row) == 1){
+						$delimiter = ';';
+						$row = str_getcsv($row[0], $delimiter);
+					}
 					foreach($row as $key=>$item){
 						$row[$key] = trim(iconv('UTF-8', 'ASCII//TRANSLIT', $item));
 					}
@@ -605,15 +632,67 @@ class ETAController extends Controller
 		//error_log(json_encode($invoices));
 	}
 
+	public function AddMissingETAInvoice($request, $uuid) {
+		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$this->AuthenticateETA($request);
+		$url = sprintf($urlbase, $uuid);
+		$response = Http::withToken($this->token)->get($url);
+		//$document = json_decode($response['document']);
+		//error_log($response);
+		$invoice = new ETAInvoice();
+		//if ($response['status'] !== 'Valid') return;
+		foreach($invoice->getFillable() as $field)
+			$invoice[$field] = null;
+		$invoice->createdByUserId = 'N/A';
+
+		foreach($invoice->getFillable() as $field)
+			if(isset($response[$field]))
+				$invoice[$field] = $response[$field];
+		
+		$errors = "";
+		$steps = $response['validationResults']['validationSteps'];
+		foreach($steps as $step) {
+			if ($step['status'] != "Invalid")
+				continue;
+			//if(!$step['error']) continue;
+			$errors = $errors . "," .  $step['error']['error'];
+			if ($step['error']['innerError'])
+				foreach($step['error']['innerError'] as $inner)
+					$errors = $errors . "," .  $inner['error'];
+		}
+		//$invoice->statusreason = $errors;
+		$invoice->save();
+		/*
+		foreach($document->invoiceLines as $line) {
+			$unitValue = new Value((array)$line->unitValue);
+			$unitValue->save();
+			$invoiceline = new InvoiceLine((array)$line);
+			$invoiceline->invoice_id = $invoice->Id;
+			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->save();
+			foreach($line->taxableItems as $taxitem) {
+				$item = new TaxableItem((array)$taxitem);
+				$item->invoiceline_id = $invoiceline->Id;
+				$item->save();
+			}
+		}
+		foreach($document->taxTotals as $totalTax) {
+			$taxTotal = new TaxTotal((array)$totalTax);
+			$taxTotal->invoice_id = $invoice->Id;
+			$taxTotal->save();
+		}*/
+	}
+
+
 	public function AddMissingInvoice($request, $uuid) {
 		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$this->AuthenticateETA($request);
 		$url = sprintf($urlbase, $uuid);
 		$response = Http::withToken($this->token)->get($url);
 		$document = json_decode($response['document']);
-		error_log($response['uuid']);
+		//error_log($response['uuid']);
 		$invoice = new Invoice((array)$document);
-		if ($invoice->status != 'Valid') return;
+		if ($invoice->status !== 'Valid') return;
 
 		$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
 		$receiver = Receiver::where('name', '=', $document->receiver->name)->first();
@@ -622,6 +701,7 @@ class ETAController extends Controller
 		$invoice->uuid = $response["uuid"];
 		$invoice->submissionUUID = $response["submissionUUID"];
 		$invoice->longId = $response["longId"];
+		//dd($invoice);
 		if (!$issuer)
 		{
 			$item2 = new Address((array)$document->issuer->address);
@@ -639,8 +719,9 @@ class ETAController extends Controller
 			$item2 = new Address((array)$document->receiver->address);
         	$item2->save();
 	        $item = new Receiver((array)$document->receiver);
-			$item->receiver_id = $document->issuer->id;
+			$item->receiver_id = isset($document->receiver->id) ? $document->receiver->id : 0;
 			$item->id = null;
+			$item->code = 0;
         	$item2->receiver()->save($item);
 			$receiver = $item;
 		}
@@ -680,7 +761,7 @@ class ETAController extends Controller
 		}
 	}
 
-	public function LoadMissingInvoices() {
+	public function LoadMissingInvoices() {	
 		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$oldinv = Invoice::whereNotNull('uuid')->pluck('uuid');
 		$missing = ETAInvoice::whereNotIn('uuid', $oldinv)->pluck('uuid');
@@ -850,4 +931,22 @@ class ETAController extends Controller
 		return $invoiceClone;
 	}
 
+	public function SetItemsActiveDate($activeFromDate, $activeToDate) {
+		$urlbase = env("ETA_URL")."/codetypes/EGS/codes/%s";
+		$items = ETAItem::all();
+		$this->AuthenticateETA2();
+
+		error_log("updating all items with active date from ".$activeFromDate." to date".$activeToDate);
+		foreach($items as $item) {
+			$url = sprintf($urlbase, $item->itemCode);
+			$response = Http::withToken($this->token)->put($url, [
+				'activeFrom' => $activeFromDate,
+				'activeTo'	=> $activeToDate,
+			]);
+			if (array_key_exists("error", $response))
+				error_log("updating ".$item->itemCode." failed with error :".$response["error"]["details"][0]["message"]);
+			else
+				error_log("updating ".$item->itemCode." succeeded!");
+		}
+	}
 }
