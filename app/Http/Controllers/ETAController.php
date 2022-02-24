@@ -265,6 +265,29 @@ class ETAController extends Controller
 
 	public function SyncReceivedInvoices(Request $request)
 	{
+		$url = env("ETA_URL")."/documents/recent";
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->get($url, [
+			"PageSize" => "10",
+			"PageNo" => "1",
+			"InvoiceDirection" => "received"	
+		]);
+		$collection = $response['result'];
+		foreach($collection as $item) {
+			try{
+				$invoice2 = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
+				if ($invoice2)
+				{
+					$invoice2->status = $item['status'];
+					//$invoice2->statusreason = $item['documentStatusReason'];
+					$invoice2->save();
+				} else {
+					//recover missing item
+					$this->AddMissingETAInvoice($request, $item['uuid']);
+				}
+			} catch (Exception $e) {}
+		};
+		return $response['metadata'];
 	}
 
 	public function SyncIssuedInvoices(Request $request)
@@ -605,6 +628,58 @@ class ETAController extends Controller
 		//error_log(json_encode($invoices));
 	}
 
+	public function AddMissingETAInvoice($request, $uuid) {
+		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$this->AuthenticateETA($request);
+		$url = sprintf($urlbase, $uuid);
+		$response = Http::withToken($this->token)->get($url);
+		//$document = json_decode($response['document']);
+		//error_log($response);
+		$invoice = new ETAInvoice();
+		//if ($response['status'] !== 'Valid') return;
+		foreach($invoice->getFillable() as $field)
+			$invoice[$field] = null;
+		$invoice->createdByUserId = 'N/A';
+
+		foreach($invoice->getFillable() as $field)
+			if(isset($response[$field]))
+				$invoice[$field] = $response[$field];
+		
+		$errors = "";
+		$steps = $response['validationResults']['validationSteps'];
+		foreach($steps as $step) {
+			if ($step['status'] != "Invalid")
+				continue;
+			//if(!$step['error']) continue;
+			$errors = $errors . "," .  $step['error']['error'];
+			if ($step['error']['innerError'])
+				foreach($step['error']['innerError'] as $inner)
+					$errors = $errors . "," .  $inner['error'];
+		}
+		//$invoice->statusreason = $errors;
+		$invoice->save();
+		/*
+		foreach($document->invoiceLines as $line) {
+			$unitValue = new Value((array)$line->unitValue);
+			$unitValue->save();
+			$invoiceline = new InvoiceLine((array)$line);
+			$invoiceline->invoice_id = $invoice->Id;
+			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->save();
+			foreach($line->taxableItems as $taxitem) {
+				$item = new TaxableItem((array)$taxitem);
+				$item->invoiceline_id = $invoiceline->Id;
+				$item->save();
+			}
+		}
+		foreach($document->taxTotals as $totalTax) {
+			$taxTotal = new TaxTotal((array)$totalTax);
+			$taxTotal->invoice_id = $invoice->Id;
+			$taxTotal->save();
+		}*/
+	}
+
+
 	public function AddMissingInvoice($request, $uuid) {
 		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$this->AuthenticateETA($request);
@@ -682,7 +757,7 @@ class ETAController extends Controller
 		}
 	}
 
-	public function LoadMissingInvoices() {
+	public function LoadMissingInvoices() {	
 		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$oldinv = Invoice::whereNotNull('uuid')->pluck('uuid');
 		$missing = ETAInvoice::whereNotIn('uuid', $oldinv)->pluck('uuid');
