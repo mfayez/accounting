@@ -8,7 +8,8 @@
 			<div class="grid grid-cols-4 gap-4 border-b border-gray-20 pb-4">
 				<div class="col-span-2">
 					<jet-label :value="__('Item')" />
-					<multiselect v-model="item.item" :options="items" label="codeNamePrimaryLang" :placeholder="__('Select item')"/>
+					<multiselect v-model="item.item" :options="items" 
+						:label="this.$page.props.locale == 'ar' ? 'codeNameSecondaryLang' : 'codeNamePrimaryLang'" :placeholder="__('Select item')"/>
 				</div>
 				<div class="col-span-2">
 					<jet-label :value="__('Units')" />
