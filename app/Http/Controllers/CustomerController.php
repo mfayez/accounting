@@ -96,7 +96,7 @@ class CustomerController extends Controller
 		$request->validate([
             'name' 							=> ['required', 'string', 'max:255'],
             'receiver_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
             'code'				 			=> ['nullable', 'string', 'max:255'],
 			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
 			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
@@ -163,7 +163,7 @@ class CustomerController extends Controller
 		$data = $request->validate([
             'name' 							=> ['required', 'string', 'max:255'],
             'receiver_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
             'code'				 			=> ['nullable', 'string', 'max:255'],
 			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
 			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
