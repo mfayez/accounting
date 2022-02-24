@@ -310,7 +310,7 @@ class ETAController extends Controller
 
 	public function SyncItems(Request $request)
 	{
-		$url = env("ETA_URL")."/codetypes/requests/my";
+		$url = env("ETA_URL")."/codetypes/codes/my";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "10",
@@ -318,7 +318,11 @@ class ETAController extends Controller
 		]);
 		$collection = $response['result'];
 		foreach($collection as $item) {
-			$item2 = ETAItem::updateOrCreate(['itemCode' => $item['itemCode']], $item);
+			if ($item["codeTypeNamePrimaryLang"] == "GS1")
+				$item2 = ETAItem::updateOrCreate(['itemCode' => $item['codeLookupValue']], $item);
+			else
+				$item2 = ETAItem::updateOrCreate(['itemCode' => $item['itemCode']], $item);
+
 			$item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
             $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
             $item2->ownerTaxpayernameAr = $item['ownerTaxpayer']['nameAr'];

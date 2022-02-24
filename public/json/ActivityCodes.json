@@ -1,17 +1,22 @@
 [
   {
-    "code": "0146",
-    "Desc_en": "Poultry farming",
-    "Desc_ar": "تربية الدواجن"
+    "code": "2011",
+    "Desc_en": "Basic chemicals",
+    "Desc_ar": "المواد الكيميائية الاساسية"
   },
   {
-    "code": "0161",
-    "Desc_en": "Support activities for crop production",
-    "Desc_ar": "الانشطة الداعمة لانتاج المحاصيل"
+    "code": "2012",
+    "Desc_en": "Manufacture of fertilizers and nitrogen compounds",
+    "Desc_ar": "صناعة الاسمدة والمركبات الازوتية"
   },
   {
-    "code": "4630",
-    "Desc_en": "Wholesale trade of food, beverages and tobacco",
-    "Desc_ar": "تجارة الجملة الخاصة بالاغذية والمشرؤبات والتبغ"
-  }
+    "code": "2100",
+    "Desc_en": "Manufacture of pharmaceutical, chemical, and plant products",
+    "Desc_ar": "صناعة المستحضرات الصيدلانية والكيميائية الدواءية والمنتجات النباتية"
+  },
+  {
+    "code": "6920",
+    "Desc_en": "Accounting, auditing, bookkeeping and tax advice activities",
+    "Desc_ar": "الانشطة المحاسبية والمراجعة ومسك الدفاتر والاستشارات الضرائبية"
+  } 
 ]

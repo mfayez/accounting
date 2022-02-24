@@ -1,5 +1,5 @@
-chown -R :nginx ./storage
-chown -R :nginx ./bootstrap/cache
+chown -R :www-data ./storage
+chown -R :www-data ./bootstrap/cache
 chmod -R 0777 ./storage
 chmod -R 0775 ./bootstrap/cache
 semanage fcontext -a -t httpd_sys_rw_content_t './storage(/.*)?'
