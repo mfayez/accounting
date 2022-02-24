@@ -225,7 +225,7 @@
 			},
 			onClose: function() {
                 this.currentItem.description = this.$page.props.locale == "ar" ? 
-					this.currentItem.item.descriptionPrimaryLang : this.currentItem.item.descriptionSecondaryLang;
+					 this.currentItem.item.descriptionSecondaryLang : this.currentItem.item.descriptionPrimaryLang; 
 
 				this.currentItem.itemType= this.currentItem.item.codeTypeName;
 				this.currentItem.itemCode= this.currentItem.item.itemCode;
