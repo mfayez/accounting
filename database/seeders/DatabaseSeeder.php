@@ -19,6 +19,7 @@ use App\Models\TaxTotal;
 use App\Models\User;
 use App\Models\Team;
 use App\Models\Value;
+use App\Models\Settings;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,5 +47,10 @@ class DatabaseSeeder extends Seeder
 		$item1->password = Hash::make("123456789");
 		$item1->current_team_id = 1;
 		$item1->save();
+
+		$item = new Settings(["name" => "footer","type" =>"invoice settings", "value" =>""]);
+		$item->save();
+		$item = new Settings(["name" => "showQR","type" =>"invoice settings", "value" =>"0"]);
+		$item->save();
     }
 }

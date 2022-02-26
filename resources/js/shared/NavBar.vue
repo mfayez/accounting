@@ -238,6 +238,14 @@
                                 >
                                     {{ __("Detailed Summary") }}
                                 </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg9()"
+                                    href="#"
+                                >
+                                    {{ __("Invoice Settings") }}
+                                </dropdown-link>
+
                             </template>
                         </dropdown>
                     </div>
@@ -277,6 +285,14 @@
                                     v-if="$page.props.user.id == 1"
                                 >
                                     {{ __("Users") }}
+                                </dropdown-link>
+                                 <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg10()"
+                                    v-if="$page.props.user.id == 1"
+                                    href="#"
+                                >
+                                    {{ __("Settings") }}
                                 </dropdown-link>
 
                                 <dropdown-link
@@ -323,6 +339,8 @@ export default {
         "open:dlg6",
         "open:dlg7",
         "open:dlg8",
+        "open:dlg9",
+        "open:dlg10",
     ],
     data() {
         return {
@@ -368,6 +386,12 @@ export default {
         },
         openDlg8() {
             this.$emit("open:dlg8");
+        },
+        openDlg9() {
+            this.$emit("open:dlg9");
+        },
+        openDlg10() {
+            this.$emit("open:dlg10");
         },
     },
     computed: {

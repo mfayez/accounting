@@ -133,7 +133,11 @@
 			items: {
 				Type: Object,
 				default: null
-			}
+			},
+			automatic: {
+				Type: boolean,
+				default: true
+			},
 		},
 		data () {
             return {

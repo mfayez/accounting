@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -59,6 +60,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/json/branches', [BranchController::class, 'index_json'])->name("json.branches");
     Route::get('/json/customers', [CustomerController::class, 'index_json'])->name("json.customers");
     Route::get('/json/eta/items', [ETAController::class, 'indexItems_json'])->name("json.eta.items");
+    
+	Route::get ('/json/settings', [SettingsController::class, 'index_json'])->name("settings.json");
+	Route::post('/json/settings', [SettingsController::class, 'store'])->name("settings.store");
+
     Route::post('/invoice/copy' , [ETAController::class , 'saveCopy'])->name('invoices.copy');
     Route::post('/ETA/Items/Upload', [ETAController::class, 'UploadItem'])->name("eta.items.upload");
     Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");

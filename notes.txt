@@ -1,0 +1,4 @@
+Users must view all customers;
+drop tax type after adding it once
+logo per branch
+idownload summary not details

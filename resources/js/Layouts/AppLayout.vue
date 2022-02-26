@@ -8,6 +8,8 @@
         <upload-invoices-dialog ref="dlg6" />
         <upload-items-dialog ref="dlg7" />
         <new-user-dialog ref="dlg8" />
+        <settings-dialog1 ref="dlg9" />
+        <settings-dialog2 ref="dlg10" />
         <nav-bar
             @open:dlg1="openDlg1"
             @open:dlg2="openDlg2"
@@ -17,6 +19,8 @@
             @open:dlg6="openDlg6"
             @open:dlg7="openDlg7"
             @open:dlg8="openDlg8"
+            @open:dlg9="openDlg9"
+            @open:dlg10="openDlg10"
         />
 
         <div class="min-h-screen bg-gray-100 pb-5">
@@ -40,6 +44,8 @@ import LoadItemsDialog from "@/Pages/Items/Load";
 import LoadInvoicesDialog from "@/Pages/Invoices/Load";
 import NewItemDialog from "@/Pages/Items/Edit";
 import UploadInvoicesDialog from "@/Pages/Invoices/Upload";
+import SettingsDialog1 from "@/Pages/Reports/Settings";
+import SettingsDialog2 from "@/Pages/Application/Settings";
 import UploadItemsDialog from "@/Pages/Items/Upload";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
@@ -55,6 +61,8 @@ export default {
         NewBranchDialog,
         LoadItemsDialog,
         LoadInvoicesDialog,
+		SettingsDialog1,
+		SettingsDialog2,
         NavBar,
         AppFooter,
         FlashMessage,
@@ -89,6 +97,12 @@ export default {
         },
         openDlg8() {
             this.$refs.dlg8.ShowDialog();
+        },
+        openDlg9() {
+            this.$refs.dlg9.ShowDialog();
+        },
+        openDlg10() {
+            this.$refs.dlg10.ShowDialog();
         },
     },
     computed: {
