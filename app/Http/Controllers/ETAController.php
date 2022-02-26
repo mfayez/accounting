@@ -341,10 +341,10 @@ class ETAController extends Controller
 		]);
 		$collection = $response['result'];
 		foreach($collection as $item) {
-		    if ($item["codeTypeNamePrimaryLang"] == "GS1")
+		    //if ($item["codeTypeNamePrimaryLang"] == "GS1")
 			$item2 = ETAItem::updateOrCreate(['itemCode' => $item['codeLookupValue']], $item);
-		    else
-			$item2 = ETAItem::updateOrCreate(['itemCode' => $item['itemCode']], $item);
+		    //else
+			//$item2 = ETAItem::updateOrCreate(['itemCode' => $item['itemCode']], $item);
 
 		    $item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
 	            $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
@@ -365,7 +365,7 @@ class ETAController extends Controller
         	    $item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
 	            $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
 		    if ($item2->codeTypeName == null)
-			    $item2->codeTypeName = "GS1";
+			    $item2->codeTypeName = $item["codeTypeNamePrimaryLang"];
 		    if ($item2->descriptionPrimaryLang == null)
 			    $item2->descriptionPrimaryLang = $item2->codeNamePrimaryLang;
 		    if ($item2->descriptionSecondaryLang == null)
@@ -699,7 +699,7 @@ class ETAController extends Controller
 		$document = json_decode($response['document']);
 		//error_log($response['uuid']);
 		$invoice = new Invoice((array)$document);
-		if ($invoice->status !== 'Valid') return;
+		//if (strcasecmp($invoice->status, 'Valid') != 0) return;
 
 		$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
 		$receiver = Receiver::where('name', '=', $document->receiver->name)->first();
