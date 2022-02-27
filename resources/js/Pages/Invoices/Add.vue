@@ -30,7 +30,8 @@
 							<multiselect v-model="form.taxpayerActivityCode" label="Desc_ar" :options="activities" placeholder="Select activity" />
 						</div>
 						<TextField v-model="form.dateTimeIssued" itemType="datetime-local" :itemLabel="__('Invoice Date')" />
-						<TextField v-model="form.internalID" itemType="text" :itemLabel="__('Internal Invoice ID')" :active="false"/>
+						<TextField v-model="form.internalID" itemType="text" :itemLabel="__('Internal Invoice ID')" 
+							:active="$page.props.auto_inv_num ? false : true"/>
 						<TextField v-model="form.totalSalesAmount" itemType="number" :itemLabel="__('Total Sales Amount')" :active="false" />
 						<TextField v-model="form.totalDiscountAmount" itemType="number" :itemLabel="__('Total Discount Amount')" :active="false" />
 						<TextField v-model="form.netAmount" itemType="number" :itemLabel="__('Net Amount')" :active="false" />
@@ -134,10 +135,6 @@
 				Type: Object,
 				default: null
 			},
-			automatic: {
-				Type: boolean,
-				default: true
-			},
 		},
 		data () {
             return {
@@ -155,7 +152,7 @@
 					name: '',
 					dateTimeIssued: new Date().toISOString().slice(0, 16),
 					taxpayerActivityCode: '',
-					internalID: 'Automatic',
+					internalID: this.$page.props.auto_inv_num ? 'automatic' : '0',
 					purchaseOrderReference: '',
 					purchaseOrderDescription: '',
 					salesOrderReference: '',

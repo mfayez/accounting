@@ -142,8 +142,8 @@
 	"Time Of Issue": "توقيت الاصدار",
 	"Invoice ETA": "رقم الفاتورة في مصلحة الضرائب",
 	"Billed To": "مقدمة إلي",
-	"Buyer Type": "تصنيف البائع",
-	"Buyer ID": "رقم التسجيل الضريبي للبائع",
+	"Buyer Type": "تصنيف المشتري",
+	"Buyer ID": "رقم التسجيل الضريبي للمشتري",
 	"Issuer Details": "جهة الاصدار",
 	"Issuer Type": "تصنيف جهة الاصدار",
 	"Invoice Total": "اجمالي الفاتورة",
@@ -164,5 +164,9 @@
 	"Giza": "الجيزة",
 	"Gharbia": "الغربية",
 	"Accounting": "حسابات",
-	"Approved By": "يعتمد"
+	"Approved By": "يعتمد",
+	"Invoice Settings": "أعدادت الفاتورة",
+	"Footer": "الهامش السفلي",
+	"Invoice PDF Settings": "أعدادت ملف PDF للفاتورة",
+	"Show QR Code": "عرض كود QR"
 }

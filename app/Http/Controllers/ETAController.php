@@ -33,9 +33,10 @@ class ETAController extends Controller
 {
 
 	public function generateInvoiceNumber($invoice){
+		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
 		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
-		$template = str_replace($values, $repalcements, env("INVOICE_TEMPALTE"));
+		$template = str_replace($values, $repalcements, SETTINGS_VAL('application settings', 'invoiceTemplate', env("INVOICE_TEMPALTE")));
 		$branchNum = $invoice->issuer_id;
 		$inv = DB::select('SELECT max(convert(internalID, unsigned integer)%100000) as LastInv FROM Invoice WHERE issuer_id = ?', [$branchNum]);
 		$invNum = 1;
@@ -190,7 +191,7 @@ class ETAController extends Controller
 		$data['issuer_id'] = $data['issuer']['Id'];
 		$data['receiver_id'] = $data['receiver']['Id'];
 		$invoice = Invoice::updateOrCreate(['Id' => $request->input('Id', -1)], $data);
-		if ($request->isMethod('post') || $invoice->internalID == 'Automatic') {
+		if ($request->isMethod('post') || $invoice->internalID == 'automatic') {
 			$this->generateInvoiceNumber($invoice);
 			$invoice->save();
 		}
@@ -699,9 +700,12 @@ class ETAController extends Controller
 		$document = json_decode($response['document']);
 		//error_log($response['uuid']);
 		$invoice = new Invoice((array)$document);
-		//if (strcasecmp($invoice->status, 'Valid') != 0) return;
+		if (strcasecmp($response['status'], 'Valid') != 0 &&
+			strcasecmp($response['status'], 'Rejected') != 0 &&
+			strcasecmp($response['status'], 'Cancelled') != 0 
+		) return;
 
-		$issuer = Issuer::where('issuer_id', '=', $document->issuer->id)->first();
+		$issuer = Issuer::where('name', '=', $document->issuer->name)->first();
 		$receiver = Receiver::where('name', '=', $document->receiver->name)->first();
 		//$receiver = Receiver::where('receiver_id', '=', $document->receiver->id)->first();
 		$invoice->status = $response['status'];
