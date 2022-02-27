@@ -25,7 +25,7 @@
 <body>
     <div class="wrapper flex justify-between">
         <div class="invoice w-full lg:w-5/6 my-5 shadow-lg rounded-xl rtl:mr-2 ltr:ml-2">
-            <div class="invoice-header flex justify-between p-5">
+            <div class="invoice-header grid grid-cols-3 gap-2">
                 <div class="invoice-details self-center">
                     <div class="mb-2">
                         <h2 class="text-3xl uppercase">@lang('Invoice')</h2>
@@ -42,7 +42,13 @@
                     </div>
                 </div>
                 <div class="logo self-center">
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="w-32 h-32">
+                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="w-48 h-48">
+                </div>
+                <div class="logo self-center h-auto mb-2">
+                    {{
+						QrCode::size(200)->generate(env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"). $data->uuid .
+							'/share/'. $data->longId);
+					}}
                 </div>
             </div>
             <hr>
@@ -133,6 +139,24 @@
 					<h4 id="tafqit" class="capitalize text-gray-600 text-xl font-bold">
 					</h4>
                 </div>
+        <hr>
+		<table style="width:100%;"><tbody><tr>
+			<td style="width:50px;"></td>
+			<td style="width:50%;"><h4 class="capitalize text-gray-600 text-xl font-bold"> {{__('Accounting') }}</h4></td>
+			<td style="width:50px;"></td>
+			<td style="width:50%;"><h4 class="capitalize text-gray-600 text-xl font-bold"> {{__('Approved By') }}</h4></td>
+			</tr><tr>
+			<td style="width:50px;"></td>
+			<td style="width:50%;"><h4 class="capitalize text-gray-600 text-xl font-bold"> ---------------------</h4></td>
+			<td style="width:50px;"></td>
+			<td style="width:50%;"><h4 class="capitalize text-gray-600 text-xl font-bold"> ---------------------</h4></td>
+		</tr></tbody></table>
+        <hr>
+		<table style="width:100%;margin-top:100px"><tbody><tr>
+			<td style="width:50px;"></td>
+			<td> <h4 class="capitalize text-gray-600 text-xl font-bold">{{ SETTINGS_VAL('invoice settings', 'footer', ''); }}</h4></td>
+		</tr></tbody></table>
+
             </div>
         </div>
         <div class="btns my-5 w-2/12 text-center">

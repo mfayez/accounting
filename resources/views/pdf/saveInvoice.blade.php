@@ -42,11 +42,15 @@
 
             <div class="invoice-details">
 
-                <ul>
+			<table>
+				<tbody>
+					<tr>
+	<td>	
+			<ul>
 
-                    <li class="pb-2 text-gray-600">{{ __('Invoice Number') }}: {{ $data->internalID }}</li>
+			<li class="pb-2 text-gray-600">{{ __('Invoice Number') }}: {{ $data->internalID }}</li>
 
-                    <li class="text-gray-600 pb-2">{{ __('Date Of Issue') }}: {{
+			<li class="text-gray-600 pb-2">{{ __('Date Of Issue') }}: {{
 
                         \Carbon\Carbon::parse($data->dateTimeIssued)->toDateString() }}</li>
 
@@ -57,12 +61,26 @@
                     <li class="text-gray-600">{{ __('Invoice ETA') }}: {{ $data->uuid ?? '-' }}</li>
 
                 </ul>
+	</td><td>
+                <div>
 
-                <div class="logo">
-
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" width="100" height="100">
+                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" width="150" height="150">
 
                 </div>
+	</td><td>
+                <div>
+                    {!!
+						strcmp(SETTINGS_VAL('invoice settings', 'showQR', ''), '1') == 0 ?
+						str_replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "", 
+						QrCode::size(150)->generate(env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"). $data->uuid .
+						'/share/'. $data->longId))
+						: '';
+					!!}
+                </div>
+	</td>
+					</tr>
+				</tbody>
+			</table>
 
             </div>
 
@@ -230,14 +248,25 @@
 
             <div class="invoice-total">
 
-                <h4>{{ __('Invoice Total') }}: {{ __('EGP') }} {{ $data->totalAmount }}</h4>
+                <h4>{{ __('Invoice Total') }}: {{ __('EGP') }} {{ round($data->totalAmount, 2) }}</h4>
+				<h4>{{ Numbers::TafqeetMoney(round($data->totalAmount, 2),'EGP');}} </h4>
 
             </div>
 
         </div>
 
         <hr>
-
+		<table style="width:100%;"><tbody><tr>
+			<td style="width:50px;"></td>
+			<td style="width:50%;"> {{__('Accounting') }}</td>
+			<td style="width:50px;"></td>
+			<td style="width:50%;"> {{__('Approved by') }}</td>
+		</tr></tbody></table>
+        <hr>
+		<table style="width:100%;"><tbody><tr>
+			<td style="width:50px;"></td>
+			<td> {{ SETTINGS_VAL('invoice settings', 'footer', ''); }}</td>
+		</tr></tbody></table>
     </div>
 
 </body>

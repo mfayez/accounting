@@ -1494,6 +1494,9 @@ select {
 .h-24 {
 	height: 6rem;
 }
+.h-auto {
+	height: auto;
+}
 .max-h-72 {
 	max-height: 18rem;
 }

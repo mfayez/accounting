@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
 		Maatwebsite\Excel\ExcelServiceProvider::class,
+		Alkoumi\LaravelArabicNumbers\LaravelArabicNumbersServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -232,6 +233,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+		'Numbers' => Alkoumi\LaravelArabicNumbers\Numbers::class,
 
     ],
 

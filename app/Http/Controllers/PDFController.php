@@ -22,10 +22,17 @@ class PDFController extends Controller
 
     public function downloadInvoice(int $id, PDF $pdf)
     {
-
+		$data = Invoice::with('issuer')
+            ->with("receiver")
+            ->with("invoiceLines")
+            ->with("invoiceLines.unitValue")
+            ->with("taxTotals")
+            ->with("invoiceLines.taxableItems")
+            ->with('receiver.address')
+            ->find($id);
+ 		//return view('pdf.saveInvoice', compact('data'));
         return PDF::loadView('pdf.saveInvoice', [
-            'data' => Invoice::with(['issuer', 'receiver', 'invoiceLines', 'invoiceLines.unitValue', 'taxTotals', 'invoiceLines.taxableItems', 'receiver.address'])
-                ->find($id),
+            'data' => $data 
         ])->download("{$id}.pdf");
     }
 }
