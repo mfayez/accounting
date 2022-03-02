@@ -169,7 +169,10 @@
 					{
 						var taxitem = this.item.taxItems[j];
 						taxitem.value = taxitem.percentage * this.item.netTotal / 100.0
-						this.item.total += taxitem.value;
+						if (taxitem.taxType.Code == 'T4')
+							this.item.total -= taxitem.value;
+						else
+							this.item.total += taxitem.value;
 					}
 				}
 			},
