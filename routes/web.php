@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/reports/summary', [ReportsController::class, 'summary'])->name("reports.summary.details");
     Route::post('/reports/summary/data', [ReportsController::class, 'summaryData'])->name("reports.summary.details.data");
     Route::post('/reports/summary/download', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
+    Route::post('/reports/summaryOnly/download', [ReportsController::class, 'summaryOnlyData'])->name("reports.summary.summaryOnlyData.download");
 
 #excel exports
     Route::get('/excel/items', function () {

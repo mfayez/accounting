@@ -22,13 +22,13 @@ ul li {
   width: 100%;
 }
 .invoice .invoice-header .invoice-details ul {
-  width: 100%;
+  width: 84%;
 }
 .invoice .invoice-header .invoice-details ul li {
   padding-bottom: 5px;
 }
 .invoice .invoice-header .invoice-details .logo {
-  width: 100%;
+  width: 16%;
 }
 .invoice .invoice-company-address {
   width: 100%;
