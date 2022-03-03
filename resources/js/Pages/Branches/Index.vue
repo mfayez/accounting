@@ -43,6 +43,9 @@
                                 >
                                     {{ __("Type(B|P)") }}
                                 </th>
+                                <th v-if="Object.keys(images).length > 0">
+                                    {{ __("Branch Logo") }}
+                                </th>
                                 <th @click.prevent="">{{ __("Actions") }}</th>
                             </tr>
                         </template>
@@ -67,6 +70,26 @@
                                             ? __("Business")
                                             : __("Individual")
                                     }}
+                                </td>
+                                <td v-if="Object.keys(images).length > 0">
+                                    <template v-if="images[branch.Id] != 'N/A'">
+                                        <a
+                                            target="_blank"
+                                            :href="
+                                                '/storage/' + images[branch.Id]
+                                            "
+                                        >
+                                            <img
+                                                :src="
+                                                    '/storage/' +
+                                                    images[branch.Id]
+                                                "
+                                                alt="Branch Image"
+                                                class="w-40 h-20 object-cover"
+                                            />
+                                        </a>
+                                    </template>
+                                    <span v-else>{{ __("No Image") }}</span>
                                 </td>
                                 <td>
                                     <secondary-button
@@ -102,6 +125,7 @@ import {
 } from "@protonemedia/inertiajs-tables-laravel-query-builder";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
+import axios from "axios";
 
 export default {
     mixins: [InteractsWithQueryBuilder],
@@ -119,6 +143,7 @@ export default {
     data() {
         return {
             branch: Object,
+            images: Object,
         };
     },
     methods: {
@@ -144,6 +169,19 @@ export default {
                     //this.$refs.password.focus()
                 });
         },
+        getImages() {
+            const ids = this.branches.data.map((branch) => branch.Id).join(",");
+
+            axios
+                .get(`/getBranchesImages/${ids}`)
+                .then((res) => {
+                    this.images = res.data;
+                })
+                .catch((err) => console.error(err));
+        },
+    },
+    mounted() {
+        this.getImages();
     },
 };
 </script>

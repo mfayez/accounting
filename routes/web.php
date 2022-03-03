@@ -57,6 +57,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'users' => UserController::class,
     ]);
 
+    Route::get('/getBranchesImages/{ids}' , [BranchController::class , 'getBranchesimages'])->name('branches.getImages');
+
     Route::get('/json/branches', [BranchController::class, 'index_json'])->name("json.branches");
     Route::get('/json/customers', [CustomerController::class, 'index_json'])->name("json.customers");
     Route::get('/json/eta/items', [ETAController::class, 'indexItems_json'])->name("json.eta.items");

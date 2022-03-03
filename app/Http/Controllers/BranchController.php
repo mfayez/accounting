@@ -18,14 +18,15 @@ use App\Models\TaxTotal;
 use App\Models\Membership;
 use App\Models\InvoiceLine;
 use App\Models\TaxableItem;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TeamInvitation;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 
@@ -230,5 +231,23 @@ class BranchController extends Controller
 
 		$branch->delete(); 
 		$address->delete();
+    }
+
+    public function getBranchesimages($branchesIds) {
+        
+        $ids = explode(',' , $branchesIds);
+
+        $images = [];
+
+        foreach($ids as $id) {
+            
+            if(count($imageDir = Storage::allFiles('public/uploads/branchesImages/' . $id)) > 0) {
+                $images[$id] = Str::of($imageDir[0])->replaceFirst('public/' , '');
+            } else {
+                $images[$id] = "N/A";
+            }
+        }
+
+        return $images;
     }
 }
