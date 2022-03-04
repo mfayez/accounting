@@ -71,6 +71,19 @@
                                 v-model="form.address.postalCode"
                             />
                         </div>
+                        <div class="mt-4">
+                            <jet-label
+                                for="branchLogo"
+                                :value="__('Branch Logo')"
+                            ></jet-label>
+                            <input
+                                type="file"
+                                class="mt-1 block w-full py-2"
+                                required
+                                accept=".jpg,.png,.jpeg"
+                                @change="branchLogo($event)"
+                            />
+                        </div>
                     </div>
                     <div>
                         <div>
@@ -213,6 +226,7 @@ export default {
                     postalCode: "",
                     additionalInformation: "",
                 },
+                branchLogo: "",
             }),
             showDialog: false,
         };
@@ -241,10 +255,39 @@ export default {
             this.showDialog = false;
         },
         SaveBranch() {
+            const form = new FormData();
+            if (this.form.branchLogo) {
+                form.append("branchLogo", this.form.branchLogo);
+            }
+            form.append("name", this.form.name);
+            form.append("issuer_id", this.form.issuer_id);
+            form.append("type", this.form.type);
+            form.append("address[branchID]", this.form.address.branchID);
+            form.append("address[country]", this.form.address.country);
+            form.append("address[governate]", this.form.address.governate);
+            form.append("address[regionCity]", this.form.address.regionCity);
+            form.append("address[street]", this.form.address.street);
+            form.append(
+                "address[buildingNumber]",
+                this.form.address.buildingNumber
+            );
+            form.append("address[postalCode]", this.form.address.postalCode);
+            form.append(
+                "address[additionalInformation]",
+                this.form.address.additionalInformation
+            );
+
+            form.append("_method", "PUT");
+
             axios
-                .put(
+                .post(
                     route("branches.update", { branch: this.branch.Id }),
-                    this.form
+                    form,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
                 )
                 .then((response) => {
                     this.$store.dispatch("setSuccessFlashMessage", true);
@@ -262,8 +305,32 @@ export default {
                 });
         },
         SaveNewBranch() {
+            const form = new FormData();
+            form.append("branchLogo", this.form.branchLogo);
+            form.append("name", this.form.name);
+            form.append("issuer_id", this.form.issuer_id);
+            form.append("type", this.form.type);
+            form.append("address[branchID]", this.form.address.branchID);
+            form.append("address[country]", this.form.address.country);
+            form.append("address[governate]", this.form.address.governate);
+            form.append("address[regionCity]", this.form.address.regionCity);
+            form.append("address[street]", this.form.address.street);
+            form.append(
+                "address[buildingNumber]",
+                this.form.address.buildingNumber
+            );
+            form.append("address[postalCode]", this.form.address.postalCode);
+            form.append(
+                "address[additionalInformation]",
+                this.form.address.additionalInformation
+            );
+
             axios
-                .post(route("branches.store"), this.form)
+                .post(route("branches.store"), form, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
                 .then((response) => {
                     this.$store.dispatch("setSuccessFlashMessage", true);
                     this.processing = false;
@@ -285,6 +352,9 @@ export default {
         submit() {
             if (this.branch == null) this.SaveNewBranch();
             else this.SaveBranch();
+        },
+        branchLogo(e) {
+            this.form.branchLogo = e.target.files[0];
         },
     },
 };
