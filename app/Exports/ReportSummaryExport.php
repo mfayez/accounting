@@ -4,10 +4,12 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class ReportSummaryExport implements FromArray , WithStartRow , WithHeadings
+class ReportSummaryExport implements FromArray , WithStartRow , WithHeadings , WithEvents
 {
     public $data;
 
@@ -20,17 +22,6 @@ class ReportSummaryExport implements FromArray , WithStartRow , WithHeadings
     */
     public function array(): array
     {
-        // foreach($this->data as $row) {
-        //     return [
-        //         __('Invoice Number') => $row->Id,
-        //         __('Month') => $row->Month,
-        //         __('Date') => $row->Date,
-        //         __('Tax Total') => $row->TaxTotal,
-        //         __('Client Name') => $row->Client,
-        //         __('Total Amount') => $row->Total
-        //     ];
-        // }  
-
         return $this->data;
     }
 
@@ -48,6 +39,15 @@ class ReportSummaryExport implements FromArray , WithStartRow , WithHeadings
             __('Tax Total'),
             __('Client Name'),
             __('Total Amount')
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $event->sheet->getDelegate()->setRightToLeft(app()->getLocale() == 'en' ? false : true);
+            }
         ];
     }
 }

@@ -168,5 +168,6 @@
 	"Invoice Settings": "أعدادت الفاتورة",
 	"Footer": "الهامش السفلي",
 	"Invoice PDF Settings": "أعدادت ملف PDF للفاتورة",
-	"Show QR Code": "عرض كود QR"
+	"Show QR Code": "عرض كود QR",
+	"Download Summary" : "تحميل الملخص"
 }
