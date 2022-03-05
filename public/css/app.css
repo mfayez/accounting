@@ -1359,6 +1359,9 @@ select {
 .mb-4 {
 	margin-bottom: 1rem;
 }
+.-mt-px {
+	margin-top: -1px;
+}
 .mb-2 {
 	margin-bottom: 0.5rem;
 }
@@ -1367,9 +1370,6 @@ select {
 }
 .mb-5 {
 	margin-bottom: 1.25rem;
-}
-.-mt-px {
-	margin-top: -1px;
 }
 .mb-10 {
 	margin-bottom: 2.5rem;
@@ -1608,11 +1608,11 @@ select {
 .max-w-xl {
 	max-width: 36rem;
 }
-.max-w-sm {
-	max-width: 24rem;
-}
 .max-w-6xl {
 	max-width: 72rem;
+}
+.max-w-sm {
+	max-width: 24rem;
 }
 .max-w-full {
 	max-width: 100%;
@@ -1959,6 +1959,10 @@ select {
 	--tw-border-opacity: 1;
 	border-color: rgba(244, 245, 247, var(--tw-border-opacity));
 }
+.border-gray-400 {
+	--tw-border-opacity: 1;
+	border-color: rgba(159, 166, 178, var(--tw-border-opacity));
+}
 .border-\[\#eceeef\] {
 	--tw-border-opacity: 1;
 	border-color: rgba(236, 238, 239, var(--tw-border-opacity));
@@ -1978,10 +1982,6 @@ select {
 .border-indigo-500 {
 	--tw-border-opacity: 1;
 	border-color: rgba(144, 97, 249, var(--tw-border-opacity));
-}
-.border-gray-400 {
-	--tw-border-opacity: 1;
-	border-color: rgba(159, 166, 178, var(--tw-border-opacity));
 }
 .border-gray-600 {
 	--tw-border-opacity: 1;
@@ -2310,14 +2310,14 @@ select {
 .pb-1 {
 	padding-bottom: 0.25rem;
 }
+.pt-8 {
+	padding-top: 2rem;
+}
 .pb-2 {
 	padding-bottom: 0.5rem;
 }
 .pb-5 {
 	padding-bottom: 1.25rem;
-}
-.pt-8 {
-	padding-top: 2rem;
 }
 .pt-0 {
 	padding-top: 0px;
@@ -2439,11 +2439,11 @@ select {
 .tracking-widest {
 	letter-spacing: 0.1em;
 }
-.tracking-wide {
-	letter-spacing: 0.025em;
-}
 .tracking-wider {
 	letter-spacing: 0.05em;
+}
+.tracking-wide {
+	letter-spacing: 0.025em;
 }
 .tracking-tight {
 	letter-spacing: -0.025em;
@@ -2508,6 +2508,14 @@ select {
 	--tw-text-opacity: 1;
 	color: rgba(16, 185, 129, var(--tw-text-opacity));
 }
+.text-gray-200 {
+	--tw-text-opacity: 1;
+	color: rgba(229, 231, 235, var(--tw-text-opacity));
+}
+.text-gray-300 {
+	--tw-text-opacity: 1;
+	color: rgba(210, 214, 220, var(--tw-text-opacity));
+}
 .text-black {
 	--tw-text-opacity: 1;
 	color: rgba(0, 0, 0, var(--tw-text-opacity));
@@ -2516,17 +2524,9 @@ select {
 	--tw-text-opacity: 1;
 	color: rgba(141, 162, 251, var(--tw-text-opacity));
 }
-.text-gray-300 {
-	--tw-text-opacity: 1;
-	color: rgba(210, 214, 220, var(--tw-text-opacity));
-}
 .text-blue-500 {
 	--tw-text-opacity: 1;
 	color: rgba(104, 117, 245, var(--tw-text-opacity));
-}
-.text-gray-200 {
-	--tw-text-opacity: 1;
-	color: rgba(229, 231, 235, var(--tw-text-opacity));
 }
 .text-\[\#4099de\] {
 	--tw-text-opacity: 1;
