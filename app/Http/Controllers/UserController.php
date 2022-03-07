@@ -43,7 +43,6 @@ class UserController extends Controller
         });
 
         $branches = QueryBuilder::for(User::class)
-			->with("receivers")
 			->with("issuers")
         	->defaultSort('name')
             ->allowedSorts(['Id', 'name', 'email'] )
@@ -88,18 +87,15 @@ class UserController extends Controller
 			'email' 	=> ['required', 'string', 'email', 'max:255', Rule::unique('users')],
             'password'	=> ['required', 'min:8'],
 			'issuers'	=> ['array'], 
-			'receivers'	=> ['array'], 
             'current_team_id'	=> ['required', 'integer', Rule::in([1,2,3,4,5])]
         ]);
 		
         $item2 = new User($data);
 		$item2->password = Hash::make($item2->password);
 		$item2->save();
+
 		if ($request->has('issuers')){
 			$item2->issuers()->attach($data['issuers']);
-		}
-		if ($request->has('receivers')){
-			$item2->receivers()->attach($data['receivers']);
 		}
 
         return $item2;
@@ -140,7 +136,6 @@ class UserController extends Controller
             'name' 		=> ['required', 'string', 'max:255'],
 			'email' 	=> ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
 			'issuers'	=> ['array'], 
-			'receivers'	=> ['array'], 
             'current_team_id'	=> ['required', 'integer', Rule::in([1,2,3,4,5])]
         ]);
 		
@@ -148,10 +143,6 @@ class UserController extends Controller
 		if ($request->has('issuers')){
 			$item->issuers()->detach();
 			$item->issuers()->attach($data['issuers']);
-		}
-		if ($request->has('receivers')){
-			$item->receivers()->detach();
-			$item->receivers()->attach($data['receivers']);
 		}
 		$item->update($data);
 		if ($request->has('password') && strlen($request->input('password')) > 0)
