@@ -260,7 +260,7 @@
 			<td style="width:50px;"></td>
 			<td style="width:50%;"> {{__('Accounting') }}</td>
 			<td style="width:50px;"></td>
-			<td style="width:50%;"> {{__('Approved by') }}</td>
+			<td style="width:50%;"> {{__('Approved By') }}</td>
 		</tr></tbody></table>
         <hr>
 		<table style="width:100%;"><tbody><tr>

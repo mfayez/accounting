@@ -19,7 +19,6 @@
             }
         }
     </style>
-	<script type="text/javascript" src="{{ URL::asset('js/tafqit.js') }}"></script>
 </head>
 
 <body>
@@ -136,7 +135,7 @@
                     <h4 class="capitalize text-gray-600 text-xl font-bold">{{ __('Invoice Total') }}: {{ __('EGP')
                         }} {{sprintf("%0.2f", $data->totalAmount)}}
                     </h4>
-					<h4 id="tafqit" class="capitalize text-gray-600 text-xl font-bold">
+					<h4>{{ Numbers::TafqeetMoney(round($data->totalAmount, 2),'EGP');}} </h4>
 					</h4>
                 </div>
         <hr>
@@ -187,16 +186,6 @@
 </body>
 <script>
     document.querySelector('#print').addEventListener('click' , (e) => print());
-	document.addEventListener("DOMContentLoaded", function(event) { 
-		var temp = {{$data->totalAmount}};
-		var pennies = temp * 100 % 100;
-		if (pennies == 0)
-			document.querySelector('#tafqit').innerText= tafqit({{round($data->totalAmount, 0)}}) +" جنيهاً";
-		else
-			document.querySelector('#tafqit').innerText= tafqit({{round($data->totalAmount, 0)}}) +" جنيهاً و " + tafqit(pennies) + " قرشاً";
-			
-		
-	});
 </script>
 
 </html>
