@@ -106,9 +106,35 @@
     	                        v-model="form.address.governate"
         	                    class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
             	            >
-                  	          <option value="Cairo">{{ __("Cairo") }}</option>
-                  	          <option value="Giza">{{ __("Giza") }}</option>
-                  	          <option value="Gharbia">{{ __("Gharbia") }}</option>
+                               <option value="Cairo">{{ __("Cairo") }}</option>
+                               <option value="Giza">{{ __("Giza") }}</option>
+                               <option value="Alexandria">{{ __("Alexandria") }}</option>
+                               <option value="Gharbiya">{{ __("Gharbiya") }}</option>
+                               <option value="Qalioubiya">{{ __("Qalioubiya") }}</option>
+                               <option value="Assiut">{{ __("Assiut") }}</option>
+                               <option value="Aswan">{{ __("Aswan") }}</option>
+                               <option value="Beheira">{{ __("Beheira") }}</option>
+                               <option value="Bani Suef">{{ __("Bani Suef") }}</option>
+                               <option value="Daqahliya">{{ __("Daqahliya") }}</option>
+                               <option value="Damietta">{{ __("Damietta") }}</option>
+                               <option value="Fayyoum">{{ __("Fayyoum") }}</option>
+                               <option value="Helwan">{{ __("Helwan") }}</option>
+                               <option value="Ismailia">{{ __("Ismailia") }}</option>
+                               <option value="Kafr El Sheikh">{{ __("Kafr El Sheikh") }}</option>
+                               <option value="Luxor">{{ __("Luxor") }}</option>
+                               <option value="Marsa Matrouh">{{ __("Marsa Matrouh") }}</option>
+                               <option value="Minya">{{ __("Minya") }}</option>
+                               <option value="Monofiya">{{ __("Monofiya") }}</option>
+                               <option value="New Valley">{{ __("New Valley") }}</option>
+                               <option value="North Sinai">{{ __("North Sinai") }}</option>
+                               <option value="Port Said">{{ __("Port Said") }}</option>
+                               <option value="Qena">{{ __("Qena") }}</option>
+                               <option value="Red Sea">{{ __("Red Sea") }}</option>
+                               <option value="Sharqiya">{{ __("Sharqiya") }}</option>
+                               <option value="Sohag">{{ __("Sohag") }}</option>
+                               <option value="South Sinai">{{ __("South Sinai") }}</option>
+                               <option value="Suez">{{ __("Suez") }}</option>
+                               <option value="Tanta">{{ __("Tanta") }}</option>
                         	</select>
                         </div>
                         <div class="mt-4">
