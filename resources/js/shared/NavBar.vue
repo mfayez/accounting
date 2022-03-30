@@ -236,7 +236,12 @@
                                 <dropdown-link
                                     :href="route('reports.summary.details')"
                                 >
-                                    {{ __("Detailed Summary") }}
+                                    {{ __("Sales Summary") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    :href="route('reports.summary.purchase')"
+                                >
+                                    {{ __("Purchase Summary") }}
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"

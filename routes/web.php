@@ -89,6 +89,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/reports/summary/data', [ReportsController::class, 'summaryData'])->name("reports.summary.details.data");
     Route::post('/reports/summary/download', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
 
+    Route::get('/reports/purchase', [ReportsController::class, 'purchase'])->name("reports.summary.purchase");
+    Route::post('/reports/purchase/data', [ReportsController::class, 'purchaseData'])->name("reports.summary.purchase.data");
+    Route::post('/reports/purchase/download', [ReportsController::class, 'purchaseDownload'])->name("reports.summary.purchase.download");
+
 #excel exports
     Route::get('/excel/items', function () {
         return App\Models\ETAItem::get()

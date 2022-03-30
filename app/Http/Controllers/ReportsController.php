@@ -56,7 +56,7 @@ class ReportsController extends Controller
 						    left outer join TaxableItem t6 on t6.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and t1.dateTimeIssued between ? and ?
+							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)
 						group by t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount";
 		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		return $data;
@@ -88,7 +88,7 @@ class ReportsController extends Controller
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and t1.dateTimeIssued between ? and ?
+							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)
 						group by t1.Id, t2.description, t2.itemCode";
 		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$items = array();
@@ -137,7 +137,58 @@ class ReportsController extends Controller
 		}
 		$writer = IOFactory::createWriter($file, 'Xlsx');
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="Customer_ExportedData.xls"');
+		header('Content-Disposition: attachment;filename="Sales_ExportedData.xls"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+		//$writer->save('./ExcelTemplates/SalesReport2.xlsx');
+		//return $data1;
+	}
+
+	public function purchase()
+	{
+        return Inertia::render('Reports/Purchase', [
+        ]);
+	}
+
+	public function purchaseData(Request $request)
+	{
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
+							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
+						from ETAInvoices t1 
+						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)";
+		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
+		return $data;
+	}
+	
+	public function purchaseDownload(Request $request)
+	{
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
+							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
+						from ETAInvoices t1 
+						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)";
+		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
+		
+		//render excel file now
+		$reader = IOFactory::createReader('Xlsx');
+		$file = $reader->load('./ExcelTemplates/PurchaseReport.xlsx');
+		$rowIdx = 4;
+		foreach($data as $row){
+			$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), $row->Id);
+			$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Month);
+			$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $row->Date);
+			$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), round($row->Total - $row->Net, 2));
+			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->SellerTaxId);
+			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->Seller);
+			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->Total);
+			$rowIdx++;
+		}
+		$writer = IOFactory::createWriter($file, 'Xlsx');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
 		header('Cache-Control: max-age=0');
 		$writer->save('php://output');
 		//$writer->save('./ExcelTemplates/SalesReport2.xlsx');
