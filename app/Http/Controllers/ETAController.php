@@ -489,6 +489,7 @@ class ETAController extends Controller
 			->with("issuer")
 			->with("invoiceLines")
 			->with("invoiceLines.taxableItems")
+			->with('invoiceLines.unitValue')
 			->whereNotNull('issuer_id')
 			->where(function ($query) use ($upload_id){
 				if ($upload_id)

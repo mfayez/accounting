@@ -34,6 +34,7 @@
 	"Canceled": "ملغاة",
 	"Reject" : "رفض",
 	"Cancel" : "الغاء",
+	"Close" : "أغلاق",
 	"Delete" : "حذف",
 	"pending": "معلقة",
 	"review" : "إعادة النظر",
@@ -196,5 +197,11 @@
 	"Invoice PDF Settings": "أعدادت ملف PDF للفاتورة",
 	"Show QR Code": "عرض كود QR",
 	"Branch Logo" : "صوره الفرع",
-	"No Image": "لا يوجد صورة"
+	"No Image": "لا يوجد صورة",
+	"Date": "تاريخ",
+	"Sales": "مبيعات",
+	"Tax": "ضريبة",
+	"Summary": "ملخص",
+	"Invoice Preview": "أستعراض الفاتورة",
+	"Approve": "أعتماد"
 }

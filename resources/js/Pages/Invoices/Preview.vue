@@ -6,18 +6,18 @@
 
         <template #content>
             <div class="grid grid-cols-10 gap-0 mt-2">
-                <div class="col-span-5">Branch: {{ item.issuer.name }}</div>
-                <div class="col-span-5">Customer: {{ item.receiver.name }}</div>
-                <div class="col-span-5">Date: {{ item.dateTimeIssued }}</div>
+                <div class="col-span-5">{{__('Branch')}}: {{ item.issuer.name }}</div>
+                <div class="col-span-5">{{__('Customer')}}: {{ item.receiver.name }}</div>
+                <div class="col-span-5">{{__('Date')}}: {{ getDate(item.dateTimeIssued) }}</div>
             </div>
-            <div class="grid grid-cols-11 gap-0 mt-2">
-                <div class="bg-gray-400 col-span-3">Item</div>
-                <div class="bg-gray-400 col-span-3">Code</div>
-                <div class="bg-gray-400 col-span-1">Quantity</div>
-                <div class="bg-gray-400 col-span-1">Sales</div>
-                <div class="bg-gray-400 col-span-1">Tax</div>
-                <div class="bg-gray-400 col-span-1">Discount</div>
-                <div class="bg-gray-400 col-span-1">Total</div>
+            <div class="grid grid-cols-10 gap-0 mt-2">
+                <div class="bg-gray-400 col-span-3">{{__('Item')}}</div>
+                <div class="bg-gray-400 col-span-2">{{__('Code')}}</div>
+                <div class="bg-gray-400 col-span-1">{{__('Quantity')}}</div>
+                <div class="bg-gray-400 col-span-1">{{__('Unit Price')}}</div>
+                <div class="bg-gray-400 col-span-1">{{__('Sales')}}</div>
+                <div class="bg-gray-400 col-span-1">{{__('Tax')}}</div>
+                <div class="bg-gray-400 col-span-1">{{__('Total')}}</div>
                 <template
                     v-for="(invline, index) in item.invoice_lines"
                     :key="index"
@@ -29,7 +29,7 @@
                         {{ invline.description }}
                     </div>
                     <div
-                        class="col-span-3"
+                        class="col-span-2"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
                         {{ invline.itemCode }}
@@ -38,57 +38,55 @@
                         class="col-span-1"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
-                        {{ invline.quantity }}
+                        {{ invline.quantity.toFixed(2) }}
                     </div>
                     <div
                         class="col-span-1"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
-                        {{ invline.salesTotal }}
+                        {{ (Math.round(100*invline.unit_value.amountEGP) / 100).toFixed(2)  }}
                     </div>
                     <div
                         class="col-span-1"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
-                        {{ getTaxlines(invline) }}
+                        {{ (Math.round(100*invline.salesTotal) / 100).toFixed(2)  }}
                     </div>
                     <div
                         class="col-span-1"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
-                        {{ invline.itemsDiscount }}
+                        {{ getTaxlines(invline).toFixed(2)  }}
                     </div>
                     <div
                         class="col-span-1"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
-                        {{ invline.total }}
+                        {{ (Math.round(100*invline.total) / 100).toFixed(2) }}
                     </div>
                 </template>
-                <div class="bg-gray-400 col-span-6">Summary</div>
+                <div class="bg-gray-400 col-span-5">{{__('Summary')}}</div>
+                <div class="bg-gray-400 col-span-1">****</div>
                 <div class="bg-gray-400 col-span-1">****</div>
                 <div class="bg-gray-400 col-span-1">
-                    {{ item.totalSalesAmount }}
+                    {{ (Math.round(100*item.totalSalesAmount) / 100).toFixed(2)  }}
                 </div>
-                <div class="bg-gray-400 col-span-1">{{ getTotalTax() }}</div>
-                <div class="bg-gray-400 col-span-1">
-                    {{ item.totalItemsDiscountAmount }}
-                </div>
-                <div class="bg-gray-400 col-span-1">{{ item.totalAmount }}</div>
+                <div class="bg-gray-400 col-span-1">{{ getTotalTax().toFixed(2)  }}</div>
+                <div class="bg-gray-400 col-span-1">{{ (Math.round(100*item.totalAmount) / 100).toFixed(2)  }}</div>
             </div>
         </template>
         <template #footer>
             <div class="flex items-center justify-between mt-4">
                 <jet-secondary-button @click="CancelDlg()">
-                    Cancel
+                    {{__('Close')}}
                 </jet-secondary-button>
                 <div>
                     <jet-button class="ms-2" @click="ApproveItem()">
                         {{ __("Approve") }}
                     </jet-button>
-                    <jet-button class="ms-2" @click="CopyItem()">
+                    <!--<jet-button class="ms-2" @click="CopyItem()">
                         {{ __("Copy") }}
-                    </jet-button>
+                    </jet-button>-->
                 </div>
             </div>
         </template>
@@ -158,6 +156,9 @@ export default {
         CancelDlg() {
             this.showDlg = false;
         },
+		getDate(temp) {
+			return (new Date(temp)).toLocaleDateString();
+		},
         getTaxlines(invLine) {
             var total = 0;
             for (var j = 0; j < invLine.taxable_items.length; j++) {
