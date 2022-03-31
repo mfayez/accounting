@@ -129,7 +129,6 @@ class CustomerController extends Controller
 		$item->receiver_id = $request->input('receiver_id');
 		$item->code = $request->input('code');
         $item2->receiver()->save($item);
-		Auth::user()->receivers()->attach($item->Id);
 
         return \redirect()->route('customers.index')->with('success' , __('Record Created'));
     }
