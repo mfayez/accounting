@@ -40,10 +40,10 @@
                         </ul>
                     </div>
                 </div>
-                <div class="logo self-center">
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="w-48 h-48">
+                <div class="logo mx-auto justify-top ">
+                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="">
                 </div>
-                <div class="logo self-center h-auto mb-2">
+                <div class="w-auto mx-auto h-auto mb-2 me-2">
                     {{
 						QrCode::size(200)->generate(env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"). $data->uuid .
 							'/share/'. $data->longId);

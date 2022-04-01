@@ -6,20 +6,27 @@
 
         <template #content>
             <div class="grid grid-cols-4 gap-4 border-b border-gray-20 pb-4">
-                <div class="col-span-2">
+                <div class="col-span-4">
                     <jet-label :value="__('Item')" />
                     <multiselect
                         v-model="item.item"
                         :options="items"
-                        :label="
-                            this.$page.props.locale == 'ar'
+                        :label="this.$page.props.locale == 'ar'
                                 ? 'codeNameSecondaryLang'
-                                : 'codeNamePrimaryLang'
-                        "
+                                : 'codeNamePrimaryLang'"
+                    	@update:model-value="updateDescription"
                         :placeholder="__('Select item')"
                     />
                 </div>
-                <div class="col-span-2">
+                <div class="col-span-4">
+                    <TextField
+                        v-model="item.description"
+                        itemType="text"
+                        :itemLabel="__('Custom Description')"
+                        :active="$page.props.custom_desc_enabled"
+                    />
+                </div>
+                <div class="col-span-4">
                     <jet-label :value="__('Units')" />
                     <multiselect
                         v-model="item.unit"
@@ -238,6 +245,12 @@ export default {
             this.showDlg = false;
             this.updateTaxTypes();
         },
+		updateDescription() {
+			if (this.$page.props.locale == 'ar')
+				this.item.description = this.item.item.codeNameSecondaryLang;
+			else
+				this.item.description = this.item.item.codeNamePrimaryLang;
+		},
         AddTaxItem() {
             if (!this.item.taxItems || this.item.taxItems.length == 0) {
                 this.item.taxItems = [];
@@ -331,6 +344,7 @@ export default {
                 const savedtaxItems = this.invoice.invoicelines.filter(
                     (line) => line.Id == this.item.Id
                 )[0];
+				if (savedtaxItems == null) return;
 
                 const selectedTaxes = savedtaxItems.taxItems.map(
                     (type) => type.taxType.Code
