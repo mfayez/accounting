@@ -240,6 +240,9 @@ export default {
                 this.item.unit = this.units.find(
                     (option) => option.code === this.item.unitType
                 );
+            this.taxTypes.forEach((type) => {
+                    type.$isDisabled = false;
+            });
         },
         CancelDlg() {
             this.showDlg = false;

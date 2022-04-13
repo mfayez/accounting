@@ -215,6 +215,10 @@ class ETAController extends Controller
 		//$invoice->save();	
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
+			if (!isset($line['amountSold']))
+				$unitValue->amountSold = null;
+			if (!isset($line['currencyExchangeRate']))
+				$unitValue->currencyExchangeRate = null;
 			$unitValue->save();
 			$invoiceline = new InvoiceLine($line);
 			$invoiceline->invoice_id = $invoice->Id;
