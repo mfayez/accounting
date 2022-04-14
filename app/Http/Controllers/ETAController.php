@@ -268,8 +268,52 @@ class ETAController extends Controller
 		return "request rejected by ETA";
 	}
 
+	public function SyncInvoices(Request $request)
+	{
+		//TODO check if there are no branches
+		$myid = Issuer::first()->issuer_id;
+		$url = env("ETA_URL")."/documents/recent";
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->get($url, [
+			"PageSize" => "10",
+			"PageNo" => $request->input("value")
+		]);
+		$collection = $response['result'];
+		foreach($collection as $item) {
+			if ((isset($item['issuer_id']) && $item['issuer_id'] == $myid) ||
+				(isset($item['issuerId']) && $item['issuerId'] == $myid))
+			{
+				try{
+					$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
+					if ($invoice2)
+					{
+						$invoice2->status = $item['status'];
+						$invoice2->statusreason = $item['documentStatusReason'];
+						$invoice2->save();
+					} else {
+						$this->AddMissingInvoice($request, $item['uuid']);
+					}
+				} catch (Exception $e) {}
+			} else {
+				try{
+					$invoice2 = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
+					if ($invoice2)
+					{
+						$invoice2->status = $item['status'];
+						//$invoice2->statusreason = $item['documentStatusReason'];
+						$invoice2->save();
+					} else {
+						//recover missing item
+						$this->AddMissingETAInvoice($request, $item['uuid']);
+					}
+				} catch (Exception $e) {}
+			}
+		};
+		return $response['metadata'];
+	}
 	public function SyncReceivedInvoices(Request $request)
 	{
+		return;
 		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
@@ -297,6 +341,7 @@ class ETAController extends Controller
 
 	public function SyncIssuedInvoices(Request $request)
 	{
+		return $this->SyncInvoices($request);
 		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
@@ -304,21 +349,9 @@ class ETAController extends Controller
 			"PageNo" => $request->input("value")
 			,"InvoiceDirection" => "sent"	
 		]);
-		//$collection = ETAItem::hydrate($response['result']);
 		$collection = $response['result'];
-		//$collection->transform(function ($item, $key) {
-    	//$collection->each(function ($item) {
 		foreach($collection as $item) {
 			try{
-				//todo mfayez do not mix issued with received invoices in the same table.
-				//$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
-				//$invoice = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
-				//if ($invoice)
-				//{
-				//	$invoice->update($item);
-				//	$invoice->save();
-				//}
-				//$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
 				$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
 				if ($invoice2)
 				{
@@ -326,12 +359,10 @@ class ETAController extends Controller
 					$invoice2->statusreason = $item['documentStatusReason'];
 					$invoice2->save();
 				} else {
-					//recover missing item
 					$this->AddMissingInvoice($request, $item['uuid']);
 				}
 			} catch (Exception $e) {}
 
-			//$invoice->save();
 		};
 		return $response['metadata'];
 	}
