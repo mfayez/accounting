@@ -56,7 +56,7 @@ class ReportsController extends Controller
 						    left outer join TaxableItem t6 on t6.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)
+							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
 						group by t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount";
 		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		return $data;
@@ -79,7 +79,7 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and t1.dateTimeIssued between ? and ?
+							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount, t4.code";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 2) as Quantity,
@@ -157,7 +157,7 @@ class ReportsController extends Controller
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
 							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
 						from ETAInvoices t1 
-						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)";
+						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'";
 		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
 		return $data;
 	}
@@ -169,7 +169,7 @@ class ReportsController extends Controller
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
 							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
 						from ETAInvoices t1 
-						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)";
+						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'";
 		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
 		
 		//render excel file now
