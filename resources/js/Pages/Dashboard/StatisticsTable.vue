@@ -115,7 +115,7 @@ const props = defineProps({
 .review {
     background-color: #0e6e9f;
 }
-.canceled {
+.cancelled {
     background-color: #000;
 }
 .invalid {
