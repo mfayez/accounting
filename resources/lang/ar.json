@@ -206,5 +206,6 @@
 	"Tax": "ضريبة",
 	"Summary": "ملخص",
 	"Invoice Preview": "أستعراض الفاتورة",
-	"Approve": "أعتماد"
+	"Approve": "أعتماد",
+	"Synchronizing Invoices...": "مزامنة الفواتير..."
 }

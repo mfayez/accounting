@@ -7,12 +7,12 @@
         <template #content>
 			<jet-validation-errors class="mb-4" />
 			<div>
-				<label for="sync1">Synchronizing Issued Invoices...</label><br/>
+				<label for="sync1">{{__('Synchronizing Invoices...')}}</label><br/>
 				<progress class="w-full" id="sync1" :value="progress1.value" :max="progress1.maxValue"> 
 					{{progress1.value}}% 
 				</progress>
-				<label for="sync2">Synchronizing Received Invoices...</label><br/>
-				<progress class="w-full" id="sync2" :value="progress2.value" :max="progress2.maxValue"> 
+				<label v-if="0" for="sync2">Synchronizing Received Invoices...</label><br/>
+				<progress v-if="0" class="w-full" id="sync2" :value="progress2.value" :max="progress2.maxValue"> 
 					{{progress2.value}}% 
 				</progress>
 			</div>
@@ -95,14 +95,16 @@
 			},
 			LoadETA1() {
 				this.form.value = this.progress1.value + 1;
-                axios.post(route('eta.invoices.sync.issued'), this.form)
+                //axios.post(route('eta.invoices.sync.issued'), this.form)
+                axios.post(route('eta.invoices.sync.all'), this.form)
 				.then(response => {
 					this.progress1.maxValue = response.data.totalPages;
 					this.progress1.value  = this.progress1.value + 1;
 					if (this.progress1.value < this.progress1.maxValue)
 						this.$nextTick(() => this.LoadETA1());
-					else
-						this.$nextTick(() => this.LoadETA2());
+					//MFAYEZ no need we now sync by date not by invoice type
+					//else
+					//	this.$nextTick(() => this.LoadETA2());
                 }).catch(error => {
 					this.$page.props.errors = error.response.data.errors;
                     this.errors = error.response.data.errors;
