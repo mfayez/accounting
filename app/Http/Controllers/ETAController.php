@@ -369,11 +369,13 @@ class ETAController extends Controller
 
 	public function SyncItems(Request $request)
 	{
-		$url = env("ETA_URL")."/codetypes/codes/my";
+		$myid = Issuer::first()->issuer_id;
+		$url = env("ETA_URL")."/codetypes/EGS/codes";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "100",
-			"Pn" => $request->input("value")
+			"Pn" => $request->input("value"),
+			"TaxpayerRIN" => $myid
 		]);
 		$collection = $response['result'];
 		foreach($collection as $item) {
@@ -385,21 +387,21 @@ class ETAController extends Controller
 		    $item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
 	            $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
         	    $item2->ownerTaxpayernameAr = $item['ownerTaxpayer']['nameAr'];
-	            $item2->requesterTaxpayerrin = $item['requesterTaxpayer']['rin'];
-        	    $item2->requesterTaxpayername = $item['requesterTaxpayer']['name'];
-	            $item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
-        	    $item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
-	            $item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
-        	    $item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
-	            $item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
-        	    $item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
-	            $item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
-        	    $item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
-	            $item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
-        	    $item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
-	            $item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
-        	    $item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
-	            $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
+	            //$item2->requesterTaxpayerrin = $item['requesterTaxpayer']['rin'];
+        	    //$item2->requesterTaxpayername = $item['requesterTaxpayer']['name'];
+	            //$item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
+        	    //$item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
+	            //$item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
+        	    //$item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
+	            //$item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
+        	    //$item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
+	            //$item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
+        	    //$item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
+	            //$item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
+        	    //$item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
+	            //$item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
+        	    //$item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
+	            //$item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
 		    if ($item2->codeTypeName == null)
 			    $item2->codeTypeName = $item["codeTypeNamePrimaryLang"];
 		    if ($item2->descriptionPrimaryLang == null)
