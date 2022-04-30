@@ -109,6 +109,9 @@ const props = defineProps({
 .valid {
     background-color: #0e9f6e;
 }
+.submitted {
+    background-color: #1abc9c;
+}
 .processing {
     background-color: #1abc9c;
 }
