@@ -11,8 +11,15 @@ function translations($json)
 
 function SETTINGS_VAL($type, $key, $default)
 {
-	$item = Settings::where("type", "=", $type)->where("name", "=", $key)->first();
-	if ($item)
-		return $item->value;
+	try
+	{
+		$item = Settings::where("type", "=", $type)->where("name", "=", $key)->first();
+		if ($item)
+			return $item->value;
+		return $default;
+	}
+	catch(Exception $e)
+	{
+	}
 	return $default;
 }
