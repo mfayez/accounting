@@ -370,7 +370,7 @@ class ETAController extends Controller
 	public function SyncItems(Request $request)
 	{
 		$myid = Issuer::first()->issuer_id;
-		$url = env("ETA_URL")."/codetypes/EGS/codes";
+		$url = env("ETA_URL")."/codetypes/".$request->input("type")."/codes";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "100",

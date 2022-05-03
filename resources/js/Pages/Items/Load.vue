@@ -7,7 +7,7 @@
         <template #content>
 			<jet-validation-errors class="mb-4" />
 			<div>
-				<label for="sync">Synchronizing...</label><br/>
+				<label for="sync">Synchronizing {{form.type}} codes ...</label><br/>
 				<progress class="w-full" id="sync" :value="progress.value" :max="progress.maxValue"> 
 					{{progress.value}}% 
 				</progress>
@@ -72,6 +72,7 @@
 				},
 				form: {
 					value: 0,
+                    type: "EGS"
 				},
 				addingNew: false,
             }
@@ -93,6 +94,13 @@
 					this.progress.value  = this.progress.value + 1;
 					if (this.progress.value < this.progress.maxValue)
 						this.$nextTick(() => this.LoadETA());
+                    else if (this.form.type == "EGS")
+                    {
+                        this.progress.maxValue = 0;
+                        this.progress.value = 0;
+                        this.form.type = "GS1";
+                        this.$nextTick(() => this.LoadETA());
+                    }
 					else
 						this.CancelAdd();
                 }).catch(error => {
