@@ -57,7 +57,7 @@ class ETAController extends Controller
 		$response = Http::withToken($this->token)->post($url, ["items" => $temp]);
 		return $response;
 		
-	}
+	}	
 	public function UploadInvoice(Request $request)
 	{
 		//$request->validate([
@@ -100,9 +100,11 @@ class ETAController extends Controller
 		{
 			$item = ETAItem::where("itemCode", "=", $invoice_data["itemCode"])->first();
 			if (!$item){
-				$temp[$key]["error"] = "Item not found!";
+				$temp[$key]["hasError"] = true;
+				$temp[$key]["error"] = __("Item") ." ". $invoice_data["itemCode"]. " ". __("not found!");
 				continue;
 			}
+			$temp[$key]["hasError"] = false;
 			
 			$unitValue = new Value($invoice_data);
 			$unitValue->save();
@@ -153,7 +155,7 @@ class ETAController extends Controller
 		
 		$upload->status = 'Review';
 		$upload->save();
-		return $upload;
+		return $temp;
         //$fileName = time().'.'.$request->file->extension();  
      
         //$request->file->move(public_path('file'), $fileName);
@@ -635,7 +637,7 @@ class ETAController extends Controller
 						$row = str_getcsv($row[0], $delimiter);
 					}
 					foreach($row as $key=>$item){
-						$row[$key] = trim(iconv('UTF-8', 'ASCII//TRANSLIT', $item));
+						$row[$key] = trim(iconv('UTF-8', 'ASCII//IGNORE', $item));
 					}
 					$header_en = $row;
 				}

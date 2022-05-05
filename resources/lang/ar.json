@@ -208,5 +208,6 @@
 	"Summary": "ملخص",
 	"Invoice Preview": "أستعراض الفاتورة",
 	"Approve": "أعتماد",
-	"Synchronizing Invoices...": "مزامنة الفواتير..."
+	"Synchronizing Invoices...": "مزامنة الفواتير...",
+	"not found!": " غير موجود!"
 }
