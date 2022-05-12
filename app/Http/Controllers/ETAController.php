@@ -29,9 +29,11 @@ use App\Models\Issuer;
 use App\Models\Upload;
 use App\Http\Requests\StoreInvoiceRequest;
 
+use App\Http\Traits\ETAAuthenticator;
+
 class ETAController extends Controller
 {
-
+	use ETAAuthenticator;
 	public function generateInvoiceNumber($invoice){
 		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
@@ -46,8 +48,6 @@ class ETAController extends Controller
 		$year2 = $year % 100;
 		$invoice->internalID = sprintf($template, $year, $year2, $branchNum, $invNum);
 	}
-	protected $token = '';
-	protected $token_expires_at = null;
 	
 	public function UploadItem(Request $request)
 	{
@@ -434,43 +434,6 @@ class ETAController extends Controller
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => array($data)]);
 		return $response;
-	}
-
-	private function AuthenticateETA2()
-	{
-		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
-			$response = Http::asForm()->post($url, [
-				"grant_type" => "client_credentials",
-				"scope" => "InvoicingAPI",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET") 
-			]);
-			$this->token = $response['access_token'];
-			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
-		}
-	}
-
-	private function AuthenticateETA(Request $request)
-	{
-		$this->token = $request->session()->get('eta_token', null);
-		$this->token_expires_at = $request->session()->get('eta_token_expires_at', null);
-		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
-			$response = Http::asForm()->post($url, [
-				"grant_type" => "client_credentials",
-				"scope" => "InvoicingAPI",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET") 
-			]);
-			$this->token = $response['access_token'];
-			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
-			$request->session()->put('eta_token', $this->token);
-			$request->session()->put('eta_token_expires_at', $this->token_expires_at);
-			$request->session()->flash('status', 'Task was successful!');
-		}
-		else {
-		}
 	}
 
 	public function indexInvoices()
