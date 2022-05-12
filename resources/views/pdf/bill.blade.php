@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="logo mx-auto justify-top ">
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="">
+                    <img src="{{ BranchLogo($data->issuer_id) }}" alt="logo" class="">
                 </div>
                 <div class="w-auto mx-auto h-auto mb-2 me-2">
                     {{

@@ -64,7 +64,7 @@
 	</td><td>
                 <div>
 
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" width="150" height="150">
+                    <img src="{{ BranchLogo($data->issuer_id) }}" alt="logo" width="150" height="150">
 
                 </div>
 	</td><td>
