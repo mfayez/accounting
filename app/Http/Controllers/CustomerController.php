@@ -70,9 +70,9 @@ class CustomerController extends Controller
 	
 	public function index_json()
 	{
-		if (Auth::user()->isAdmin)
+		// if (Auth::user()->isAdmin)
 			return Receiver::with('address')->get();
-		return Auth::user()->receivers()->with('address')->get()->toArray();
+		// return Auth::user()->receivers()->with('address')->get()->toArray();
 	}
 
     /**
@@ -99,7 +99,12 @@ class CustomerController extends Controller
             'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
             'code'				 			=> ['nullable', 'string', 'max:255'],
 			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
-			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
+			'address.governate' 			=> ['required', 'string', Rule::in(['Alexandria', 'Assiut', 'Aswan',
+												'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum', 
+												'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor', 
+												'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
+												'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
+												'South Sinai', 'Suez', 'Tanta'])],
 			'address.regionCity' 			=> ['required', 'string'],
 			'address.street' 				=> ['required', 'string'],
 			'address.buildingNumber' 		=> ['required', 'integer'],
@@ -124,7 +129,6 @@ class CustomerController extends Controller
 		$item->receiver_id = $request->input('receiver_id');
 		$item->code = $request->input('code');
         $item2->receiver()->save($item);
-		Auth::user()->receivers()->attach($item->Id);
 
         return \redirect()->route('customers.index')->with('success' , __('Record Created'));
     }
@@ -166,7 +170,12 @@ class CustomerController extends Controller
             'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
             'code'				 			=> ['nullable', 'string', 'max:255'],
 			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
-			'address.governate' 			=> ['required', 'string', Rule::in(['Cairo', 'Giza', 'Gharbia'])],
+			'address.governate' 			=> ['required', 'string', Rule::in(['Alexandria', 'Assiut', 'Aswan',
+												'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum', 
+												'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor', 
+												'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
+												'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
+												'South Sinai', 'Suez', 'Tanta'])],
 			'address.regionCity' 			=> ['required', 'string'],
 			'address.street' 				=> ['required', 'string'],
 			'address.buildingNumber' 		=> ['required', 'integer'],

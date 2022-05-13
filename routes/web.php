@@ -11,6 +11,7 @@ use App\Http\Controllers\PDFController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ETAArchiveController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -57,6 +58,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'users' => UserController::class,
     ]);
 
+    Route::get('/getBranchesImages/{ids}' , [BranchController::class , 'getBranchesimages'])->name('branches.getImages');
+
     Route::get('/json/branches', [BranchController::class, 'index_json'])->name("json.branches");
     Route::get('/json/customers', [CustomerController::class, 'index_json'])->name("json.customers");
     Route::get('/json/eta/items', [ETAController::class, 'indexItems_json'])->name("json.eta.items");
@@ -69,8 +72,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");
     Route::post('/ETA/Items/Add', [ETAController::class, 'AddItem'])->name("eta.items.store");
     Route::get('/ETA/Items', [ETAController::class, 'indexItems'])->name("eta.items.index");
+
     Route::post('/ETA/Invoices/Sync/Received', [ETAController::class, 'SyncReceivedInvoices'])->name("eta.invoices.sync.received");
     Route::post('/ETA/Invoices/Sync/Issued', [ETAController::class, 'SyncIssuedInvoices'])->name("eta.invoices.sync.issued");
+    Route::post('/ETA/Invoices/Sync/Invoices', [ETAController::class, 'SyncInvoices'])->name("eta.invoices.sync.all");
+
     Route::post('/ETA/Invoices/Add', [ETAController::class, 'AddInvoice'])->name("eta.invoices.store");
     Route::post('/ETA/Invoices/Cancel', [ETAController::class, 'CancelInvoice'])->name("eta.invoices.cancel");
     Route::post('/ETA/Invoices/Delete', [ETAController::class, 'DeleteInvoice'])->name("eta.invoices.delete");
@@ -88,6 +94,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/reports/summary/download', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
     Route::post('/reports/summaryOnly/download', [ReportsController::class, 'summaryOnlyData'])->name("reports.summary.summaryOnlyData.download");
 
+    Route::get('/reports/purchase', [ReportsController::class, 'purchase'])->name("reports.summary.purchase");
+    Route::post('/reports/purchase/data', [ReportsController::class, 'purchaseData'])->name("reports.summary.purchase.data");
+    Route::post('/reports/purchase/download', [ReportsController::class, 'purchaseDownload'])->name("reports.summary.purchase.download");
+
 #excel exports
     Route::get('/excel/items', function () {
         return App\Models\ETAItem::get()
@@ -97,6 +107,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         return App\Models\Receiver::get()
             ->downloadExcel("customers.xlsx", $writerType = null, $headings = true);
     })->name('excel.customers');
+
+#ETA Archives
+    Route::get('/ETA/Archives',        [ETAArchiveController::class, 'getArchiveRequests'])->name("archive.getArchiveRequests");
+    Route::post('/ETA/Archives/Add',   [ETAArchiveController::class, 'store'])->name("archive.store");
+    Route::get('/ETA/Archives/import', [ETAArchiveController::class, 'importArchive'])->name("archive.import");
 
 #charts data
     Route::post('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");

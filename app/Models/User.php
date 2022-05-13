@@ -93,8 +93,8 @@ class User extends Authenticatable
 		return $this->belongsToMany(Issuer::class, 'user_issuer');
 	}
 
-	public function receivers()
-	{
-		return $this->belongsToMany(Receiver::class, 'user_receiver');
-	}
+	// public function receivers()
+	// {
+	// 	return $this->belongsToMany(Receiver::class, 'user_receiver');
+	// }
 }

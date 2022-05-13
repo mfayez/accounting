@@ -10,6 +10,10 @@
 			<form @submit.prevent="submit">
 				<div class="grid grid-cols-2 gap-4">
 					<div class="col-span-2">
+                        <jet-checkbox name="custom_desc" id="custom_desc" v-model:checked="form.custom_desc" />
+						<jet-label for="custom_desc" :value="__('Allow Custom Items Description')" class="ms-2"/>
+					</div>
+					<div class="col-span-2">
                         <jet-checkbox name="automatic" id="automatic" v-model:checked="form.automatic" />
 						<jet-label for="automatic" :value="__('Automatic Invoice Number')" class="ms-2"/>
 					</div>
@@ -75,6 +79,7 @@
 				errors: [],
                 form: this.$inertia.form({
 					type: 'application settings',
+					custom_desc: false,
                     automatic: false,
 					invoiceTemplate: '',
                 }),
@@ -90,6 +95,7 @@
 					this.settings = response.data;
 					this.form.invoiceTemplate = this.settings.invoiceTemplate;
 					this.form.automatic = this.settings.automatic == '1' ? true : false;
+					this.form.custom_desc = this.settings.custom_desc == '1' ? true : false;
         	    }).catch(error => {
 
             	});

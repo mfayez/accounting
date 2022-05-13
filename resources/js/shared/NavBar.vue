@@ -236,7 +236,12 @@
                                 <dropdown-link
                                     :href="route('reports.summary.details')"
                                 >
-                                    {{ __("Detailed Summary") }}
+                                    {{ __("Sales Summary") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    :href="route('reports.summary.purchase')"
+                                >
+                                    {{ __("Purchase Summary") }}
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
@@ -246,6 +251,38 @@
                                     {{ __("Invoice Settings") }}
                                 </dropdown-link>
 
+                            </template>
+                        </dropdown>
+                        <dropdown
+                            :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]':
+                                            $page.url.startsWith('/archive'),
+                                    }"
+                                >
+                                    <i class="fa fa-box-archive"></i>
+                                    {{ __("Archives") }}
+                                </span>
+                            </template>
+                            <template #content>
+                                <dropdown-link
+                                    :href="route('archive.getArchiveRequests')"
+                                >
+                                    {{ __("Show Archives") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg11()"
+                                    href="#"
+                                >
+                                    {{ __("Request Archive Preparation") }}
+                                </dropdown-link>
                             </template>
                         </dropdown>
                     </div>
@@ -341,6 +378,7 @@ export default {
         "open:dlg8",
         "open:dlg9",
         "open:dlg10",
+        "open:dlg11",
     ],
     data() {
         return {
@@ -392,6 +430,9 @@ export default {
         },
         openDlg10() {
             this.$emit("open:dlg10");
+        },
+        openDlg11() {
+            this.$emit("open:dlg11");
         },
     },
     computed: {

@@ -29,9 +29,11 @@ use App\Models\Issuer;
 use App\Models\Upload;
 use App\Http\Requests\StoreInvoiceRequest;
 
+use App\Http\Traits\ETAAuthenticator;
+
 class ETAController extends Controller
 {
-
+	use ETAAuthenticator;
 	public function generateInvoiceNumber($invoice){
 		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
@@ -46,8 +48,6 @@ class ETAController extends Controller
 		$year2 = $year % 100;
 		$invoice->internalID = sprintf($template, $year, $year2, $branchNum, $invNum);
 	}
-	protected $token = '';
-	protected $token_expires_at = null;
 	
 	public function UploadItem(Request $request)
 	{
@@ -57,7 +57,7 @@ class ETAController extends Controller
 		$response = Http::withToken($this->token)->post($url, ["items" => $temp]);
 		return $response;
 		
-	}
+	}	
 	public function UploadInvoice(Request $request)
 	{
 		//$request->validate([
@@ -100,9 +100,11 @@ class ETAController extends Controller
 		{
 			$item = ETAItem::where("itemCode", "=", $invoice_data["itemCode"])->first();
 			if (!$item){
-				$temp[$key]["error"] = "Item not found!";
+				$temp[$key]["hasError"] = true;
+				$temp[$key]["error"] = __("Item") ." ". $invoice_data["itemCode"]. " ". __("not found!");
 				continue;
 			}
+			$temp[$key]["hasError"] = false;
 			
 			$unitValue = new Value($invoice_data);
 			$unitValue->save();
@@ -153,7 +155,7 @@ class ETAController extends Controller
 		
 		$upload->status = 'Review';
 		$upload->save();
-		return $upload;
+		return $temp;
         //$fileName = time().'.'.$request->file->extension();  
      
         //$request->file->move(public_path('file'), $fileName);
@@ -215,6 +217,10 @@ class ETAController extends Controller
 		//$invoice->save();	
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
+			if (!isset($line['amountSold']))
+				$unitValue->amountSold = null;
+			if (!isset($line['currencyExchangeRate']))
+				$unitValue->currencyExchangeRate = null;
 			$unitValue->save();
 			$invoiceline = new InvoiceLine($line);
 			$invoiceline->invoice_id = $invoice->Id;
@@ -264,8 +270,52 @@ class ETAController extends Controller
 		return "request rejected by ETA";
 	}
 
+	public function SyncInvoices(Request $request)
+	{
+		//TODO check if there are no branches
+		$myid = Issuer::first()->issuer_id;
+		$url = env("ETA_URL")."/documents/recent";
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->get($url, [
+			"PageSize" => "10",
+			"PageNo" => $request->input("value")
+		]);
+		$collection = $response['result'];
+		foreach($collection as $item) {
+			if ((isset($item['issuer_id']) && $item['issuer_id'] == $myid) ||
+				(isset($item['issuerId']) && $item['issuerId'] == $myid))
+			{
+				try{
+					$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
+					if ($invoice2)
+					{
+						$invoice2->status = $item['status'];
+						$invoice2->statusreason = $item['documentStatusReason'];
+						$invoice2->save();
+					} else {
+						$this->AddMissingInvoice($request, $item['uuid']);
+					}
+				} catch (Exception $e) {}
+			} else {
+				try{
+					$invoice2 = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
+					if ($invoice2)
+					{
+						$invoice2->status = $item['status'];
+						//$invoice2->statusreason = $item['documentStatusReason'];
+						$invoice2->save();
+					} else {
+						//recover missing item
+						$this->AddMissingETAInvoice($request, $item['uuid']);
+					}
+				} catch (Exception $e) {}
+			}
+		};
+		return $response['metadata'];
+	}
 	public function SyncReceivedInvoices(Request $request)
 	{
+		return;
 		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
@@ -293,6 +343,7 @@ class ETAController extends Controller
 
 	public function SyncIssuedInvoices(Request $request)
 	{
+		return $this->SyncInvoices($request);
 		$url = env("ETA_URL")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
@@ -300,21 +351,9 @@ class ETAController extends Controller
 			"PageNo" => $request->input("value")
 			,"InvoiceDirection" => "sent"	
 		]);
-		//$collection = ETAItem::hydrate($response['result']);
 		$collection = $response['result'];
-		//$collection->transform(function ($item, $key) {
-    	//$collection->each(function ($item) {
 		foreach($collection as $item) {
 			try{
-				//todo mfayez do not mix issued with received invoices in the same table.
-				//$invoice = ETAInvoice::updateOrCreate(['uuid' => $item['uuid']], $item); 
-				//$invoice = ETAInvoice::firstWhere(['uuid' => $item['uuid']]);
-				//if ($invoice)
-				//{
-				//	$invoice->update($item);
-				//	$invoice->save();
-				//}
-				//$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid'], 'status' => 'processing']);
 				$invoice2 = Invoice::firstWhere(['uuid' => $item['uuid']]);
 				if ($invoice2)
 				{
@@ -322,23 +361,23 @@ class ETAController extends Controller
 					$invoice2->statusreason = $item['documentStatusReason'];
 					$invoice2->save();
 				} else {
-					//recover missing item
 					$this->AddMissingInvoice($request, $item['uuid']);
 				}
 			} catch (Exception $e) {}
 
-			//$invoice->save();
 		};
 		return $response['metadata'];
 	}
 
 	public function SyncItems(Request $request)
 	{
-		$url = env("ETA_URL")."/codetypes/codes/my";
+		$myid = Issuer::first()->issuer_id;
+		$url = env("ETA_URL")."/codetypes/".$request->input("type")."/codes";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "100",
-			"Pn" => $request->input("value")
+			"Pn" => $request->input("value"),
+			"TaxpayerRIN" => $myid
 		]);
 		$collection = $response['result'];
 		foreach($collection as $item) {
@@ -350,21 +389,21 @@ class ETAController extends Controller
 		    $item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
 	            $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
         	    $item2->ownerTaxpayernameAr = $item['ownerTaxpayer']['nameAr'];
-	            $item2->requesterTaxpayerrin = $item['requesterTaxpayer']['rin'];
-        	    $item2->requesterTaxpayername = $item['requesterTaxpayer']['name'];
-	            $item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
-        	    $item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
-	            $item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
-        	    $item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
-	            $item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
-        	    $item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
-	            $item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
-        	    $item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
-	            $item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
-        	    $item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
-	            $item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
-        	    $item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
-	            $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
+	            //$item2->requesterTaxpayerrin = $item['requesterTaxpayer']['rin'];
+        	    //$item2->requesterTaxpayername = $item['requesterTaxpayer']['name'];
+	            //$item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
+        	    //$item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
+	            //$item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
+        	    //$item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
+	            //$item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
+        	    //$item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
+	            //$item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
+        	    //$item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
+	            //$item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
+        	    //$item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
+	            //$item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
+        	    //$item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
+	            //$item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
 		    if ($item2->codeTypeName == null)
 			    $item2->codeTypeName = $item["codeTypeNamePrimaryLang"];
 		    if ($item2->descriptionPrimaryLang == null)
@@ -395,43 +434,6 @@ class ETAController extends Controller
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => array($data)]);
 		return $response;
-	}
-
-	private function AuthenticateETA2()
-	{
-		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
-			$response = Http::asForm()->post($url, [
-				"grant_type" => "client_credentials",
-				"scope" => "InvoicingAPI",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET") 
-			]);
-			$this->token = $response['access_token'];
-			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
-		}
-	}
-
-	private function AuthenticateETA(Request $request)
-	{
-		$this->token = $request->session()->get('eta_token', null);
-		$this->token_expires_at = $request->session()->get('eta_token_expires_at', null);
-		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
-			$response = Http::asForm()->post($url, [
-				"grant_type" => "client_credentials",
-				"scope" => "InvoicingAPI",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET") 
-			]);
-			$this->token = $response['access_token'];
-			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
-			$request->session()->put('eta_token', $this->token);
-			$request->session()->put('eta_token_expires_at', $this->token_expires_at);
-			$request->session()->flash('status', 'Task was successful!');
-		}
-		else {
-		}
 	}
 
 	public function indexInvoices()
@@ -489,6 +491,7 @@ class ETAController extends Controller
 			->with("issuer")
 			->with("invoiceLines")
 			->with("invoiceLines.taxableItems")
+			->with('invoiceLines.unitValue')
 			->whereNotNull('issuer_id')
 			->where(function ($query) use ($upload_id){
 				if ($upload_id)
@@ -597,7 +600,7 @@ class ETAController extends Controller
 						$row = str_getcsv($row[0], $delimiter);
 					}
 					foreach($row as $key=>$item){
-						$row[$key] = trim(iconv('UTF-8', 'ASCII//TRANSLIT', $item));
+						$row[$key] = trim(iconv('UTF-8', 'ASCII//IGNORE', $item));
 					}
 					$header_en = $row;
 				}

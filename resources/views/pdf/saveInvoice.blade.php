@@ -64,7 +64,7 @@
 	</td><td>
                 <div>
 
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" width="150" height="150">
+                    <img src="{{ BranchLogo($data->issuer_id) }}" alt="logo" width="150" height="150">
 
                 </div>
 	</td><td>
@@ -260,7 +260,7 @@
 			<td style="width:50px;"></td>
 			<td style="width:50%;"> {{__('Accounting') }}</td>
 			<td style="width:50px;"></td>
-			<td style="width:50%;"> {{__('Approved by') }}</td>
+			<td style="width:50%;"> {{__('Approved By') }}</td>
 		</tr></tbody></table>
         <hr>
 		<table style="width:100%;"><tbody><tr>

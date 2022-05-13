@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         Inertia::share([
 		'preview_url' => env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"),
 		'auto_inv_num' => SETTINGS_VAL('application settings', 'automatic', '0') == '1' ? true : false,
+		'custom_desc_enabled' => SETTINGS_VAL('application settings', 'custom_desc', '0') == '1' ? true : false,
         'locale' => function () {
           return Session()->get('locale', app()->getLocale());
         },

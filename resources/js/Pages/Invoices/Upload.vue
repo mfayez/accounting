@@ -11,6 +11,11 @@
 						<input type="file" @change="handleFileUpload($event)" ref="inputFile"/>
 					</label>
                 </div>
+                <template v-for="row in data">
+                    <div v-if="row.hasError">
+                        {{row.error}}
+                    </div>
+                </template>
             </template>
 
             <template #footer>
@@ -65,7 +70,8 @@
             return {
 				file: '',
 				uploadingInvoices: false,
-				processing: false
+				processing: false,
+                data: []
             }
         },
 
@@ -95,10 +101,11 @@
 						'Content-Type': 'multipart/form-data'
 					}
 				  }
-				).then(function(){
+				).then((response)=>{
 					temp.processing = false;
 					temp.$refs.inputFile.value = null;
-					temp.closeModal()
+                    this.data = response.data;
+					//temp.closeModal()
 				})
 				.catch(function(){
 					temp.processing = false;

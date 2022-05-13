@@ -19,7 +19,6 @@
             }
         }
     </style>
-	<script type="text/javascript" src="{{ URL::asset('js/tafqit.js') }}"></script>
 </head>
 
 <body>
@@ -41,10 +40,10 @@
                         </ul>
                     </div>
                 </div>
-                <div class="logo self-center">
-                    <img src="{{ asset('images/invoice_logo.jpg') }}" alt="logo" class="w-48 h-48">
+                <div class="logo mx-auto justify-top ">
+                    <img src="{{ BranchLogo($data->issuer_id) }}" alt="logo" class="">
                 </div>
-                <div class="logo self-center h-auto mb-2">
+                <div class="w-auto mx-auto h-auto mb-2 me-2">
                     {{
 						QrCode::size(200)->generate(env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"). $data->uuid .
 							'/share/'. $data->longId);
@@ -136,7 +135,7 @@
                     <h4 class="capitalize text-gray-600 text-xl font-bold">{{ __('Invoice Total') }}: {{ __('EGP')
                         }} {{sprintf("%0.2f", $data->totalAmount)}}
                     </h4>
-					<h4 id="tafqit" class="capitalize text-gray-600 text-xl font-bold">
+					<h4>{{ Numbers::TafqeetMoney(round($data->totalAmount, 2),'EGP');}} </h4>
 					</h4>
                 </div>
         <hr>
@@ -187,16 +186,6 @@
 </body>
 <script>
     document.querySelector('#print').addEventListener('click' , (e) => print());
-	document.addEventListener("DOMContentLoaded", function(event) { 
-		var temp = {{$data->totalAmount}};
-		var pennies = temp * 100 % 100;
-		if (pennies == 0)
-			document.querySelector('#tafqit').innerText= tafqit({{round($data->totalAmount, 0)}}) +" جنيهاً";
-		else
-			document.querySelector('#tafqit').innerText= tafqit({{round($data->totalAmount, 0)}}) +" جنيهاً و " + tafqit(pennies) + " قرشاً";
-			
-		
-	});
 </script>
 
 </html>
