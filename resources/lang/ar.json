@@ -199,13 +199,8 @@
 	"Invoice Settings": "أعدادت الفاتورة",
 	"Footer": "الهامش السفلي",
 	"Invoice PDF Settings": "أعدادت ملف PDF للفاتورة",
-<<<<<<< HEAD
 	"Show QR Code": "عرض كود QR",
-	"Download Summary" : "تحميل الملخص"
-||||||| 411bb16
-	"Show QR Code": "عرض كود QR"
-=======
-	"Show QR Code": "عرض كود QR",
+	"Download Summary" : "تحميل الملخص",
 	"Branch Logo" : "صوره الفرع",
 	"No Image": "لا يوجد صورة",
 	"Date": "تاريخ",
@@ -216,5 +211,4 @@
 	"Approve": "أعتماد",
 	"Synchronizing Invoices...": "مزامنة الفواتير...",
 	"not found!": " غير موجود!"
->>>>>>> master
 }
