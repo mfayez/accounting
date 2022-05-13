@@ -11,6 +11,7 @@ use App\Http\Controllers\PDFController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ETAArchiveController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -105,6 +106,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         return App\Models\Receiver::get()
             ->downloadExcel("customers.xlsx", $writerType = null, $headings = true);
     })->name('excel.customers');
+
+#ETA Archives
+    Route::get('/ETA/Archives',        [ETAArchiveController::class, 'getArchiveRequests'])->name("archive.getArchiveRequests");
+    Route::post('/ETA/Archives/Add',   [ETAArchiveController::class, 'store'])->name("archive.store");
+    Route::get('/ETA/Archives/import', [ETAArchiveController::class, 'importArchive'])->name("archive.import");
 
 #charts data
     Route::post('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");
