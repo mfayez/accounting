@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportSummaryExport;
 use Inertia\Inertia;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -31,6 +32,7 @@ use App\Models\Discount;
 use App\Models\Receiver;
 use App\Models\Issuer;
 use App\Models\Upload;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportsController extends Controller
 {
@@ -193,6 +195,12 @@ class ReportsController extends Controller
 		$writer->save('php://output');
 		//$writer->save('./ExcelTemplates/SalesReport2.xlsx');
 		//return $data1;
+	}
+
+	public function summaryOnlyData(Request $request) {
+
+		return Excel::download(new ReportSummaryExport($this->summaryData($request)) , 'Report.xlsx');
+
 	}
 
 
