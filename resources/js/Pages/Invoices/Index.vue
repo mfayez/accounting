@@ -104,7 +104,13 @@
 										class="me-2"
 										v-show="item.status=='Valid'"
                                         	@click="openExternal(item)">
-                                        	{{ __("ETA") }}
+                                        	{{ __("ETA1") }}
+                                    	</secondary-button>
+                                        <secondary-button
+										class="me-2"
+										v-show="item.status=='Valid'"
+                                        	@click="openExternal2(item)">
+                                        	{{ __("ETA2") }}
                                     	</secondary-button>
 									
 <!--											<jet-button @click.prevent="editItem(item)">
@@ -163,6 +169,9 @@ export default {
         };
     },
     methods: {
+        openExternal2(item) {
+            window.open(route('eta.invoice.download', {uuid: item.uuid}), '_blank');
+        },
         openExternal(item) {
             window.open(
                 this.$page.props.preview_url + 
