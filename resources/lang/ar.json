@@ -234,5 +234,8 @@
 	"Loading invoices from ETA": "تحميل الفواتير من مصلحة الضرائب",
 	"Name 1": "الاسم",
 	"Synchronizing  ": "مزامنة",
-	"Loading items from ETA": "تحميل الأصناف من مصلحة الضرائب"
+	"Loading items from ETA": "تحميل الأصناف من مصلحة الضرائب",
+	"Month": "الشهر",
+	"Tax Total": "أجمالي الضريبة",
+	"Client Name": "اسم العميل"
 }
