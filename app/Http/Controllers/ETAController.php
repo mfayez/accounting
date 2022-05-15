@@ -462,7 +462,8 @@ class ETAController extends Controller
 		$items = QueryBuilder::for(ETAInvoice::class)
             ->defaultSort('Id')
 			->whereNotIn('issuerId', $myid)
-			->allowedSorts(['status' , 'internalId' , 'total' , 'netAmount' , 'totalSales' , 'totalDiscount'])
+			->allowedSorts(['status' , 'internalId' , 'total' , 'netAmount' , 'totalSales' ,
+			 		'totalDiscount', 'dateTimeIssued', 'dateTimeReceived'])
             ->allowedFilters(['status', 'internalId', $globalSearch])
             ->paginate(20)
             ->withQueryString();
@@ -477,8 +478,8 @@ class ETAController extends Controller
 				'issuerName' => __('Issuer'),
 				'receiverId' => __('Receiver Registration Number'),
 				'receiverName' => __('Receiver'),
-			#	'dateTimeIssued' => 'Issued At',
-			#	'dateTimeReceived' => 'Received At',
+				'dateTimeIssued' => __('Issued At'),
+				'dateTimeReceived' => __('Received At'),
 				'totalSales' => __('Sales'),
 				'totalDiscount' => __('Discount'),
 				'netAmount' => __('Net'),
@@ -523,7 +524,7 @@ class ETAController extends Controller
 			//->join("Receiver", "Invoice.receiver_id", "Receiver.Id")
 			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
             ->defaultSort('-Invoice.Id')
-            ->allowedSorts(['status' , 'internalID' , 'totalAmount' , 'netAmount'])
+            ->allowedSorts(['status' , 'internalID' , 'totalAmount' , 'netAmount', 'dateTimeIssued'])
             ->allowedFilters(['status', 'internalID', $globalSearch])
             ->paginate(20)
             ->withQueryString();
@@ -538,6 +539,7 @@ class ETAController extends Controller
 				'receiver.name' => __('Receiver'),
 				'receiver.receiver_id'	=> __('Customer Registration Number'),
 				'totalAmount' => __('Total Amount'),
+				'dateTimeIssued' => __('Issued At'),
 				'netAmount' => __('Net Amount'),
 				'status'		=> __('Status'),
 				'statusReason'		=> __('ETA Comments'),

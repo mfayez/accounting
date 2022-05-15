@@ -237,5 +237,7 @@
 	"Loading items from ETA": "تحميل الأصناف من مصلحة الضرائب",
 	"Month": "الشهر",
 	"Tax Total": "أجمالي الضريبة",
-	"Client Name": "اسم العميل"
+	"Client Name": "اسم العميل",
+	"Issued At": "تاريخ الأصدار",
+	"Received At": "تاريخ الأستلام"
 }

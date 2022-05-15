@@ -50,7 +50,14 @@
 					  		<tr v-for="item in items.data" :key="item.id">
 									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
 										<div v-for="rowVals in nestedIndex(item, key).split(',')">
-											{{ key == 'status' || key == 'statusReason' ? __(rowVals) : rowVals }}</div>
+											{{ 
+                                                key == 'status' || key == 'statusReason' ? __(rowVals) :
+                                               (key == 'dateTimeIssued' || key == 'dateTimeReceived' ? 
+                                                    new Date(rowVals).toLocaleDateString() : 
+                                                    rowVals
+                                               ) 
+                                            }}
+                                        </div>
 									</td>
 									<td>
                                         <div class="grid grid-cols-3 w-56">
