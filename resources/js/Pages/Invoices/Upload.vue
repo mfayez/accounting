@@ -2,12 +2,12 @@
         <!-- New Customer Modal -->
         <jet-dialog-modal :show="uploadingInvoices" @close="uploadingInvoices = false">
             <template #title>
-                Upload Invoices
+                {{__('Upload Invoices')}}
             </template>
 
             <template #content>
                 <div class="grid grid-cols-3 md:grid-cols-3 gap-4">
-					<label>File
+					<label>{{__('Choose File')}}
 						<input type="file" @change="handleFileUpload($event)" ref="inputFile"/>
 					</label>
                 </div>
@@ -20,11 +20,11 @@
 
             <template #footer>
                 <jet-secondary-button @click="CancelAddCustomer()">
-                    Cancel
+                    {{__('Cancel')}}
                 </jet-secondary-button>
 
                 <jet-button class="ms-2" @click="submitFile()" :disabled="processing">
-                    Save
+                    {{__('Save')}}
                 </jet-button>
             </template>
         </jet-dialog-modal>

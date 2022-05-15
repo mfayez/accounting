@@ -53,69 +53,71 @@
 											{{ key == 'status' || key == 'statusReason' ? __(rowVals) : rowVals }}</div>
 									</td>
 									<td>
-										<div>
-
-										<secondary-button
-											class="me-2"
-                                        	@click="rejectInvoice(item)" 
-											v-show="route().current('eta.invoices.received.index') && item.status =='Valid'"
-											>
-                                        	{{ __("Reject") }}
-                                    	</secondary-button>
-
-										<jet-button
-											class="me-2"
-                                        	@click="cancelInvoice(item)" 
-											v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
-											>
-                                        	{{ __("Cancel") }}
-                                    	</jet-button>
-
-										<secondary-button
-											class="me-2"
-                                        	@click="deleteInvoice(item)" 
-											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
-											>
-                                        	{{ __("Delete") }}
-                                    	</secondary-button>
-
-										<jet-button
-										class="me-2"
-                                        	@click="editInvoice(item)" 
-											v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
-											>
-                                        	{{ __("Edit") }}
-                                    	</jet-button>
-
-										<secondary-button
-										class="me-2"
-                                        	@click="viewInvoice(item)">
-                                        	{{ __("View") }}
-                                    	</secondary-button>
+                                        <div class="grid grid-cols-3 w-56">
+                                            <jet-danger-button
+                                                class="me-2 mt-2"
+                                                @click="rejectInvoice(item)" 
+                                                v-show="route().current('eta.invoices.received.index') && item.status =='Valid'"
+                                                >
+                                                {{ __("Reject") }}
+                                            </jet-danger-button>
+                                            
+                                            <jet-danger-button
+                                                class="me-2 mt-2"
+                                                @click="cancelInvoice(item)" 
+                                                v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
+                                                >
+                                                {{ __("Cancel") }}
+                                            </jet-danger-button>
+                                            
+                                            <jet-danger-button
+                                                class="me-2 mt-2"
+                                                @click="deleteInvoice(item)" 
+                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
+                                                >
+                                                {{ __("Delete") }}
+                                            </jet-danger-button>
+                                            
+                                            <jet-button
+                                            class="me-2 mt-2"
+                                                @click="editInvoice(item)" 
+                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
+                                                >
+                                                {{ __("Edit") }}
+                                            </jet-button>
+                                            
+                                            <secondary-button
+                                                class="me-2 mt-2"
+                                                @click="viewInvoice(item)"
+                                                v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
+                                            >
+                                                {{ __("View") }}
+                                            </secondary-button>
+                                            
+                                            <jet-button
+                                                class="me-2 mt-2"
+                                                @click="downloadPDF(item)" 
+                                                v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
+                                            >
+                                                {{ __("PDF") }}
+                                            </jet-button>
+                                            
+                                            <secondary-button
+                                                class="me-2 mt-2"
+                                                v-show="item.status=='Valid'"
+                                                @click="openExternal(item)"
+                                            >
+                                                {{ __("ETA1") }}
+                                            </secondary-button>
+                                            
+                                            <jet-button
+                                            class="me-2 mt-2"
+                                            v-show="item.status=='Valid'"
+                                                @click="openExternal2(item)">
+                                                {{ __("ETA2") }}
+                                            </jet-button>    
+                                        </div>
 										
-
-										<jet-button
-										class="me-2"
-                                        	@click="downloadPDF(item)" >
-                                        	{{ __("PDF") }}
-                                    	</jet-button>
-
-										<secondary-button
-										class="me-2"
-										v-show="item.status=='Valid'"
-                                        	@click="openExternal(item)">
-                                        	{{ __("ETA1") }}
-                                    	</secondary-button>
-                                        <secondary-button
-										class="me-2"
-										v-show="item.status=='Valid'"
-                                        	@click="openExternal2(item)">
-                                        	{{ __("ETA2") }}
-                                    	</secondary-button>
-									
-<!--											<jet-button @click.prevent="editItem(item)">
-											</jet-button> -->
-								 	 	</div>
 									</td>
 							  </tr>
 						</template>
@@ -138,16 +140,20 @@ import JetLabel from "@/Jetstream/Label";
 import PreviewInvoice from "@/Pages/Invoices/Preview";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
+import JetDangerButton from '@/Jetstream/DangerButton';
+import Dropdown from "@/Jetstream/Dropdown";
 
 export default {
     mixins: [InteractsWithQueryBuilder],
     components: {
+        Dropdown,
         AppLayout,
         Confirm,
         PreviewInvoice,
         JetLabel,
         Table: Tailwind2.Table,
         JetButton,
+        JetDangerButton,
         AddEditItem,
         SecondaryButton,
     },

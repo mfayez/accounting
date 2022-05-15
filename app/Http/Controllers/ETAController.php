@@ -440,7 +440,8 @@ class ETAController extends Controller
 	public function indexInvoices(Request $request)
 	{
 		$columns = $request->query("columns", []);
-		if (count($columns) == 0)
+		$remember = $request->query("remember", "yes");
+		if (count($columns) == 0 && $remember == 'yes')
 		{
 			$columns_str = SETTINGS_VAL(Auth::user()->name, "index.received.columns", "[]");
 			$columns = json_decode($columns_str);
@@ -490,7 +491,8 @@ class ETAController extends Controller
 	public function indexIssued(Request $request, $upload_id = null)
 	{
 		$columns = $request->query("columns", []);
-		if (count($columns) == 0)
+		$remember = $request->query("remember", "yes");
+		if (count($columns) == 0 && $remember == 'yes')
 		{
 			$columns_str = SETTINGS_VAL(Auth::user()->name, "index.issued.columns", "[]");
 			$columns = json_decode($columns_str);

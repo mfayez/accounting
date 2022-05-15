@@ -1,7 +1,7 @@
 <template>
     <jet-dialog-modal :show="showDialog" @close="showDialog = false">
         <template #title>
-            {{ __("customer Information") }}
+            {{ __("Customer Information") }}
         </template>
 
         <template #content>
@@ -36,7 +36,7 @@
                             />
                         </div>
                         <div class="mt-4">
-                            <jet-label for="name" :value="__('customer Name')" />
+                            <jet-label for="name" :value="__('Customer Name')" />
                             <jet-input
                                 id="name"
                                 type="text"
@@ -48,7 +48,7 @@
                         <div class="mt-4">
                             <jet-label
                                 for="customerNo"
-                                :value="__('Customer Number')"
+                                :value="__('Internal Code')"
                             />
                             <jet-input
                                 id="customerNo"

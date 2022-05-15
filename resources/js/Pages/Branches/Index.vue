@@ -73,21 +73,14 @@
                                 </td>
                                 <td v-if="Object.keys(images).length > 0">
                                     <template v-if="images[branch.Id] != 'N/A'">
-                                        <a
-                                            target="_blank"
-                                            :href="
-                                                '/storage/' + images[branch.Id]
+                                        <img
+                                            :src="
+                                                '/storage/' +
+                                                images[branch.Id]
                                             "
-                                        >
-                                            <img
-                                                :src="
-                                                    '/storage/' +
-                                                    images[branch.Id]
-                                                "
-                                                alt="Branch Image"
-                                                class="w-40 h-20 object-cover"
-                                            />
-                                        </a>
+                                            alt="Branch Image"
+                                            class="object-cover"
+                                        />
                                     </template>
                                     <span v-else>{{ __("No Image") }}</span>
                                 </td>
@@ -188,5 +181,9 @@ export default {
 <style scoped>
 :deep(table th) {
     text-align: start;
+}
+img {
+    max-width: 100%;
+    max-height: 100%;
 }
 </style>

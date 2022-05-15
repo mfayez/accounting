@@ -80,7 +80,7 @@
                 <jet-secondary-button @click="CancelDlg()">
                     {{__('Close')}}
                 </jet-secondary-button>
-                <div>
+                <div v-show="item.status!='Valid'">
                     <jet-button class="ms-2" @click="ApproveItem()">
                         {{ __("Approve") }}
                     </jet-button>

@@ -1,13 +1,13 @@
 <template>
     <jet-dialog-modal :show="addingNew" @close="addingNew = false">
 		<template #title>
-        	Loading items from ETA
+        	{{__('Loading items from ETA')}}
         </template>
 
         <template #content>
 			<jet-validation-errors class="mb-4" />
 			<div>
-				<label for="sync">Synchronizing {{form.type}} codes ...</label><br/>
+				<label for="sync">{{__('Synchronizing')}} {{form.type}}</label><br/>
 				<progress class="w-full" id="sync" :value="progress.value" :max="progress.maxValue"> 
 					{{progress.value}}% 
 				</progress>
@@ -16,7 +16,7 @@
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
 	    		<jet-secondary-button @click="CancelAdd()">
-   					Cancel
+   					{{__('Cancel')}}
         		</jet-secondary-button>
 			</div>
 	   </template>

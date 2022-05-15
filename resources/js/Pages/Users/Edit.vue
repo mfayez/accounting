@@ -64,7 +64,7 @@
                             v-model="issuers"
                             :options="branches"
                             label="name"
-                            :placeholder="__('Select item')"
+                            :placeholder="__('Select Branches')"
                             :multiple="true"
                         />
                     </div>

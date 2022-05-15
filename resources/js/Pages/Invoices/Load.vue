@@ -1,7 +1,7 @@
 <template>
     <jet-dialog-modal :show="addingNew" @close="addingNew = false">
 		<template #title>
-        	Loading invoices from ETA
+        	{{__('Loading invoices from ETA')}}
         </template>
 
         <template #content>
@@ -20,7 +20,7 @@
 		<template #footer>
 			<div class="flex items-center justify-end mt-4">
 	    		<jet-secondary-button @click="CancelAdd()">
-   					Cancel
+   					{{__('Cancel')}}
         		</jet-secondary-button>
 			</div>
 	   </template>
