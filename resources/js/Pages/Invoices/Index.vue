@@ -96,7 +96,7 @@
                                             <secondary-button
                                                 class="me-2 mt-2"
                                                 @click="viewInvoice(item)"
-                                                v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
+                                                v-show="route().current('eta.invoices.sent.index')"
                                             >
                                                 {{ __("View") }}
                                             </secondary-button>
