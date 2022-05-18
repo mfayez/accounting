@@ -85,7 +85,7 @@ class ReportsController extends Controller
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount, t4.code";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 2) as Quantity,
-							round(sum(t2.total), 2) as Total, round(sum(t7.amountEGP), 2) as UnitValue
+							round(sum(t2.salesTotal), 2) as Total, round(sum(t7.amountEGP), 2) as UnitValue
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
