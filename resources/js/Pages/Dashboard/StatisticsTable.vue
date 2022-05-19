@@ -22,7 +22,7 @@
                                 {{ __('Invoices') }}
                             </th>
                             <th
-                                class="bg-[#f8f9fa] p-3 border border-[#eceeef] hidden md:block"
+                                class="bg-[#f8f9fa] p-3 border border-[#eceeef] hidden md:visible"
                             >
                                 {{ __('Net Amount') }}
                             </th>
@@ -32,7 +32,7 @@
                                 {{ __('Gross Amount') }}
                             </th>
                             <th
-                                class="bg-[#f8f9fa] p-3 border border-[#eceeef] hidden md:block"
+                                class="bg-[#f8f9fa] p-3 border border-[#eceeef] hidden md:visible"
                             >
                                 {{ __('Tax Amount') }}
                             </th>
@@ -51,13 +51,13 @@
                                 <td class="p-2 border border-[#eceeef]">
                                     {{ row.invoicesCount }}
                                 </td>
-                                <td class="p-2 border border-[#eceeef] hidden md:block">
+                                <td class="p-2 border border-[#eceeef] hidden md:visible">
                                     {{ row.totalSalesAmount }}
                                 </td>
                                 <td class="p-2 border border-[#eceeef]">
                                     {{ row.totalAmount }}
                                 </td>
-                                <td class="p-2 border border-[#eceeef] hidden md:block">
+                                <td class="p-2 border border-[#eceeef] hidden md:visible">
                                     {{ row.taxTotal }}
                                 </td>
                                 <td class="p-2 border border-[#eceeef]">

@@ -3617,6 +3617,10 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 }
 @media (min-width: 768px) {
 
+	.md\:visible {
+		visibility: visible;
+	}
+
 	.md\:col-span-2 {
 		grid-column: span 2 / span 2;
 	}
