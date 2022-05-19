@@ -256,6 +256,14 @@ class ReportsController extends Controller
 			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->Total);
 			$rowIdx++;
 		}
+		$last = $rowIdx - 1;
+		$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), "***");
+		$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), "الأجمالي");
+		$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $startDate);
+		$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $endDate);
+		$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), "=SUM(F4:F".$last.")");
+		$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), "=SUM(G4:G".$last.")");
+		$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), "=SUM(H4:H".$last.")");
 		$writer = IOFactory::createWriter($file, 'Xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
@@ -316,6 +324,15 @@ class ReportsController extends Controller
 			$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), $row->Total);
 			$rowIdx++;
 		}
+		$last = $rowIdx - 1;
+		$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), "***");
+		$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), "الأجمالي");
+		$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), "***");
+		$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $startDate);
+		$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $endDate);
+		$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), "=SUM(G4:G".$last.")");
+		$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), "=SUM(H4:H".$last.")");
+		$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), "=SUM(I4:I".$last.")");
 		$writer = IOFactory::createWriter($file, 'Xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
