@@ -244,6 +244,16 @@
                                     {{ __("Purchase Summary") }}
                                 </dropdown-link>
                                 <dropdown-link
+                                    :href="route('reports.branches.sales')"
+                                >
+                                    {{ __("Branches Summary") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    :href="route('reports.customers.sales')"
+                                >
+                                    {{ __("Customers Summary") }}
+                                </dropdown-link>
+                                <dropdown-link
                                     as="a"
                                     @click.prevent="openDlg9()"
                                     href="#"

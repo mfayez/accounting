@@ -209,4 +209,119 @@ class ReportsController extends Controller
 		$col1 = Coordinate::stringFromColumnIndex($col);
 		return $col1.$row;
 	}
+
+	public function branchesSales()
+	{
+        return Inertia::render('Reports/BranchesSales', [
+        ]);
+	}
+
+	public function branchesSalesData(Request $request)
+	{
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$strSqlStmt1 = "select t3.Id as Id, t3.name as Name,  
+							sum(t5.amount) as TaxTotal, sum(t1.totalSalesAmount) as SalesTotal, sum(t1.totalAmount) as Total
+						from Invoice t1 inner join Issuer t3 on t3.Id = t1.issuer_id
+							left outer join TaxTotal t5 on t5.invoice_id = t1.Id
+						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
+						group by t3.Id, t3.name";
+		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
+		return $data;
+	}
+	
+	public function branchesSalesDownload(Request $request)
+	{
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$strSqlStmt1 = "select t3.Id as Id, t3.name as Name,  
+							sum(t5.amount) as TaxTotal, sum(t1.totalSalesAmount) as SalesTotal, sum(t1.totalAmount) as Total
+						from Invoice t1 inner join Issuer t3 on t3.Id = t1.issuer_id
+							left outer join TaxTotal t5 on t5.invoice_id = t1.Id
+						where t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
+						group by t3.Id, t3.name";
+		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
+		
+		//render excel file now
+		$reader = IOFactory::createReader('Xlsx');
+		$file = $reader->load('./ExcelTemplates/BranchesSales.xlsx');
+		$rowIdx = 4;
+		foreach($data as $row){
+			$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), $row->Id);
+			$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Name);
+			$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $startDate);
+			$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $endDate);
+			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->TaxTotal);
+			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->SalesTotal);
+			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->Total);
+			$rowIdx++;
+		}
+		$writer = IOFactory::createWriter($file, 'Xlsx');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+		//$writer->save('./ExcelTemplates/SalesReport2.xlsx');
+		//return $data1;
+	}
+
+	public function customersSales()
+	{
+        return Inertia::render('Reports/CustomersSales', [
+        ]);
+	}
+
+	public function customersSalesData(Request $request)
+	{
+		$branchId   = $request->input('issuer')['Id'];
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$strSqlStmt1 = "select t4.receiver_id as Id, t4.name as Name,  
+							sum(t5.amount) as TaxTotal, sum(t1.totalSalesAmount) as SalesTotal, sum(t1.totalAmount) as Total
+						from Invoice t1 inner join Receiver t4 on t4.Id = t1.receiver_id
+							left outer join TaxTotal t5 on t5.invoice_id = t1.Id
+						where (t1.issuer_id = ? or ? = -1)
+						and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
+						group by t4.receiver_id, t4.name";
+		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $startDate, $endDate]);
+		return $data;
+	}
+	
+	public function customersSalesDownload(Request $request)
+	{
+		$branchId   = $request->input('issuer')['Id'];
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$strSqlStmt1 = "select t4.receiver_id as Id, t4.code as Code, t4.name as Name,  
+							sum(t5.amount) as TaxTotal, sum(t1.totalSalesAmount) as SalesTotal, sum(t1.totalAmount) as Total
+						from Invoice t1 inner join Receiver t4 on t4.Id = t1.receiver_id
+							left outer join TaxTotal t5 on t5.invoice_id = t1.Id
+						where (t1.issuer_id = ? or ? = -1)
+						and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
+						group by t4.receiver_id, t4.name, t4.code";
+		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $startDate, $endDate]);
+		
+		//render excel file now
+		$reader = IOFactory::createReader('Xlsx');
+		$file = $reader->load('./ExcelTemplates/CustomersSales.xlsx');
+		$rowIdx = 4;
+		foreach($data as $row){
+			$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), $row->Code);
+			$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Name);
+			$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $row->Id);
+			$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $startDate);
+			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $endDate);
+			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->TaxTotal);
+			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->SalesTotal);
+			$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), $row->Total);
+			$rowIdx++;
+		}
+		$writer = IOFactory::createWriter($file, 'Xlsx');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+		//$writer->save('./ExcelTemplates/SalesReport2.xlsx');
+		//return $data1;
+	}
 }

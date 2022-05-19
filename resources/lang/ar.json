@@ -239,5 +239,9 @@
 	"Tax Total": "أجمالي الضريبة",
 	"Client Name": "اسم العميل",
 	"Issued At": "تاريخ الأصدار",
-	"Received At": "تاريخ الأستلام"
+	"Received At": "تاريخ الأستلام",
+	"Customers Sales Report": "تقرير المبيعات للعملاء",
+	"Customers Summary": "مبيعات العملاء",
+	"Branches Summary": "مبيعات الفروع",
+	"Branches Sales Report": "تقرير مبيعات الفروع"
 }
