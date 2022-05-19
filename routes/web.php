@@ -71,6 +71,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/invoice/copy' , [ETAController::class , 'saveCopy'])->name('invoices.copy');
     Route::post('/ETA/Items/Upload', [ETAController::class, 'UploadItem'])->name("eta.items.upload");
     Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");
+    Route::post('/ETA/Items/Requests/Sync', [ETAController::class, 'SyncItemsRequests'])->name("eta.items.requests.sync");
     Route::post('/ETA/Items/Add', [ETAController::class, 'AddItem'])->name("eta.items.store");
     Route::get('/ETA/Items', [ETAController::class, 'indexItems'])->name("eta.items.index");
 

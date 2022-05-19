@@ -102,6 +102,26 @@
                         this.$nextTick(() => this.LoadETA());
                     }
 					else
+                    {
+                        this.progress.maxValue = 0;
+                        this.progress.value = 0;
+                        this.form.type = "Requests";
+						this.LoadETARequests();
+                    }
+                }).catch(error => {
+					this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;
+                });
+			},
+            LoadETARequests() {
+				this.form.value = this.progress.value + 1;
+                axios.post(route('eta.items.requests.sync'), this.form)
+				.then(response => {
+					this.progress.maxValue = response.data.totalPages;
+					this.progress.value  = this.progress.value + 1;
+					if (this.progress.value < this.progress.maxValue)
+						this.$nextTick(() => this.LoadETARequests());
+                    else
 						this.CancelAdd();
                 }).catch(error => {
 					this.$page.props.errors = error.response.data.errors;

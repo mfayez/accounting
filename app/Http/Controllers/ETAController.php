@@ -417,6 +417,42 @@ class ETAController extends Controller
 		return $response['metadata'];
 	}
 
+	public function SyncItemsRequests(Request $request)
+	{
+		$url = env("ETA_URL")."/codetypes/requests/my";
+		$this->AuthenticateETA($request);
+		$response = Http::withToken($this->token)->get($url, [
+			"Ps" => "100",
+			"Pn" => $request->input("value")
+		]);
+		if (!isset($response['result']))
+			return json_encode(["totalPages" => 0, "totalCount" => 0]);
+		$collection = $response['result'];
+		foreach($collection as $item) {
+			$item2 = ETAItem::updateOrCreate(['itemCode' => $item['itemCode']], $item);
+			$item2->ownerTaxpayerrin = $item['ownerTaxpayer']['rin'];
+            $item2->ownerTaxpayername = $item['ownerTaxpayer']['name'];
+            $item2->ownerTaxpayernameAr = $item['ownerTaxpayer']['nameAr'];
+            $item2->requesterTaxpayerrin = $item['requesterTaxpayer']['rin'];
+            $item2->requesterTaxpayername = $item['requesterTaxpayer']['name'];
+            $item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
+            $item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
+            $item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
+            $item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
+            $item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
+            $item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
+            $item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
+            $item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
+            $item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
+            $item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
+            $item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
+            $item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
+            $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
+			$item2->save();
+		};
+		return $response['metadata'];
+	}
+
 	public function AddItem(Request $request)
 	{
 		$url = env("ETA_URL")."/codetypes/requests/codes";
