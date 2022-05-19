@@ -3698,6 +3698,10 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 		display: flex;
 	}
 
+	.md\:table-cell {
+		display: table-cell;
+	}
+
 	.md\:grid {
 		display: grid;
 	}
