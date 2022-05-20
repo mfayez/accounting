@@ -31,10 +31,13 @@ use App\Models\Settings;
 use App\Http\Requests\StoreInvoiceRequest;
 
 use App\Http\Traits\ETAAuthenticator;
+use App\Http\Traits\ExcelWrapper;
 
 class ETAController extends Controller
 {
 	use ETAAuthenticator;
+	use ExcelWrapper;
+	
 	public function generateInvoiceNumber($invoice){
 		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
@@ -53,19 +56,33 @@ class ETAController extends Controller
 	public function UploadItem(Request $request)
 	{
 		$url = env("ETA_URL")."/codetypes/requests/codes";
-		$temp = $this->csvToArray($request->file);
+		$temp = [];
+		$extension = $request->file->extension();
+		if ($extension == 'xlsx' || $extension == 'xls')
+			$temp = $this->xlsxToArray($request->file, $extension);
+		else if ($extension == 'csv')
+			$temp = $this->csvToArray($request->file);
+		else
+			return json_encode(["Error" => true, "Message" => __("Unsupported File Type!")]);
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => $temp]);
 		return $response;
 		
-	}	
+	}
 	public function UploadInvoice(Request $request)
 	{
 		//$request->validate([
         //    'file' => 'required|file|mimes:csv',
         //]);
-    
-		$temp = $this->csvToArray($request->file);
+		$temp = [];
+		$extension = $request->file->extension();
+		if ($extension == 'xlsx' || $extension == 'xls')
+			$temp = $this->xlsxToArray($request->file, $extension);
+		else if ($extension == 'csv')
+			$temp = $this->csvToArray($request->file);
+		else
+			return json_encode(["Error" => true, "Message" => __("Unsupported File Type!")]);
+		
 		$upload = new Upload();
 		$upload->userId = Auth::id();
 		$upload->fileName = $request->file->getClientOriginalName();
@@ -643,39 +660,6 @@ class ETAController extends Controller
 		return ETAItem::all()->toArray();
 	}
 	
-	private function csvToArray($filename = '', $delimiter = ',')
-	{
-    	if (!file_exists($filename) || !is_readable($filename))
-        	return false;
-
-	    $header_en = null;
-	    $header_ar = null;
-    	$data = array();
-	    if (($handle = fopen($filename, 'r')) !== false)
-    	{
-        	while (($row = fgetcsv($handle, 10000, $delimiter)) !== false)
-	        {
-    	        if (!$header_en){
-					if (count($row) == 1){
-						$delimiter = ';';
-						$row = str_getcsv($row[0], $delimiter);
-					}
-					foreach($row as $key=>$item){
-						$row[$key] = trim(iconv('UTF-8', 'ASCII//IGNORE', $item));
-					}
-					$header_en = $row;
-				}
-    	        else if (!$header_ar)
-        	        $header_ar = $row;
-            	else
-                	$data[] = array_combine($header_en, $row);
-        	}
-	        fclose($handle);
-    	}
-
-    	return $data;
-	}
-
 	public function UpdateInvoices(){
 		$urlbase = env("ETA_URL")."/documents/%s/raw";
 		$invoices = Invoice::where('status', '=', 'Invalid')

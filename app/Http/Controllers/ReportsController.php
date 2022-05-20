@@ -34,8 +34,12 @@ use App\Models\Issuer;
 use App\Models\Upload;
 use Maatwebsite\Excel\Facades\Excel;
 
+use App\Http\Traits\ExcelWrapper;
+
 class ReportsController extends Controller
 {
+	use ExcelWrapper;
+	
 	private $mValue;
 	public function summary()
 	{
@@ -201,13 +205,6 @@ class ReportsController extends Controller
 
 		return Excel::download(new ReportSummaryExport($this->summaryData($request)) , 'Report.xlsx');
 
-	}
-
-
-	private function index($col, $row)
-	{
-		$col1 = Coordinate::stringFromColumnIndex($col);
-		return $col1.$row;
 	}
 
 	public function branchesSales()
