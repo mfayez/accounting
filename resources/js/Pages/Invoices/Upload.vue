@@ -16,6 +16,9 @@
                         {{row.error}}
                     </div>
                 </template>
+                <div class="mt-4 flex justify-end">
+                    <a href="/ExcelTemplates/InvoiceUpload.xlsx">{{__('Download excel template')}}</a>
+                </div>
             </template>
 
             <template #footer>

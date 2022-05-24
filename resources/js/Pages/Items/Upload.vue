@@ -11,6 +11,9 @@
 						<input type="file" @change="handleFileUpload($event)" ref="inputFile"/>
 					</label>
                 </div>
+                <div class="flex justify-end">
+                    <a href="/ExcelTemplates/ItemUpload.xlsx">{{__('Download excel template')}}</a>
+                </div>
             </template>
 
             <template #footer>
