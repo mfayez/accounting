@@ -273,6 +273,38 @@
                                     class="cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]':
+                                            $page.url.startsWith('/pos'),
+                                    }"
+                                >
+                                    <i class="fa fa-cash-register"></i>
+                                    {{ __("POS") }}
+                                </span>
+                            </template>
+                            <template #content>
+                                <dropdown-link
+                                    :href="route('pos.index')"
+                                >
+                                    {{ __("Show POSs") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg12()"
+                                    href="#"
+                                >
+                                    {{ __("Add POS") }}
+                                </dropdown-link>
+                            </template>
+                        </dropdown>
+                        <dropdown
+                            :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]':
                                             $page.url.startsWith('/archive'),
                                     }"
                                 >
@@ -443,6 +475,9 @@ export default {
         },
         openDlg11() {
             this.$emit("open:dlg11");
+        },
+        openDlg12() {
+            this.$emit("open:dlg12");
         },
     },
     computed: {

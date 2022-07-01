@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ETAArchiveController;
 use App\Http\Controllers\ETAInvoiceController;
+use App\Http\Controllers\POSController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -57,6 +58,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'branches' => BranchController::class,
         'items' => ItemController::class,
         'users' => UserController::class,
+        'pos' => POSController::class,
     ]);
 
     Route::get('/getBranchesImages/{ids}' , [BranchController::class , 'getBranchesimages'])->name('branches.getImages');

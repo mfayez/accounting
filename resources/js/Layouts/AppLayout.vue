@@ -11,6 +11,7 @@
         <settings-dialog1 ref="dlg9" />
         <settings-dialog2 ref="dlg10" />
         <archive-request-dialog ref="dlg11" />
+        <add-pos ref="dlg12" />
         <nav-bar
             @open:dlg1="openDlg1"
             @open:dlg2="openDlg2"
@@ -23,6 +24,7 @@
             @open:dlg9="openDlg9"
             @open:dlg10="openDlg10"
             @open:dlg11="openDlg11"
+            @open:dlg12="openDlg12"
         />
 
         <div class="min-h-screen bg-gray-100 pb-5">
@@ -50,12 +52,14 @@ import SettingsDialog1 from "@/Pages/Reports/Settings";
 import SettingsDialog2 from "@/Pages/Application/Settings";
 import UploadItemsDialog from "@/Pages/Items/Upload";
 import ArchiveRequestDialog from "@/Pages/Archives/Request";
+import AddPos from "@/Pages/POS/Add.vue";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
 import FlashMessage from "@/shared/FlashMessage";
 import { mapGetters } from "vuex";
 export default {
     components: {
+        AddPos,
         ArchiveRequestDialog,
         UploadItemsDialog,
         UploadInvoicesDialog,
@@ -110,6 +114,9 @@ export default {
         },
         openDlg11() {
             this.$refs.dlg11.ShowDialog();
+        },
+        openDlg12() {
+            this.$refs.dlg12.ShowDialog();
         },
     },
     computed: {
