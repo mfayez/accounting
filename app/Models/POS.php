@@ -12,6 +12,11 @@ class POS extends Model
     public $primaryKey = 'id';
  
     protected $fillable = ["name", "serial", "os_version", "model",
-        "grant_type", "pos_key", "client_id", "client_secret"];
+        "grant_type", "pos_key", "client_id", "client_secret", 'issuer_id'];
+
+    public function issuer()
+    {
+        return $this->belongsTo('App\Models\Issuer', 'issuer_id', 'Id');
+    }
 
 }

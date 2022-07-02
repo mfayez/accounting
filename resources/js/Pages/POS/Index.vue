@@ -18,64 +18,34 @@
                     >
                         <template #head>
                             <tr>
-                                <th
-                                    v-show="showColumn('id')"
-                                    @click.prevent="sortBy('id')"
-                                >
-                                    {{ __("ID") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('name')"
-                                    @click.prevent="sortBy('name')"
-                                >
-                                    {{ __("Name") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('serial')"
-                                    @click.prevent="sortBy('serial')"
-                                >
-                                    {{ __("serial") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('grant_type')"
-                                    @click.prevent="sortBy('grant_type')"
-                                >
-                                    {{ __("Grant Type") }}
-                                </th>
-                                
-
-                                <th @click.prevent="">{{ __("Actions") }}</th>
-                            </tr>
+                                <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
+                                    <th v-show="showColumn(key)" 
+                                        v-if="notSortableCols.includes(key)">{{ col.label }}</th>
+                                    <th class="cursor-pointer" v-show="showColumn(key)"
+                                        @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
+                                  </template>
+								<th @click.prevent="">{{__('Actions')}}</th>
+							</tr>
                         </template>
 
                         <template #body>
-                            <tr
-                                v-for="pos_item in poses.data"
-                                :key="pos_item.id"
-                            >
-                                <td v-show="showColumn('id')">
-                                    {{ pos_item.id }}
-                                </td>
-                                <td v-show="showColumn('name')">
-                                    {{ pos_item.name }}
-                                </td>
-                                <td v-show="showColumn('serial')">
-                                    {{ pos_item.serial }}
-                                </td>
-                                <td v-show="showColumn('grant_type')">
-                                    {{ pos_item.grant_type }}
+                            <tr v-for="item in poses.data" :key="item.id">
+                                <td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+                                    <div v-for="rowVals in nestedIndex(item, key).split(',')">
+                                        {{rowVals}}
+                                    </div>
                                 </td>
                                
                                 <td>
                                     <secondary-button
-                                        @click="editPOS(pos_item)"
+                                        @click="editPOS(item)"
                                     >
                                         <i class="fa fa-edit"></i>
                                         {{ __("Edit") }}
                                     </secondary-button>
                                     <jet-button
                                         class="ms-2"
-                                        @click="removePOS(pos_item)"
+                                        @click="removePOS(item)"
                                     >
                                         <i class="fa fa-trash"></i>
                                         {{ __("Delete") }}
@@ -118,6 +88,10 @@ export default {
     data() {
         return {
             pos_item: Object,
+            notSortableCols: [
+                "issuer.name",
+                "grant_type"
+            ],
         };
     },
     methods: {
@@ -142,6 +116,17 @@ export default {
                 .catch((error) => {
                     //this.$refs.password.focus()
                 });
+        },
+        nestedIndex: function (item, key) {
+            try {
+                var keys = key.split(".");
+                if (keys.length == 1) return item[key].toString();
+                if (keys.length == 2) return item[keys[0]][keys[1]].toString();
+                if (keys.length == 3)
+                    return item[keys[0]][keys[1]][keys[2]].toString();
+                return "Unsupported Nested Index";
+            } catch (err) {}
+            return "N/A";
         },
     },
     mounted() {

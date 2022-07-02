@@ -27,6 +27,7 @@ class POSController extends Controller
     public function index()
     {
         $POSes = QueryBuilder::for(POS::class)
+            ->with("issuer")
 			->defaultSort('name')
             ->allowedSorts(['id', 'name', 'serial'])
             ->allowedFilters(['name', 'serial'])
@@ -43,7 +44,8 @@ class POSController extends Controller
                 'id' => __('ID'),
                 'name' => __('Name'),
                 'serial' => __('Serial'),
-                'grant_type' => __('Grant Type')
+                'grant_type' => __('Grant Type'),
+                'issuer.name' => __('Branch'),
             ]);
         });
     }
@@ -64,7 +66,8 @@ class POSController extends Controller
 			'grant_type' 	=> ['required', 'string', Rule::in(['client_credentials'])],
 			'client_id' 	=> ['required', 'string'],
 			'client_secret' => ['required', 'string'],
-            'pos_key'	    => ['string']
+            'pos_key'	    => ['string'],
+            'issuer_id'     => ['required']
         ]);
         $item = new POS($data);
         $item->save();
@@ -90,7 +93,8 @@ class POSController extends Controller
 			'grant_type' 	=> ['required', 'string', Rule::in(['client_credentials'])],
 			'client_id' 	=> ['required', 'string'],
 			'client_secret' => ['required', 'string'],
-            'pos_key'	    => ['string']
+            'pos_key'	    => ['string'],
+            'issuer_id'     => ['required']
         ]);
         $pos = POS::findOrFail($data['id']);
         $pos->update($data);

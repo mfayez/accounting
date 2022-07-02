@@ -11,6 +11,15 @@
                         <TextField v-model="form.name" itemType="input" :itemLabel="__('POS Name')" />
                     </div>
                     <div>
+                        <jet-label :value="__('Branch')" />
+                        <multiselect
+                            v-model="form.issuer"
+                            label="name"
+                            :options="branches"
+                            placeholder="Select branch"
+                        />
+                    </div>
+                    <div>
                         <TextField v-model="form.serial" itemType="input" :itemLabel="__('Serial Number')" />
                     </div>
                     <div>
@@ -19,7 +28,7 @@
                     <div>
                         <TextField v-model="form.model" itemType="input" :itemLabel="__('Model')" />
                     </div>
-                    <div v-if="false">
+                    <div>
                         <TextField v-model="form.pos_key" itemType="input" :itemLabel="__('POS Key')" />
                     </div>
                     <div v-if="false">
@@ -53,6 +62,8 @@
     </jet-dialog-modal>
 </template>
 
+<style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
+
 <script>
 import JetActionMessage from "@/Jetstream/ActionMessage";
 import JetActionSection from "@/Jetstream/ActionSection";
@@ -68,6 +79,7 @@ import JetLabel from "@/Jetstream/Label";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import Multiselect from "@suadelabs/vue3-multiselect";
 import TextField from '@/UI/TextField'
 
 export default {
@@ -87,6 +99,7 @@ export default {
         JetSecondaryButton,
         JetSectionBorder,
         JetValidationErrors,
+        Multiselect,
     },
 
     props: {
@@ -99,6 +112,7 @@ export default {
     data() {
         return {
             errors: [],
+            branches: [],
             form: this.$inertia.form({
                 name: "POS1",
                 serial: "253142",
@@ -107,7 +121,9 @@ export default {
                 pos_key: " ",
                 grant_type: "client_credentials",
                 client_id: "779bf63a-e6a3-452d-a7c9-09b80a726b14",
-                client_secret: "17d01008-a5a6-45d2-b148-852bbd5a8f86"
+                client_secret: "17d01008-a5a6-45d2-b148-852bbd5a8f86",
+                issuer_id: '',
+                issuer: ''
             }),
             showDialog: false,
         };
@@ -125,6 +141,7 @@ export default {
                 this.form.grant_type    = this.positem.grant_type;
                 this.form.client_id     = this.positem.client_id;
                 this.form.client_secret = this.positem.client_secret;
+                this.form.issuer_id     = this.positem.issuer_id;
             }
             this.showDialog = true;
         },
@@ -133,6 +150,7 @@ export default {
             this.showDialog = false;
         },
         submit() {
+            this.form.issuer_id = this.form.issuer.Id;
             if ((this.positem !== null)){
                 axios
                     .put(route("pos.update", this.positem.id), this.form)
@@ -168,6 +186,18 @@ export default {
             
         },
         
+    },
+    created: function created() {
+        axios
+            .get(route("json.branches"))
+            .then((response) => {
+                this.branches = response.data;
+                if (this.positem)
+                    this.form.issuer = this.branches.find(
+                        (option) => option.Id === this.positem.issuer_id
+                    );
+            })
+            .catch((error) => {});
     },
 };
 </script>
