@@ -40,6 +40,15 @@
                     <div class="col-span-2">
                         <TextField v-model="form.client_secret" itemType="input" :itemLabel="__('Client Secret')" />
                     </div>
+                    <div class="lg:col-span-2">
+                        <jet-label :value="__('Branch Activity')" />
+                        <multiselect
+                            v-model="form.activityCode"
+                            label="Desc_ar"
+                            :options="activities"
+                            placeholder="Select activity"
+                        />
+                    </div>
                 </div>
             </form>
         </template>
@@ -113,6 +122,7 @@ export default {
         return {
             errors: [],
             branches: [],
+            activities: [],
             form: this.$inertia.form({
                 name: "POS1",
                 serial: "253142",
@@ -121,9 +131,11 @@ export default {
                 pos_key: " ",
                 grant_type: "client_credentials",
                 client_id: "779bf63a-e6a3-452d-a7c9-09b80a726b14",
-                client_secret: "17d01008-a5a6-45d2-b148-852bbd5a8f86",
+                client_secret: "20872ee3-f132-4954-8bf5-7d836a751f14",
                 issuer_id: '',
-                issuer: ''
+                issuer: '',
+                activity_code: "",
+                activityCode: '',
             }),
             showDialog: false,
         };
@@ -138,10 +150,17 @@ export default {
                 this.form.os_version    = this.positem.os_version;
                 this.form.model         = this.positem.model;
                 this.form.pos_key       = this.positem.pos_key;
+                this.form.activity_code = this.positem.activity_code;
                 this.form.grant_type    = this.positem.grant_type;
                 this.form.client_id     = this.positem.client_id;
                 this.form.client_secret = this.positem.client_secret;
                 this.form.issuer_id     = this.positem.issuer_id;
+                this.form.issuer = this.branches.find(
+                    (option) => option.Id === this.positem.issuer_id
+                );
+                this.form.activityCode = this.activities.find(
+                    (option) => option.code === this.positem.activity_code
+                );
             }
             this.showDialog = true;
         },
@@ -151,6 +170,7 @@ export default {
         },
         submit() {
             this.form.issuer_id = this.form.issuer.Id;
+            this.form.activity_code = this.form.activityCode.code;
             if ((this.positem !== null)){
                 axios
                     .put(route("pos.update", this.positem.id), this.form)
@@ -196,6 +216,17 @@ export default {
                     this.form.issuer = this.branches.find(
                         (option) => option.Id === this.positem.issuer_id
                     );
+            })
+            .catch((error) => {});
+        axios
+            .get("/json/ActivityCodes.json")
+            .then((response) => {
+                this.activities = response.data;
+                if (this.positem)
+                    this.form.activityCode = this.activities.find(
+                        (option) => option.code === this.positem.activity_code
+                    );
+                else this.form.activityCode = this.activities[0];
             })
             .catch((error) => {});
     },

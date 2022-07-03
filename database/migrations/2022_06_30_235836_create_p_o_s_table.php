@@ -21,6 +21,7 @@ class CreatePOSTable extends Migration
             $table->string("model");
             $table->string("pos_key");
             $table->string("grant_type");
+            $table->string("activity_code");
             $table->string("client_id");
             $table->string("client_secret");
             $table->foreignId('issuer_id');

@@ -64,7 +64,8 @@ class POSController extends Controller
             'os_version'	=> ['required', 'string'],
             'model' 		=> ['required', 'string'],
 			'grant_type' 	=> ['required', 'string', Rule::in(['client_credentials'])],
-			'client_id' 	=> ['required', 'string'],
+			'activity_code' => ['required', 'string'],
+            'client_id' 	=> ['required', 'string'],
 			'client_secret' => ['required', 'string'],
             'pos_key'	    => ['string'],
             'issuer_id'     => ['required']
@@ -91,6 +92,7 @@ class POSController extends Controller
             'os_version'	=> ['required', 'string'],
             'model' 		=> ['required', 'string'],
 			'grant_type' 	=> ['required', 'string', Rule::in(['client_credentials'])],
+            'activity_code' => ['required', 'string'],
 			'client_id' 	=> ['required', 'string'],
 			'client_secret' => ['required', 'string'],
             'pos_key'	    => ['string'],
