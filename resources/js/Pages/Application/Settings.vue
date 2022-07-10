@@ -10,6 +10,14 @@
 			<form @submit.prevent="submit">
 				<div class="grid grid-cols-2 gap-4">
 					<div class="col-span-2">
+                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.e_invoice" />
+						<jet-label for="automatic" :value="__('Activate E-Invoice')" class="ms-2"/>
+					</div>
+					<div class="col-span-2">
+                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.e_receipt" />
+						<jet-label for="automatic" :value="__('Activate E-Receipt')" class="ms-2"/>
+					</div>
+					<div class="col-span-2">
                         <jet-checkbox name="custom_desc" id="custom_desc" v-model:checked="form.custom_desc" />
 						<jet-label for="custom_desc" :value="__('Allow Custom Items Description')" class="ms-2"/>
 					</div>
@@ -81,6 +89,8 @@
 					type: 'application settings',
 					custom_desc: false,
                     automatic: false,
+					e_invoice: true,
+					e_receipt: false,
 					invoiceTemplate: '',
                 }),
 				showDialog: false,
@@ -90,15 +100,17 @@
         methods: {
 			ShowDialog() {
 				this.showDialog = true;
-				axios.get(route('settings.json'), { params: { type: this.form.type} })
-				.then(response => {
-					this.settings = response.data;
-					this.form.invoiceTemplate = this.settings.invoiceTemplate;
-					this.form.automatic = this.settings.automatic == '1' ? true : false;
-					this.form.custom_desc = this.settings.custom_desc == '1' ? true : false;
-        	    }).catch(error => {
-
-            	});
+				axios
+					.get(route('settings.json'), { params: { type: this.form.type} })
+					.then(response => {
+						this.settings = response.data;
+						this.form.invoiceTemplate = this.settings.invoiceTemplate;
+						this.form.automatic = this.settings.automatic == '1' ? true : false;
+						this.form.custom_desc = this.settings.custom_desc == '1' ? true : false;
+						this.form.e_invoice = this.settings.e_invoice == '1' ? true : false;
+						this.form.e_receipt = this.settings.e_receipt == '1' ? true : false;
+        		    }).catch(error => {
+            		});
 			},
 			CancelDlg() {
 				this.showDialog = false;
