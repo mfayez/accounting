@@ -11,21 +11,10 @@
         <settings-dialog1 ref="dlg9" />
         <settings-dialog2 ref="dlg10" />
         <archive-request-dialog ref="dlg11" />
-        <add-pos ref="dlg12" />
-        <nav-bar
-            @open:dlg1="openDlg1"
-            @open:dlg2="openDlg2"
-            @open:dlg3="openDlg3"
-            @open:dlg4="openDlg4"
-            @open:dlg5="openDlg5"
-            @open:dlg6="openDlg6"
-            @open:dlg7="openDlg7"
-            @open:dlg8="openDlg8"
-            @open:dlg9="openDlg9"
-            @open:dlg10="openDlg10"
-            @open:dlg11="openDlg11"
-            @open:dlg12="openDlg12"
-        />
+        <add-pos ref="addPOS" />
+        <load-receipts ref="loadReceipts" />
+        <upload-receipts ref="uploadReceipts" />
+        <nav-bar @open_dlg="openDlg" />
 
         <div class="min-h-screen bg-gray-100 pb-5">
             <main>
@@ -53,6 +42,8 @@ import SettingsDialog2 from "@/Pages/Application/Settings";
 import UploadItemsDialog from "@/Pages/Items/Upload";
 import ArchiveRequestDialog from "@/Pages/Archives/Request";
 import AddPos from "@/Pages/POS/Add.vue";
+import LoadReceipts from "@/Pages/Receipts/Load";
+import UploadReceipts from "@/Pages/Receipts/Upload";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
 import FlashMessage from "@/shared/FlashMessage";
@@ -60,6 +51,8 @@ import { mapGetters } from "vuex";
 export default {
     components: {
         AddPos,
+        LoadReceipts,
+        UploadReceipts,
         ArchiveRequestDialog,
         UploadItemsDialog,
         UploadInvoicesDialog,
@@ -82,42 +75,9 @@ export default {
         };
     },
     methods: {
-        openDlg1() {
-            this.$refs.dlg1.ShowDialog();
-        },
-        openDlg2() {
-            this.$refs.dlg2.ShowDialog();
-        },
-        openDlg3() {
-            this.$refs.dlg3.ShowDialog();
-        },
-        openDlg4() {
-            this.$refs.dlg4.ShowDialog();
-        },
-        openDlg5() {
-            this.$refs.dlg5.ShowDialog();
-        },
-        openDlg6() {
-            this.$refs.dlg6.ShowDialog();
-        },
-        openDlg7() {
-            this.$refs.dlg7.ShowDialog();
-        },
-        openDlg8() {
-            this.$refs.dlg8.ShowDialog();
-        },
-        openDlg9() {
-            this.$refs.dlg9.ShowDialog();
-        },
-        openDlg10() {
-            this.$refs.dlg10.ShowDialog();
-        },
-        openDlg11() {
-            this.$refs.dlg11.ShowDialog();
-        },
-        openDlg12() {
-            this.$refs.dlg12.ShowDialog();
-        },
+        openDlg($dlg) {
+            this.$refs[$dlg].ShowDialog();
+        }
     },
     computed: {
         ...mapGetters(["successFlashMessage"]),
