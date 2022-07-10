@@ -62,7 +62,7 @@
                             <template #content>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg1()"
+                                    @click.prevent="openDlg('dlg1')"
                                     :href="route('customers.create')"
                                 >
                                     {{ __("Add New Customer") }}
@@ -98,7 +98,7 @@
                             <template #content>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg2()"
+                                    @click.prevent="openDlg('dlg2')"
                                     href="#"
                                 >
                                     {{ __("Add New Branch") }}
@@ -113,6 +113,7 @@
                             :align="alignDropDown()"
                             width="48"
                             class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.e_invoice_enabled"
                         >
                             <template #trigger>
                                 <span
@@ -143,7 +144,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg6()"
+                                    @click.prevent="openDlg('dlg6')"
                                     href="#"
                                 >
                                     {{ __("Upload Invoices") }}
@@ -155,7 +156,47 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg5()"
+                                    @click.prevent="openDlg('dlg5')"
+                                    href="#"
+                                >
+                                    {{ __("Load from ETA") }}
+                                </dropdown-link>
+                            </template>
+                        </dropdown>
+                        <dropdown
+                            :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.e_receipt_enabled"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': invoiceConditions,
+                                    }"
+                                >
+                                    <i class="fa fa-file"></i>
+                                    {{ __("Receipts") }}
+                                </span>
+                            </template>
+
+                            <template #content>
+                                <dropdown-link
+                                    :href="route('eta.receipts.index')"
+                                >
+                                    {{ __("Show My Receipts") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('uploadReceipts')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Receipts") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('loadReceipts')"
                                     href="#"
                                 >
                                     {{ __("Load from ETA") }}
@@ -181,14 +222,14 @@
                             <template #content>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg4()"
+                                    @click.prevent="openDlg('dlg4')"
                                     href="#"
                                 >
                                     {{ __("Add New Item") }}
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg7()"
+                                    @click.prevent="openDlg('dlg7')"
                                     href="#"
                                 >
                                     {{ __("Upload Items") }}
@@ -204,7 +245,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg3()"
+                                    @click.prevent="openDlg('dlg3')"
                                     href="#"
                                 >
                                     {{ __("Load from ETA") }}
@@ -255,7 +296,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg9()"
+                                    @click.prevent="openDlg('dlg9')"
                                     href="#"
                                 >
                                     {{ __("Invoice Settings") }}
@@ -267,6 +308,7 @@
                             :align="alignDropDown()"
                             width="48"
                             class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.e_receipt_enabled"
                         >
                             <template #trigger>
                                 <span
@@ -288,7 +330,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg12()"
+                                    @click.prevent="openDlg('addPOS')"
                                     href="#"
                                 >
                                     {{ __("Add POS") }}
@@ -320,7 +362,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg11()"
+                                    @click.prevent="openDlg('dlg11')"
                                     href="#"
                                 >
                                     {{ __("Request Archive Preparation") }}
@@ -367,7 +409,7 @@
                                 </dropdown-link>
                                  <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg10()"
+                                    @click.prevent="openDlg('dlg10')"
                                     v-if="$page.props.user.id == 1"
                                     href="#"
                                 >
@@ -376,7 +418,7 @@
 
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg8()"
+                                    @click.prevent="openDlg('dlg8')"
                                     href="#"
                                 >
                                     {{ __("Add New User") }}
@@ -399,28 +441,14 @@
 
 <script>
 import { Link } from "@inertiajs/inertia-vue3";
-
 import LanguageSelector from "@/Language/LanguageSelector";
-
 import Dropdown from "@/Jetstream/Dropdown";
-
 import DropdownLink from "@/Jetstream/DropdownLink";
-
 import JetApplicationMark from "@/Jetstream/ApplicationMark";
 
 export default {
     emits: [
-        "open:dlg1",
-        "open:dlg2",
-        "open:dlg3",
-        "open:dlg4",
-        "open:dlg5",
-        "open:dlg6",
-        "open:dlg7",
-        "open:dlg8",
-        "open:dlg9",
-        "open:dlg10",
-        "open:dlg11",
+        "open_dlg"
     ],
     data() {
         return {
@@ -443,41 +471,8 @@ export default {
         alignDropDown() {
             return this.$page.props.locale == "en" ? "left" : "right";
         },
-        openDlg1() {
-            this.$emit("open:dlg1");
-        },
-        openDlg2() {
-            this.$emit("open:dlg2");
-        },
-        openDlg3() {
-            this.$emit("open:dlg3");
-        },
-        openDlg4() {
-            this.$emit("open:dlg4");
-        },
-        openDlg5() {
-            this.$emit("open:dlg5");
-        },
-        openDlg6() {
-            this.$emit("open:dlg6");
-        },
-        openDlg7() {
-            this.$emit("open:dlg7");
-        },
-        openDlg8() {
-            this.$emit("open:dlg8");
-        },
-        openDlg9() {
-            this.$emit("open:dlg9");
-        },
-        openDlg10() {
-            this.$emit("open:dlg10");
-        },
-        openDlg11() {
-            this.$emit("open:dlg11");
-        },
-        openDlg12() {
-            this.$emit("open:dlg12");
+        openDlg($dlg) {
+            this.$emit("open_dlg", $dlg);
         },
     },
     computed: {

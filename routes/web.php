@@ -14,6 +14,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ETAArchiveController;
 use App\Http\Controllers\ETAInvoiceController;
 use App\Http\Controllers\POSController;
+use App\Http\Controllers\ReceiptController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -88,6 +89,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/ETA/Invoices/Upload', [ETAController::class, 'UploadInvoice'])->name("eta.invoices.upload");
     Route::post('/ETA/Invoices/Upload/Cancel', [ETAController::class, 'CancelUpload'])->name("eta.invoices.upload.cancel");
     Route::get('/ETA/Invoices/Excel/Review', [ETAController::class, 'indexExcel'])->name("invoices.excel.review");
+
+#Receipt Controller
+    Route::get('/ETA/Receipts/Index', [ReceiptController::class, 'Index'])->name("eta.receipts.index");
+    Route::post('/ETA/Receipts/Upload', [ReceiptController::class, 'UploadReceipts'])->name("eta.receipts.upload");
 
     Route::get('/ETA/Invoice/Print', [ETAInvoiceController::class, 'downloadPDF'])->name('eta.invoice.download');
 #todo mfayez change the controller method and implement it later
