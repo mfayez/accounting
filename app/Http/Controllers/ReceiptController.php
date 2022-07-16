@@ -245,7 +245,6 @@ class ReceiptController extends Controller
         $lastUUID = null;//'a53030d65802d6baeff04c0efb54d9c273916989d2efa390caf65c2d5fd5d0ab';
         $document = $this->ReceiptToDocument($item, $lastUUID);
         $retValue = $this->fillUUID($document);
-        return $retValue;
         $this->AuthenticatePOS($request, $item->seller);
         $result = $this->SendReceiptToETA($retValue);
         return $result;
