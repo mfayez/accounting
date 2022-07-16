@@ -12,7 +12,7 @@ class POS extends Model
     public $primaryKey = 'id';
  
     protected $fillable = ["name", "serial", "os_version", "model",
-        "grant_type", "pos_key", "activity_code", "client_id", "client_secret", 'issuer_id'];
+        "grant_type", "pos_key", "activity_code", "client_id", "client_secret", 'last_uuid', 'issuer_id'];
 
     public function issuer()
     {

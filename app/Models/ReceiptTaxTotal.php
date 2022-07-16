@@ -14,7 +14,7 @@ class ReceiptTaxTotal extends \Illuminate\Database\Eloquent\Model
     public $primaryKey = 'Id';
     protected $casts = [
         'Id'      => 'integer',
-        'amount'  => 'decimal:5', 
+        'amount'  => 'float', 
     ];
 
     protected $fillable = ['taxType', 'amount', 'receipt_id'];

@@ -13,6 +13,8 @@ class Address extends \Illuminate\Database\Eloquent\Model
 
     public $primaryKey = 'Id';
 
+    protected $hidden = ['created_at', 'Id', 'updated_at'];
+
     protected $fillable = ['branchID', 'country', 'governate', 'regionCity', 'street', 'buildingNumber', 'postalCode',
         'floor', 'room', 'landmark', 'additionalInformation'];
 

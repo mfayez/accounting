@@ -19,11 +19,11 @@ class ReceiptItem extends \Illuminate\Database\Eloquent\Model
 
     protected $casts = [
         'id'        => 'integer',
-        'quantity'  => 'decimal:5', 
-        'unitPrice' => 'decimal:5', 
-        'netSale'   => 'decimal:5', 
-        'totalSale' => 'decimal:5', 
-        'total'     => 'decimal:5'
+        'quantity'  => 'float', 
+        'unitPrice' => 'float', 
+        'netSale'   => 'float', 
+        'totalSale' => 'float', 
+        'total'     => 'float'
     ];
 
     protected $fillable = ['receipt_id', 'internalCode', 'description', 'itemType', 'itemCode', 'unitType',

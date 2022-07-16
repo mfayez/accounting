@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ReceiptTaxTotal;
+use Illuminate\Support\Carbon;
 
 class Receipt extends Model
 {
@@ -15,27 +16,32 @@ class Receipt extends Model
     public $timestamps = false;
     protected $casts = [
         'id'                        => 'integer',
-        'adjustment'                => 'decimal:5', 
-        'exchangeRate'              => 'decimal:5', 
-        'feesAmount'                => 'decimal:5', 
-        'grossWeight'               => 'decimal:5', 
-        'netAmount'                 => 'decimal:5', 
-        'netWeight'                 => 'decimal:5', 
-        'totalAmount'               => 'decimal:5', 
-        'totalCommercialDiscount'   => 'decimal:5', 
-        'totalItemsDiscount'        => 'decimal:5', 
-        'totalSales'                => 'decimal:5'
+        'adjustment'                => 'float', 
+        'exchangeRate'              => 'float', 
+        'feesAmount'                => 'float', 
+        'grossWeight'               => 'float', 
+        'netAmount'                 => 'float', 
+        'netWeight'                 => 'float', 
+        'totalAmount'               => 'float', 
+        'totalCommercialDiscount'   => 'float', 
+        'totalItemsDiscount'        => 'float', 
+        'totalSales'                => 'float'
     ];
 
     protected $fillable = ['buyer_id', 'buyer_mobileNumber', 'buyer_name', 'buyer_paymentNumber', 
         'buyer_type', 'currency', 'dateTimeIssued', 'pos_id', 'orderdeliveryMode', 'paymentMethod', 
         'previousUUID', 'receiptNumber', 'referenceOldUUID', 'sOrderNameCode', 'uuid', 'adjustment', 
         'exchangeRate', 'feesAmount', 'grossWeight', 'netAmount', 'netWeight', 'totalAmount', 'totalCommercialDiscount', 
-        'totalItemsDiscount', 'totalSales', 'status', 'statusReason'];
+        'totalItemsDiscount', 'totalSales', 'status', 'statusReason', 'submission_id', 'long_id'];
 
     public function getDates()
     {
         return ['dateTimeIssued'];
+    }
+
+    protected function serializeDate($date)
+    {
+        return $date->format('Y-m-d\TH:i:s\Z');
     }
 
     public function normalize()
