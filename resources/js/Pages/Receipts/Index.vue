@@ -1,18 +1,7 @@
 <template>
     <!-- prettier-ignore -->
     <app-layout>
-		<preview-invoice ref="dlg3" v-model="invItem" />
-		<confirm ref="dlg2" @confirmed="cancelInv2()">
-			<jet-label for="type"  value="Select cancelation reason:" />
-			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
-			  <option value="Wrong buyer details">Wrong buyer details</option>
-			  <option value="Wrong invoice details">Wrong invoice details</option>
-			</select>
-		</confirm>
-		<confirm ref="dlg4" @confirmed="deleteInv()">
-			<jet-label for="type"  value="Are you sure you want to delete this Invoice?" />
-		</confirm>
-        <div class="py-4">
+		<div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
 					<Table
@@ -48,27 +37,12 @@
 									</td>
 									<td>
                                         <div class="grid grid-cols-3 w-56">
-                                            <jet-danger-button
-                                                class="me-2 mt-2"
-                                                @click="cancelInvoice(item)"
-                                                >
-                                                {{ __("Cancel") }}
-                                            </jet-danger-button>
-                                            
-                                            <jet-danger-button
-                                                class="me-2 mt-2"
-                                                @click="deleteInvoice(item)" 
-                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
-                                                >
-                                                {{ __("Delete") }}
-                                            </jet-danger-button>
-                                            
                                             <jet-button
-                                            class="me-2 mt-2"
-                                                @click="editInvoice(item)" 
-                                                v-show="False"
+                                                class="me-2 mt-2"
+                                                @click="sendToETA(item)" 
+                                                v-show="item.status=='In Review'" 
                                                 >
-                                                {{ __("Edit") }}
+                                                {{ __("Send") }}
                                             </jet-button>
                                         </div>
 										
@@ -116,8 +90,7 @@ export default {
     },
     data() {
         return {
-            invItem: { quantity: 1009 },
-            cancelReason: "",
+            invItem: {},
             notSortableCols: [
                 "statusReason",
                 "receiver.name",
@@ -129,84 +102,19 @@ export default {
         };
     },
     methods: {
-        openExternal2(item) {
-            window.open(route('eta.invoice.download', {uuid: item.uuid}), '_blank');
-        },
-        openExternal(item) {
-            window.open(
-                this.$page.props.preview_url + 
-                    item.uuid +
-                    "/share/" +
-                    item.longId
-            );
-        },
-        downloadPDF(item) {
+        sendToETA(item) {
             this.invItem = item;
-            window.open(route("pdf.invoice.preview", [item.Id]));
-        },
-        editInvoice(item) {
-            this.invItem = item;
-            window.location.href = route("invoices.edit", [item.Id]);
-        },
-        viewInvoice(item) {
-            this.invItem = item;
-            this.$nextTick(() => {
-                this.$refs.dlg3.ShowDialog();
-            });
-        },
-        deleteInvoice(item) {
-            this.invItem = item;
-            this.$refs.dlg4.ShowModal();
-        },
-        deleteInv() {
             axios
-                .post(route("eta.invoices.delete"), { Id: this.invItem.Id })
-                .then((response) => {
-                    location.reload();
-                })
-                .catch((error) => {
-                    alert(error.response.data);
-                });
-        },
-        cancelInvoice(item) {
-            this.invItem = item;
-            this.$refs.dlg2.ShowModal();
-        },
-        cancelInv2() {
-            axios
-                .post(route("eta.invoices.cancel"), {
-                    uuid: this.invItem.uuid,
-                    status: "cancelled",
-                    reason: this.cancelReason,
+                .post(route("eta.receipts.send"), {
+                    id: this.invItem.id,
                 })
                 .then((response) => {
-                    console.log(response);
-                    alert(response.data);
-                    //location.reload();
+                    //console.log(response);
+                    //alert(response.data);
                 })
                 .catch((error) => {
-                    console.log(error);
-                    alert(error.response.data);
-                    //this.$refs.password.focus()
-                });
-        },
-        rejectInvoice(item) {
-            this.invItem = item;
-            this.$refs.dlg1.ShowModal();
-        },
-        rejectInv2() {
-            axios
-                .post(route("eta.invoices.cancel"), {
-                    uuid: this.invItem.uuid,
-                    status: "rejected",
-                    reason: this.cancelReason,
-                })
-                .then((response) => {
-                    alert(response.data);
-                })
-                .catch((error) => {
-                    alert(error.response.data);
-                    //this.$refs.password.focus()
+                    //console.log(error);
+                    //alert(error.response.data);
                 });
         },
         nestedIndex: function (item, key) {
@@ -219,10 +127,7 @@ export default {
                 return "Unsupported Nested Index";
             } catch (err) {}
             return "N/A";
-        },
-        editItem: function (item_id) {
-            //alert(JSON.stringify(item_id));
-        },
+        }
     },
 };
 </script>

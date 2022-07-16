@@ -93,6 +93,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 #Receipt Controller
     Route::get('/ETA/Receipts/Index', [ReceiptController::class, 'Index'])->name("eta.receipts.index");
     Route::post('/ETA/Receipts/Upload', [ReceiptController::class, 'UploadReceipts'])->name("eta.receipts.upload");
+    Route::post('/ETA/Receipts/Send', [ReceiptController::class, 'SignAndSendReceipt'])->name("eta.receipts.send");
+    Route::post('/ETA/Receipts/SendAll', [ReceiptController::class, 'SignAndSendReceipts'])->name("eta.receipts.send.all");
 
     Route::get('/ETA/Invoice/Print', [ETAInvoiceController::class, 'downloadPDF'])->name('eta.invoice.download');
 #todo mfayez change the controller method and implement it later

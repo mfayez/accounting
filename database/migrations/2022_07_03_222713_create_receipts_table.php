@@ -22,7 +22,7 @@ class CreateReceiptsTable extends Migration
             $table->string("previousUUID")->default("");
             $table->string("referenceOldUUID")->nullable();
             $table->string("currency")->default("EGP");
-            $table->unsignedDecimal("exchangeRate")->nullable()->default(1);
+            $table->unsignedDecimal("exchangeRate")->nullable()->default(0);
             $table->string("sOrderNameCode")->nullable();
             $table->string("orderdeliveryMode")->nullable();
             $table->unsignedDecimal("grossWeight")->nullable();
@@ -43,6 +43,8 @@ class CreateReceiptsTable extends Migration
             $table->unsignedDecimal("adjustment")->default(0);
             $table->string("status");
             $table->string("statusReason");
+            $table->string("submission_id")->nullable();
+            $table->string("long_id")->nullable();
             $table->timestamps();
         });
 

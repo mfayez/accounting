@@ -24,6 +24,7 @@ class CreatePOSTable extends Migration
             $table->string("activity_code");
             $table->string("client_id");
             $table->string("client_secret");
+            $table->string("last_uuid")->nullable();
             $table->foreignId('issuer_id');
             $table->timestamps();
         });
