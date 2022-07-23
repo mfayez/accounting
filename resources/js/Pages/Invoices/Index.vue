@@ -2,7 +2,8 @@
     <!-- prettier-ignore -->
     <app-layout>
 		<preview-invoice ref="dlg3" v-model="invItem" />
-		<confirm ref="dlg1" @confirmed="rejectInv2()">
+        <credit-note ref="dlg5" v-model="invItem" />
+        <confirm ref="dlg1" @confirmed="rejectInv2()">
 			<jet-label for="type"  value="Select rejection reason:" />
 			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
 				  <option value="Wrong invoice details">Wrong invoice details</option>
@@ -122,7 +123,15 @@
                                             v-show="item.status=='Valid'"
                                                 @click="openExternal2(item)">
                                                 {{ __("ETA2") }}
-                                            </jet-button>    
+                                            </jet-button>
+
+                                            <secondary-button
+                                                class="me-2 mt-2"
+                                                v-show="item.status=='Valid'"
+                                                @click="creditNoteUpdate(item)"
+                                            >
+                                                {{ __("Credit") }}
+                                            </secondary-button>    
                                         </div>
 										
 									</td>
@@ -145,6 +154,7 @@ import AddEditItem from "@/Pages/Items/AddEdit";
 import Confirm from "@/UI/Confirm";
 import JetLabel from "@/Jetstream/Label";
 import PreviewInvoice from "@/Pages/Invoices/Preview";
+import CreditNote from "@/Pages/Invoices/CreditNote";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -157,6 +167,7 @@ export default {
         AppLayout,
         Confirm,
         PreviewInvoice,
+        CreditNote,
         JetLabel,
         Table: Tailwind2.Table,
         JetButton,
@@ -205,6 +216,12 @@ export default {
             this.invItem = item;
             this.$nextTick(() => {
                 this.$refs.dlg3.ShowDialog();
+            });
+        },
+        creditNoteUpdate(item) {
+            this.invItem = item;
+            this.$nextTick(() => {
+                this.$refs.dlg5.ShowDialog();
             });
         },
         deleteInvoice(item) {

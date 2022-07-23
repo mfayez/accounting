@@ -260,6 +260,85 @@ class ETAController extends Controller
 		//$response = Http::withToken($this->token)->post($url, ["documents" => array($data)]);
 		//return $response;
 	}
+	
+	public function AddCredit(StoreInvoiceRequest $request)
+	{
+		$url = env("ETA_URL")."/documentsubmissions";
+		$data = $request->validated();
+		//remove extra attributes, no need but you can get them from git history
+		$data['documentType'] = "C";
+		$data['dateTimeIssued'] = $data['dateTimeIssued'] . ":00Z";
+		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode']['code'];
+		$data['totalSalesAmount'] = floatval($data['totalSalesAmount']);
+		$data['totalDiscountAmount'] = floatval($data['totalDiscountAmount']);
+		$data['netAmount'] = floatval($data['netAmount']);
+		$data['totalAmount'] = floatval($data['totalAmount']);
+		$data['totalItemsDiscountAmount'] = floatval($data['totalItemsDiscountAmount']);
+		$data['extraDiscountAmount'] = floatval($data['extraDiscountAmount']);
+		foreach($data['invoiceLines'] as $key=>$line){
+			$data['invoiceLines'][$key]['salesTotal'] = floatval($line['salesTotal']);
+			$data['invoiceLines'][$key]['total'] = floatval($line['total']);
+			$data['invoiceLines'][$key]['valueDifference'] = floatval($line['valueDifference']);
+			$data['invoiceLines'][$key]['totalTaxableFees'] = floatval($line['totalTaxableFees']);
+			$data['invoiceLines'][$key]['netTotal'] = floatval($line['netTotal']);
+			$data['invoiceLines'][$key]['itemsDiscount'] = floatval($line['itemsDiscount']);
+			$data['invoiceLines'][$key]['unitValue']['amountEGP'] = floatval($line['unitValue']['amountEGP']);
+		}
+		//return ["documents" => array($data)];
+		$data['status'] = "In Review";
+		$data['statusReason'] = "Manual Entry";
+		$data['issuer_id'] = $data['issuer']['Id'];
+		$data['receiver_id'] = $data['receiver']['Id'];
+		$invoice = Invoice::updateOrCreate(['Id' => $request->input('Id', -1)], $data);
+		if ($request->isMethod('post') || $invoice->internalID == 'automatic') {
+			$this->generateInvoiceNumber($invoice);
+			$invoice->save();
+		}
+		foreach($invoice->invoiceLines as $line)
+		{
+			//if($line->discount)
+			$line->discount()->delete();
+			$delme = $line->unitValue;
+			//if($line->taxableItems)
+			$line->taxableItems()->delete();
+			$line->delete();
+			if($delme) $delme->delete();
+		}
+		//if($invoice->taxTotals)
+		$invoice->taxTotals()->delete();
+
+		//$invoice->issuer_id = $data['issuer']['Id'];
+		//$invoice->receiver_id = $data['receiver']['Id'];
+		//$invoice->status = "In Review";
+		//$invoice->statusreason = "Manual Entry";
+		//$invoice->save();	
+		foreach($data['invoiceLines'] as $line) {
+			$unitValue = new Value($line['unitValue']);
+			if (!isset($line['amountSold']))
+				$unitValue->amountSold = null;
+			if (!isset($line['currencyExchangeRate']))
+				$unitValue->currencyExchangeRate = null;
+			$unitValue->save();
+			$invoiceline = new InvoiceLine($line);
+			$invoiceline->invoice_id = $invoice->Id;
+			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->save();
+			foreach($line['taxableItems'] as $taxitem) {
+				$item = new TaxableItem($taxitem);
+				$item->invoiceline_id = $invoiceline->Id;
+				$item->save();
+			}
+		}
+		foreach($data["taxTotals"] as $totalTax) {
+			$taxTotal = new TaxTotal($totalTax);
+			$taxTotal->invoice_id = $invoice->Id;
+			$taxTotal->save();
+		}
+		return $invoice;
+		//$this->AuthenticateETA($request);
+		//$response = Http::withToken($this->token)->post($url, ["documents" => array($data)]);
+		//return $response;
+	}
 
 	public function CancelInvoice(Request $request)
 	{
