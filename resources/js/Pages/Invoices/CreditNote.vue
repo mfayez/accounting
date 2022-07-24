@@ -48,7 +48,11 @@
                         class="col-span-1"
                         :class="{ 'bg-gray-200': index % 2 == 1 }"
                     >
-                        {{ (Math.round(100*invline.unit_value.amountEGP) / 100).toFixed(2)  }}
+                        <TextField
+                            v-model="invline.unit_value.amountEGP"
+                            itemType="number"
+                            @update:model-value="updateValues(invline)"
+                        />
                     </div>
                     <div
                         class="col-span-1"
