@@ -16,7 +16,7 @@ class StoreInvoiceRequest extends FormRequest
     {
         return true;
     }
-
+	
 	/**
 	 * Prepare the data for validation.
 	 *
@@ -30,7 +30,7 @@ class StoreInvoiceRequest extends FormRequest
 		$taxTotals2 = [];
 		foreach($data['invoiceLines'] as $item) {
 			foreach($item['taxItems'] as $taxItem) {
-				$key1 = $taxItem['taxType']['Code'];
+					$key1 = $taxItem['taxType']['Code'];
 				if (array_key_exists($key1, $taxTotals)) {
 					$taxTotals[$key1] = $taxTotals[$key1] + floatval($taxItem['value']);
 				} else {
@@ -43,11 +43,12 @@ class StoreInvoiceRequest extends FormRequest
 		}
 		//add missing attributes
 		$this->merge(["documentType"			=> "I",
-						 "documentTypeVersion"	=> "1.0",
+						 "documentTypeVersion"	=> "0.9",
 						 "issuer"				=> array_merge(["id" => $data['issuer']['issuer_id']], $data['issuer']),
 						 "receiver"				=> array_merge(["id" => $data['receiver']['receiver_id']], $data['receiver']),
 						 "taxTotals"			=> $taxTotals2,
 		]);
+		
 	}
     /**
      * Get the validation rules that apply to the request.

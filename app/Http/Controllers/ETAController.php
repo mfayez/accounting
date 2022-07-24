@@ -29,6 +29,7 @@ use App\Models\Issuer;
 use App\Models\Upload;
 use App\Models\Settings;
 use App\Http\Requests\StoreInvoiceRequest;
+use App\Http\Requests\StoreCreditRequest;
 
 use App\Http\Traits\ETAAuthenticator;
 use App\Http\Traits\ExcelWrapper;
@@ -261,14 +262,12 @@ class ETAController extends Controller
 		//return $response;
 	}
 	
-	public function AddCredit(StoreInvoiceRequest $request)
+	public function AddCredit(StoreCreditRequest $request)
 	{
 		$url = env("ETA_URL")."/documentsubmissions";
 		$data = $request->validated();
 		//remove extra attributes, no need but you can get them from git history
-		$data['documentType'] = "C";
-		$data['dateTimeIssued'] = $data['dateTimeIssued'] . ":00Z";
-		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode']['code'];
+		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode'];
 		$data['totalSalesAmount'] = floatval($data['totalSalesAmount']);
 		$data['totalDiscountAmount'] = floatval($data['totalDiscountAmount']);
 		$data['netAmount'] = floatval($data['netAmount']);
@@ -289,29 +288,8 @@ class ETAController extends Controller
 		$data['statusReason'] = "Manual Entry";
 		$data['issuer_id'] = $data['issuer']['Id'];
 		$data['receiver_id'] = $data['receiver']['Id'];
-		$invoice = Invoice::updateOrCreate(['Id' => $request->input('Id', -1)], $data);
-		if ($request->isMethod('post') || $invoice->internalID == 'automatic') {
-			$this->generateInvoiceNumber($invoice);
-			$invoice->save();
-		}
-		foreach($invoice->invoiceLines as $line)
-		{
-			//if($line->discount)
-			$line->discount()->delete();
-			$delme = $line->unitValue;
-			//if($line->taxableItems)
-			$line->taxableItems()->delete();
-			$line->delete();
-			if($delme) $delme->delete();
-		}
-		//if($invoice->taxTotals)
-		$invoice->taxTotals()->delete();
-
-		//$invoice->issuer_id = $data['issuer']['Id'];
-		//$invoice->receiver_id = $data['receiver']['Id'];
-		//$invoice->status = "In Review";
-		//$invoice->statusreason = "Manual Entry";
-		//$invoice->save();	
+		$invoice = new Invoice($data);
+		$invoice->save();
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
 			if (!isset($line['amountSold']))
