@@ -43,7 +43,7 @@ class StoreInvoiceRequest extends FormRequest
 		}
 		//add missing attributes
 		$this->merge(["documentType"			=> "I",
-						 "documentTypeVersion"	=> "0.9",
+						 "documentTypeVersion"	=> SETTINGS_VAL('application settings', 'invoiceVersion', '1.0'),
 						 "issuer"				=> array_merge(["id" => $data['issuer']['issuer_id']], $data['issuer']),
 						 "receiver"				=> array_merge(["id" => $data['receiver']['receiver_id']], $data['receiver']),
 						 "taxTotals"			=> $taxTotals2,

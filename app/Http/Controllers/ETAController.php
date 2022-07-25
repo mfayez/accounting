@@ -100,7 +100,7 @@ class ETAController extends Controller
 			}
 			$invoice = new Invoice($invoice_data);
 			$invoice->documentType = "I";
-			$invoice->documentTypeVersion = "1.0";
+			$invoice->documentTypeVersion = SETTINGS_VAL('application settings', 'invoiceVersion', '1.0');;
 			$invoice->totalDiscountAmount = 0;
 			$invoice->totalSalesAmount = 0;
 			$invoice->netAmount = 0;

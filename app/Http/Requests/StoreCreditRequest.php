@@ -55,7 +55,7 @@ class StoreCreditRequest extends FormRequest
 
 		//add missing attributes
 		$this->merge(["documentType"			=> "C",
-						 "documentTypeVersion"	=> "0.9",
+						 "documentTypeVersion"	=> SETTINGS_VAL('application settings', 'invoiceVersion', '1.0'),
 						 "issuer"				=> array_merge(["id" => $data['issuer']['issuerId']], $data['issuer']),
 						 "receiver"				=> array_merge(["id" => $data['receiver']['receiverId']], $data['receiver']),
 						 "taxTotals"			=> $taxTotals2
