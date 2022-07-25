@@ -17,6 +17,14 @@
                         <jet-checkbox name="automatic" id="automatic" v-model:checked="form.automatic" />
 						<jet-label for="automatic" :value="__('Automatic Invoice Number')" class="ms-2"/>
 					</div>
+					
+					<div class="col-span-2">
+						<jet-label for="invoice_version" :value="__('Invoice Version')" />
+						<jet-input id="invoice_version" type="text" 
+							class="mt-1 block w-full" v-model="form.invoiceVersion" 
+							v-model:active="form.automatic" v-model:required="form.automatic" autofocus />
+					</div>
+					
 					<div class="col-span-2">
 						<jet-label for="invoice_template" :value="__('Invoice Template')" />
 						<jet-input id="invoice_template" type="text" 
@@ -82,6 +90,7 @@
 					custom_desc: false,
                     automatic: false,
 					invoiceTemplate: '',
+					invoiceVersion: '1.0'
                 }),
 				showDialog: false,
             }
@@ -94,6 +103,7 @@
 				.then(response => {
 					this.settings = response.data;
 					this.form.invoiceTemplate = this.settings.invoiceTemplate;
+					this.form.invoiceVersion = this.settings.invoiceVersion;
 					this.form.automatic = this.settings.automatic == '1' ? true : false;
 					this.form.custom_desc = this.settings.custom_desc == '1' ? true : false;
         	    }).catch(error => {
