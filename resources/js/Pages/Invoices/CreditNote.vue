@@ -8,7 +8,13 @@
             <div class="grid grid-cols-10 gap-0 mt-2">
                 <div class="col-span-5">{{__('Branch')}}: {{ item.issuer.name }}</div>
                 <div class="col-span-5">{{__('Customer')}}: {{ item.receiver.name }}</div>
-                <div class="col-span-5">{{__('Date')}}: {{ getDate(item.dateTimeIssued) }}</div>
+                <div class="col-span-5">
+                    <TextField
+                        v-model="item.dateTimeIssued"
+                        itemType="datetime-local"
+                        :itemLabel="__('Invoice Date')"
+                    />
+                </div>
             </div>
             <div class="grid grid-cols-10 gap-0 mt-2">
                 <div class="bg-gray-400 col-span-3">{{__('Item')}}</div>
@@ -156,6 +162,7 @@ export default {
     methods: {
         ShowDialog() {
             this.item = JSON.parse(JSON.stringify(this.modelValue));
+            this.item.dateTimeIssued = new Date().toISOString().slice(0, 16);
             this.showDlg = true;
         },
         CancelDlg() {

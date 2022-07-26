@@ -250,5 +250,7 @@
 	"Are you sure?": "هل انت متأكد؟",
 	"Once approved it will be sent to ETA": "بمجرد الأعتماد سيتم أرسالها الى مصلحة الضرائب",
 	"Invoice has been approved!": "تم أعتماد الفاتورة",
-	"Are you sure you want to delete this Invoice?": "هل انت متأكد من حذف هذا لامستند؟"
+	"Are you sure you want to delete this Invoice?": "هل انت متأكد من حذف هذا لامستند؟",
+	"Credit Note Summary": "ملخص أشعار الخصم",
+	"Debit Note Summary": "ملخص أشعار الأضافة"
 }

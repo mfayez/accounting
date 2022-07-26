@@ -42,7 +42,7 @@ class StoreInvoiceRequest extends FormRequest
 			$taxTotals2=array_merge($taxTotals2, [['taxType'=>$key, 'amount'=>$val]]);
 		}
 		//add missing attributes
-		$this->merge(["documentType"			=> "I",
+		$this->merge(["documentType"			=> array_key_exists('documentType', $data) ? $data['documentType'] : "I",
 						 "documentTypeVersion"	=> SETTINGS_VAL('application settings', 'invoiceVersion', '1.0'),
 						 "issuer"				=> array_merge(["id" => $data['issuer']['issuer_id']], $data['issuer']),
 						 "receiver"				=> array_merge(["id" => $data['receiver']['receiver_id']], $data['receiver']),
@@ -89,7 +89,7 @@ class StoreInvoiceRequest extends FormRequest
 			'receiver.type' 						=> ['required'],
 			'receiver.id' 							=> ['required'],
 			'receiver.name' 						=> ['required'],
-			'documentType' 							=> ['required', Rule::in(['I'])],
+			'documentType' 							=> ['required', Rule::in(['I', 'C', 'D'])],
 			'documentTypeVersion' 					=> ['required', Rule::in(['0.9', '1.0'])],
 			'dateTimeIssued' 						=> ['required', 'date'],
 			'taxpayerActivityCode' 					=> ['required'],
