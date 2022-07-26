@@ -101,6 +101,14 @@
                                             >
                                                 {{ __("View") }}
                                             </secondary-button>
+
+                                            <jet-button
+                                                class="me-2 mt-2"
+                                                @click="ApproveItem(item)"
+                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='approved' && item.status!='rejected'"
+                                            >
+                                                {{ __("Approve") }}
+                                            </jet-button>
                                             
                                             <jet-button
                                                 class="me-2 mt-2"
@@ -159,6 +167,7 @@ import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import JetDangerButton from '@/Jetstream/DangerButton';
 import Dropdown from "@/Jetstream/Dropdown";
+import swal from "sweetalert";
 
 export default {
     mixins: [InteractsWithQueryBuilder],
@@ -216,6 +225,36 @@ export default {
             this.invItem = item;
             this.$nextTick(() => {
                 this.$refs.dlg3.ShowDialog();
+            });
+        },
+        ApproveItem(item) {
+            swal({
+                title: this.__("Are you sure?"),
+                text: this.__("Once approved it will be sent to ETA"),
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willApprove) => {
+                if (willApprove) {
+                    axios
+                        .post(route("eta.invoices.approve"), {
+                            Id: item.Id,
+                        })
+                        .then((response) => {
+                            swal(this.__("Invoice has been approved!"), {
+                                icon: "success",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        })
+                        .catch((error) => {
+                            swal(error.response.data, {
+                                icon: "error",
+                            });
+                        });
+                    
+                }
             });
         },
         creditNoteUpdate(item) {
