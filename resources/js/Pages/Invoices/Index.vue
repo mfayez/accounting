@@ -48,7 +48,9 @@
 						</template>
 
 						<template #body>
-					  		<tr v-for="item in items.data" :key="item.id">
+					  		<tr v-for="item in items.data" :key="item.id" 
+                                :class="{ credit: item.documentType =='C' }"
+                            >
 									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
 										<div v-for="rowVals in nestedIndex(item, key).split(',')">
 											{{ 
@@ -338,5 +340,8 @@ export default {
 <style scoped>
 :deep(table th) {
     text-align: start;
+}
+.credit {
+    background-color: lightgoldenrodyellow;
 }
 </style>
