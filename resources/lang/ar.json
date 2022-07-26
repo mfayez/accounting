@@ -244,5 +244,10 @@
 	"Customers Summary": "مبيعات العملاء",
 	"Branches Summary": "مبيعات الفروع",
 	"Branches Sales Report": "تقرير مبيعات الفروع",
-	"Download excel template": "تحميل نموذج الأكسل"
+	"Download excel template": "تحميل نموذج الأكسل",
+	"Credit": "خصم",
+	"Invoice Debit Note": "أشعار خصم على الفاتورة",
+	"Are you sure?": "هل انت متأكد؟",
+	"Once approved it will be sent to ETA": "بمجرد الأعتماد سيتم أرسالها الى مصلحة الضرائب",
+	"Invoice has been approved!": "تم أعتماد الفاتورة"
 }
