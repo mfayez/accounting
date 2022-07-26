@@ -79,7 +79,7 @@ class ReportsController extends Controller
 		//$startDate  = "2019-10-10";
 		//$endDate    = "2030-10-10";
 		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
-							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total, t4.code as Code
+							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalSalesAmount as Total, t4.code as Code
 						from Invoice t1  
 							inner join Receiver t4 on t4.Id = t1.receiver_id
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
