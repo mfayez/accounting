@@ -19,7 +19,7 @@
                             :disabled="tab_idx == 1"
                             :isRounded="false"
                         >
-                            {{ __("Invoice Summary") }}
+                            {{ getDocumentTitle() }}
                         </jet-button>
                         <jet-button
                             @click="tab_idx = 2"
@@ -48,6 +48,7 @@
                                 label="name"
                                 :options="branches"
                                 placeholder="Select branch"
+                                :disabled="form.documentType != 'I'"
                             />
                         </div>
                         <div>
@@ -57,6 +58,7 @@
                                 label="name"
                                 :options="customers"
                                 placeholder="Select customer"
+                                :disabled="form.documentType != 'I'"
                             />
                         </div>
                         <div class="lg:col-span-2">
@@ -66,6 +68,7 @@
                                 label="Desc_ar"
                                 :options="activities"
                                 placeholder="Select activity"
+                                :disabled="form.documentType != 'I'"
                             />
                         </div>
                         <TextField
@@ -77,7 +80,7 @@
                             v-model="form.internalID"
                             itemType="text"
                             :itemLabel="__('Internal Invoice ID')"
-                            :active="$page.props.auto_inv_num ? false : true"
+                            :active="$page.props.auto_inv_num ? false : form.documentType == 'I'"
                         />
                         <TextField
                             v-model="form.totalSalesAmount"
@@ -227,7 +230,10 @@
                             </jet-label>
                         </div>
                         <div class="flex items-center justify-end mt-4">
-                            <jet-button class="ms-2" @click="AddItem()">
+                            <jet-button class="ms-2" 
+                                @click="AddItem()"
+                                v-if="form.documentType == 'I'"
+                            >
                                 {{ __("Add New Item") }}
                             </jet-button>
                         </div>
@@ -302,6 +308,7 @@ export default {
                 issuer: "",
                 receiver: "",
                 name: "",
+                documentType: "I",
                 dateTimeIssued: new Date().toISOString().slice(0, 16),
                 taxpayerActivityCode: "",
                 internalID: this.$page.props.auto_inv_num ? "automatic" : "0",
@@ -450,6 +457,12 @@ export default {
                 );
             return taxitem.taxType + "(" + taxitem.subType + ")";
         },
+        getDocumentTitle: function() {
+            return this.form.documentType == 'I' ? this.__("Invoice Summary") : 
+                   this.form.documentType == 'C' ? this.__("Credit Note Summary") :
+                   this.form.documentType == 'D' ? this.__("Debit Note Summary") : 
+                   this.__("Error!!");
+        }
     },
     created: function created() {
         axios
@@ -504,6 +517,7 @@ export default {
                 this.form.totalItemsDiscountAmount =
                     this.invoice.totalItemsDiscountAmount;
                 this.form.invoiceLines = this.invoice.invoicelines;
+                this.form.documentType = this.invoice.documentType;
                 this.form.dateTimeIssued = this.invoice.dateTimeIssued.slice(
                     0,
                     16
