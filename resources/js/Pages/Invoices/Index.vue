@@ -83,7 +83,7 @@
                                             <jet-danger-button
                                                 class="me-2 mt-2"
                                                 @click="deleteInvoice(item)" 
-                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='processing' && item.status!='approved'" 
+                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='approved'" 
                                                 >
                                                 {{ __("Delete") }}
                                             </jet-danger-button>
