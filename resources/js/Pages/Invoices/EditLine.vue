@@ -283,17 +283,18 @@ export default {
             this.subType = {};
         },
         calculateTax() {
-            this.item.total = this.item.netTotal + 0;
+            this.item.total = this.parse(this.item.netTotal);
             if (this.item.taxItems) {
                 for (var j = 0; j < this.item.taxItems.length; j++) {
                     var taxitem = this.item.taxItems[j];
                     taxitem.value =
-                        (taxitem.percentage * this.item.netTotal) / 100.0;
+                        ((taxitem.percentage * this.item.netTotal) / 100.0);
                     if (taxitem.taxType.Code == "T4")
                         this.item.total -= taxitem.value;
                     else this.item.total += taxitem.value;
                 }
             }
+			this.item.total = this.item.total.toFixed(5);
         },
         parse(val) {
             var temp = parseFloat(val);
@@ -302,14 +303,14 @@ export default {
         },
         updateValues() {
             this.item.salesTotal =
-                this.parse(this.item.quantity) *
-                this.parse(this.item.unitValue.amountEGP);
+                (this.parse(this.item.quantity) *
+                this.parse(this.item.unitValue.amountEGP)).toFixed(5);
             this.item.netTotal =
-                this.item.salesTotal - this.parse(this.item.itemsDiscount);
+                (this.item.salesTotal - this.parse(this.item.itemsDiscount)).toFixed(5);
             this.calculateTax();
         },
         updateValue(item, val) {
-            item.value = (this.item.netTotal * val) / 100.0;
+            item.value = ((this.item.netTotal * val) / 100.0).toFixed(5);
             this.$nextTick(() => {
                 this.calculateTax();
             });
