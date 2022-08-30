@@ -343,7 +343,7 @@ export default {
                 var item = this.form.invoiceLines[i];
 
                 this.form.totalSalesAmount += parseFloat(item.salesTotal);
-                this.form.totalDiscountAmount += parseFloat(item.itemsDiscount);
+                //this.form.totalDiscountAmount += parseFloat(item.itemsDiscount);
                 this.form.netAmount += parseFloat(item.netTotal);
                 this.form.totalAmount += parseFloat(item.total);
                 this.form.extraDiscountAmount += 0;
