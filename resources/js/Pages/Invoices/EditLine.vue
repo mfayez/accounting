@@ -283,7 +283,8 @@ export default {
             this.subType = {};
         },
         calculateTax() {
-            this.item.total = this.parse(this.item.netTotal);
+			this.item.total = 
+                (this.item.salesTotal - this.parse(this.item.itemsDiscount));
             if (this.item.taxItems) {
                 for (var j = 0; j < this.item.taxItems.length; j++) {
                     var taxitem = this.item.taxItems[j];
@@ -305,8 +306,7 @@ export default {
             this.item.salesTotal =
                 (this.parse(this.item.quantity) *
                 this.parse(this.item.unitValue.amountEGP)).toFixed(5);
-            this.item.netTotal =
-                (this.item.salesTotal - this.parse(this.item.itemsDiscount)).toFixed(5);
+            this.item.netTotal = this.item.salesTotal;
             this.calculateTax();
         },
         updateValue(item, val) {
