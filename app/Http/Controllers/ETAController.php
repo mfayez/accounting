@@ -41,6 +41,8 @@ class ETAController extends Controller
 	
 	public function generateInvoiceNumber($invoice){
 		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
+		if ($invoice->internalID != 'automatic') return;
+
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
 		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
 		$template = str_replace($values, $repalcements, SETTINGS_VAL('application settings', 'invoiceTemplate', env("INVOICE_TEMPALTE")));
