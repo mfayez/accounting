@@ -102,6 +102,7 @@
                             <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">{{ __('Quantity') }}</th>
                             <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">{{ __('Unit Price') }}</th>
                             <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">{{ __('Total Sales Amount') }}</th>
+                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">{{ __('Discount Amount') }}</th>
                             <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">{{ __('Tax Amount') }}</th>
                             <th class="bg-[#f8f9fa] p-3 border border-[#eceeef]">{{ __('Total') }}</th>
                         </tr>
@@ -124,6 +125,7 @@
                             <td class="p-2 border border-[#eceeef]">{{ $line->quantity }}</td>
                             <td class="p-2 border border-[#eceeef]">{{ $line->unitValue->amountEGP }}</td>
                             <td class="p-2 border border-[#eceeef]">{{ $line->salesTotal }}</td>
+                            <td class="p-2 border border-[#eceeef]">{{ $line->itemsDiscount }}</td>
                             <td class="p-2 border border-[#eceeef]">{{ sprintf("%0.2f", $total) }}</td>
                             <td class="p-2 border border-[#eceeef]">{{ sprintf("%0.2f", $line->total) }}</td>
                         </tr>
