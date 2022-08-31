@@ -39,9 +39,9 @@ class ETAController extends Controller
 	use ETAAuthenticator;
 	use ExcelWrapper;
 	
-	public function generateInvoiceNumber($invoice){
+	public function generateInvoiceNumber($invoice, $excel=false){
 		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
-		if ($invoice->internalID != 'automatic') return;
+		if ($invoice->internalID != 'automatic' && $excel == false) return;
 
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
 		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
@@ -112,7 +112,7 @@ class ETAController extends Controller
 			$invoice->status = "In Review";	
 			$invoice->statusreason = "Excel Upload";
 			$invoice->upload_id = $upload->Id;
-			$this->generateInvoiceNumber($invoice);
+			$this->generateInvoiceNumber($invoice, true);
 			$invoice->save();
 			$temp[$key]["invoice_id"] = $invoice->Id;
 			$inserted[$invoice_data['internalID']] = $invoice->Id;
