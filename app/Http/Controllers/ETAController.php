@@ -134,7 +134,8 @@ class ETAController extends Controller
 			$invoiceline->itemType = $item->codeTypeName;//"EGS"
 			$invoiceline->description = $item->codeNamePrimaryLang;
 			$invoiceline->internalCode = $item->Id;
-			$invoiceline->netTotal = $invoice_data["salesTotal"] - $invoiceline->itemsDiscount;
+			$invoiceline->itemsDiscount = $invoice_data["itemsDiscount"];
+			$invoiceline->netTotal = $invoice_data["salesTotal"];// - $invoiceline->itemsDiscount;
 			$invoiceline->valueDifference = 0;
 			$invoiceline->totalTaxableFees = 0;
 			
@@ -162,8 +163,8 @@ class ETAController extends Controller
 				$item1->save();
 			}
 			if ($invoice_data["T2(Tbl01)"] > 0) {
-				$item1 = new TaxableItem(["taxType" => "T2", "subType" => "Tbl01", "amount" => floatval($invoice_data["T1(V009)"])]);
-				$item1->rate = round($item1->amount * 100 / $invoiceline->netTotal, 2);
+				$item1 = new TaxableItem(["taxType" => "T2", "subType" => "Tbl01", "amount" => floatval($invoice_data["T2(Tbl01)"])]);
+				$item1->rate = round($item1->amount * 100 / ($invoiceline->salesTotal - $invoiceline->itemsDiscount), 2);
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
 			}
