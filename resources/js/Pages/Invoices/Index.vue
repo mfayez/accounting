@@ -3,13 +3,7 @@
     <app-layout>
 		<preview-invoice ref="dlg3" v-model="invItem" />
         <credit-note ref="dlg5" v-model="invItem" />
-        <confirm ref="dlg1" @confirmed="rejectInv2()">
-			<jet-label for="type"  value="Select rejection reason:" />
-			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
-				  <option value="Wrong invoice details">Wrong invoice details</option>
-			</select>
-		</confirm>
-		<confirm ref="dlg2" @confirmed="cancelInv2()">
+        <confirm ref="dlg2" @confirmed="cancelInv2()">
 			<jet-label for="type"  value="Select cancelation reason:" />
 			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
 			  <option value="Wrong buyer details">Wrong buyer details</option>
@@ -66,16 +60,8 @@
                                         <div class="grid grid-cols-3 w-56">
                                             <jet-danger-button
                                                 class="me-2 mt-2"
-                                                @click="rejectInvoice(item)" 
-                                                v-show="route().current('eta.invoices.received.index') && item.status =='Valid'"
-                                                >
-                                                {{ __("Reject") }}
-                                            </jet-danger-button>
-                                            
-                                            <jet-danger-button
-                                                class="me-2 mt-2"
                                                 @click="cancelInvoice(item)" 
-                                                v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
+                                                v-show="item.status=='Valid'"
                                                 >
                                                 {{ __("Cancel") }}
                                             </jet-danger-button>
@@ -83,7 +69,7 @@
                                             <jet-danger-button
                                                 class="me-2 mt-2"
                                                 @click="deleteInvoice(item)" 
-                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='approved'" 
+                                                v-show="item.status!='Valid' && item.status!='approved'" 
                                                 >
                                                 {{ __("Delete") }}
                                             </jet-danger-button>
@@ -91,7 +77,7 @@
                                             <jet-button
                                             class="me-2 mt-2"
                                                 @click="editInvoice(item)" 
-                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid'"
+                                                v-show="item.status!='Valid'"
                                                 >
                                                 {{ __("Edit") }}
                                             </jet-button>
@@ -99,7 +85,6 @@
                                             <secondary-button
                                                 class="me-2 mt-2"
                                                 @click="viewInvoice(item)"
-                                                v-show="route().current('eta.invoices.sent.index')"
                                             >
                                                 {{ __("View") }}
                                             </secondary-button>
@@ -107,7 +92,7 @@
                                             <jet-button
                                                 class="me-2 mt-2"
                                                 @click="ApproveItem(item)"
-                                                v-show="route().current('eta.invoices.sent.index') && item.status!='Valid' && item.status!='approved' && item.status!='rejected'"
+                                                v-show="item.status!='Valid' && item.status!='approved' && item.status!='rejected'"
                                             >
                                                 {{ __("Approve") }}
                                             </jet-button>
@@ -115,7 +100,7 @@
                                             <jet-button
                                                 class="me-2 mt-2"
                                                 @click="downloadPDF(item)" 
-                                                v-show="route().current('eta.invoices.sent.index') && item.status=='Valid'"
+                                                v-show="item.status=='Valid'"
                                             >
                                                 {{ __("PDF") }}
                                             </jet-button>
@@ -164,6 +149,7 @@ import AddEditItem from "@/Pages/Items/AddEdit";
 import Confirm from "@/UI/Confirm";
 import JetLabel from "@/Jetstream/Label";
 import PreviewInvoice from "@/Pages/Invoices/Preview";
+import UpdateReceived from "@/Pages/Invoices/UpdateReceived";
 import CreditNote from "@/Pages/Invoices/CreditNote";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
@@ -178,6 +164,7 @@ export default {
         AppLayout,
         Confirm,
         PreviewInvoice,
+        UpdateReceived,
         CreditNote,
         JetLabel,
         Table: Tailwind2.Table,
@@ -297,25 +284,6 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error);
-                    alert(error.response.data);
-                    //this.$refs.password.focus()
-                });
-        },
-        rejectInvoice(item) {
-            this.invItem = item;
-            this.$refs.dlg1.ShowModal();
-        },
-        rejectInv2() {
-            axios
-                .post(route("eta.invoices.cancel"), {
-                    uuid: this.invItem.uuid,
-                    status: "rejected",
-                    reason: this.cancelReason,
-                })
-                .then((response) => {
-                    alert(response.data);
-                })
-                .catch((error) => {
                     alert(error.response.data);
                     //this.$refs.password.focus()
                 });
