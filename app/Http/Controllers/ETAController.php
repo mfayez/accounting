@@ -554,58 +554,6 @@ class ETAController extends Controller
 		return $response;
 	}
 
-	public function indexInvoices(Request $request)
-	{
-		$columns = $request->query("columns", []);
-		$remember = $request->query("remember", "yes");
-		if (count($columns) == 0 && $remember == 'yes')
-		{
-			$columns_str = SETTINGS_VAL(Auth::user()->name, "index.received.columns", "[]");
-			$columns = json_decode($columns_str);
-			if (count($columns) > 0)
-				return redirect()->route('eta.invoices.received.index', ["columns" => $columns]);
-		}
-		SETTINGS_SET_VAL(Auth::user()->name, "index.received.columns", json_encode($columns));
-		
-		$myid = Issuer::whereNotNull('issuer_id')->pluck('issuer_id');
-		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
-            $query->where(function ($query) use ($value) {
-                $query->where('totalDiscount', '=', "{$value}")
-                    ->orWhere('netAmount', '=', "{$value}")
-                    ->orWhere('internalID', '=', "{$value}");
-            });
-        });
-
-		$items = QueryBuilder::for(ETAInvoice::class)
-            ->defaultSort('Id')
-			->whereNotIn('issuerId', $myid)
-			->allowedSorts(['status' , 'internalId' , 'total' , 'netAmount' , 'totalSales' ,
-			 		'totalDiscount', 'dateTimeIssued', 'dateTimeReceived'])
-            ->allowedFilters(['status', 'internalId', $globalSearch])
-            ->paginate(20)
-            ->withQueryString();
-        return Inertia::render('Invoices/Index', [
-            'items' => $items,
-        ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
-				'internalId'	=>	__('Internal ID'),
-				'status'	=>	__('Status')
-			])->addColumns([
-                'internalId'	=> __('Internal ID'),
-				'issuerName' => __('Issuer'),
-				'receiverId' => __('Receiver Registration Number'),
-				'receiverName' => __('Receiver'),
-				'dateTimeIssued' => __('Issued At'),
-				'dateTimeReceived' => __('Received At'),
-				'totalSales' => __('Sales'),
-				'totalDiscount' => __('Discount'),
-				'netAmount' => __('Net'),
-				'total' => __('Total'),
-				'status' => __('Status'),
-            ]);
-        });
-    }
-
 	public function indexIssued(Request $request, $upload_id = null)
 	{
 		$columns = $request->query("columns", []);

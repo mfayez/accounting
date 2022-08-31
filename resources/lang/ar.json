@@ -252,5 +252,8 @@
 	"Invoice has been approved!": "تم أعتماد الفاتورة",
 	"Are you sure you want to delete this Invoice?": "هل انت متأكد من حذف هذا لامستند؟",
 	"Credit Note Summary": "ملخص أشعار الخصم",
-	"Debit Note Summary": "ملخص أشعار الأضافة"
+	"Debit Note Summary": "ملخص أشعار الأضافة",
+	"Direction": "توجية",
+	"Receiving Branch": "المستلم",
+	"Invoice Review": "مراجعة فاتورة"
 }
