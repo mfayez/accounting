@@ -190,6 +190,8 @@
 
                         <th>{{ __('Total Sales Amount') }}</th>
 
+                        <th>{{ __('Discount Amount') }}</th>
+
                         <th>{{ __('Tax Amount') }}</th>
 
                         <th>{{ __('Total') }}</th>
@@ -232,6 +234,8 @@
                         <td>{{ $line->unitValue->amountEGP }}</td>
 
                         <td>{{ $line->salesTotal }}</td>
+
+                        <td>{{ $line->itemsDiscount }}</td>
 
                         <td>{{ $total }}</td>
 
