@@ -190,8 +190,13 @@ export default {
 };
 </script>
 <style scoped>
+:deep(table td) {
+    text-align: start;
+	white-space: pre-line;
+}
 :deep(table th) {
     text-align: start;
+	white-space: pre-line;
 }
 .credit {
     background-color: lightgoldenrodyellow;
