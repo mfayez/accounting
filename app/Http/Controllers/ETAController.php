@@ -348,10 +348,10 @@ class ETAController extends Controller
 				$inv2->status = $request->input("status");
 				$inv2->save();
 			}
-			return "request accepted";
+			return "تم قبول الطلب من قبل المصلحة";
 		}
 		
-		return "request rejected by ETA";
+		return "تم رفض الطلب من قبل المصلحة";
 	}
 
 	public function SyncInvoices(Request $request)
@@ -735,6 +735,8 @@ class ETAController extends Controller
 				foreach($step['error']['innerError'] as $inner)
 					$errors = $errors . "," .  $inner['error'];
 		}
+		$invoice->reviewer = "";
+		$invoice->comment = "";
 		//$invoice->statusreason = $errors;
 		$invoice->save();
 		/*
