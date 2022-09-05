@@ -1,0 +1,160 @@
+<template>
+    <jet-dialog-modal :show="showDialog" @close="showDialog = false">
+        <template #title>
+            {{ __("Prepare Archive") }}
+        </template>
+
+        <template #content>
+            <form @submit.prevent="submit">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <jet-label :value="__('Branch')" />
+                        <multiselect
+                            v-model="form.issuer"
+                            label="name"
+                            :options="branches"
+                            placeholder="Select branch"
+                        />
+                    </div>
+                    <div>
+                        <jet-label :value="__('Customer')" />
+                        <multiselect
+                            v-model="form.receiver"
+                            label="name"
+                            :options="customers"
+                            placeholder="Select customer"
+                        />
+                    </div>
+                    <div>
+                        <TextField v-model="form.start_date" itemType="date" :itemLabel="__('Start Date')" />
+                    </div>
+                    <div>
+                        <TextField v-model="form.end_date" itemType="date" :itemLabel="__('End Date')" />
+                    </div>
+                </div>
+            </form>
+        </template>
+        <template #footer>
+            <div class="flex items-center justify-end">
+                <jet-secondary-button @click="CancelAddRequest()">
+                    {{ __("Cancel") }}
+                </jet-secondary-button>
+
+                <jet-button
+                    class="ms-2"
+                    @click="submit"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
+                    {{ __("Send") }}
+                </jet-button>
+            </div>
+        </template>
+    </jet-dialog-modal>
+</template>
+
+<style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
+
+<script>
+import JetActionMessage from "@/Jetstream/ActionMessage";
+import JetActionSection from "@/Jetstream/ActionSection";
+import JetButton from "@/Jetstream/Button";
+import JetConfirmationModal from "@/Jetstream/ConfirmationModal";
+import JetDangerButton from "@/Jetstream/DangerButton";
+import JetDialogModal from "@/Jetstream/DialogModal";
+import JetFormSection from "@/Jetstream/FormSection";
+import JetInput from "@/Jetstream/Input";
+import JetCheckbox from "@/Jetstream/Checkbox";
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetSectionBorder from "@/Jetstream/SectionBorder";
+import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import TextField from '@/UI/TextField'
+import Multiselect from "@suadelabs/vue3-multiselect";
+
+export default {
+    components: {
+        Multiselect,
+        TextField,
+        JetActionMessage,
+        JetActionSection,
+        JetButton,
+        JetConfirmationModal,
+        JetDangerButton,
+        JetDialogModal,
+        JetFormSection,
+        JetInput,
+        JetCheckbox,
+        JetInputError,
+        JetLabel,
+        JetSecondaryButton,
+        JetSectionBorder,
+        JetValidationErrors,
+    },
+
+    props: {
+        //todo
+    },
+
+    data() {
+        return {
+            errors: [],
+            branches: [],
+            customers: [],
+            form: this.$inertia.form({
+                issuer: "",
+                receiver: "",
+                start_date: new Date().toISOString().slice(0, 10),
+				end_date: new Date().toISOString().slice(0, 10)
+            }),
+            showDialog: false,
+        };
+    },
+
+    methods: {
+        ShowDialog() {
+            this.showDialog = true;
+        },
+        CancelAddRequest() {
+            this.showDialog = false;
+        },
+        submit() {
+            axios
+                .post(route("archive.request.store"), this.form)
+                .then((response) => {
+                    this.$store.dispatch("setSuccessFlashMessage", true);
+                    this.$nextTick(() => this.$emit("dataUpdated"));
+                    this.form.reset();
+                    this.form.processing = false;
+                    this.showDialog = false;
+                })
+                .catch((error) => {
+                    this.form.processing = false;
+                    this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors;
+                });
+        },
+    },
+    created: function created() {
+        axios
+            .get(route("json.branches"))
+            .then((response) => {
+                var temp = [{ Id: -1, name: "All" }];
+                this.branches = temp.concat(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        axios
+            .get(route("json.customers"))
+            .then((response) => {
+                var temp = [{ Id: -1, name: "All" }];
+                this.customers = temp.concat(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    },
+};
+</script>
