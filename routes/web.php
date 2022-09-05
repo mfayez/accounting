@@ -12,6 +12,7 @@ use App\Http\Controllers\PDFController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ETAArchiveController;
 use App\Http\Controllers\ETAInvoiceController;
 use App\Http\Controllers\POSController;
@@ -138,7 +139,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/ETA/Archives',        [ETAArchiveController::class, 'getArchiveRequests'])->name("archive.getArchiveRequests");
     Route::post('/ETA/Archives/Add',   [ETAArchiveController::class, 'store'])->name("archive.store");
     Route::get('/ETA/Archives/import', [ETAArchiveController::class, 'importArchive'])->name("archive.import");
-
+#Local Archives
+    Route::get('/Archives',         [ArchiveController::class, 'index'])->name("archive.index");
+    Route::post('/Archives/Add',    [ArchiveController::class, 'store'])->name("archive.request.store");
+    Route::get('/Archives/download/{Id}',[ArchiveController::class, 'downloadArchives'])->name("archive.download");
+    
 #charts data
     Route::post('/json/top/items', [ChartsController::class, 'topItems'])->name("json.top.items");
     Route::post('/json/top/receivers', [ChartsController::class, 'topReceivers'])->name("json.top.receivers");

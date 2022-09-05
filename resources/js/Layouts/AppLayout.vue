@@ -11,10 +11,42 @@
         <settings-dialog1 ref="dlg9" />
         <settings-dialog2 ref="dlg10" />
         <archive-request-dialog ref="dlg11" />
+<<<<<<< HEAD
         <add-pos ref="addPOS" />
         <load-receipts ref="loadReceipts" />
         <upload-receipts ref="uploadReceipts" />
         <nav-bar @open_dlg="openDlg" />
+||||||| parent of 0f1f4a9... Add local archive preparation
+        <nav-bar
+            @open:dlg1="openDlg1"
+            @open:dlg2="openDlg2"
+            @open:dlg3="openDlg3"
+            @open:dlg4="openDlg4"
+            @open:dlg5="openDlg5"
+            @open:dlg6="openDlg6"
+            @open:dlg7="openDlg7"
+            @open:dlg8="openDlg8"
+            @open:dlg9="openDlg9"
+            @open:dlg10="openDlg10"
+            @open:dlg11="openDlg11"
+        />
+=======
+        <archive-request-dialog2 ref="dlg12" />
+        <nav-bar
+            @open:dlg1="openDlg1"
+            @open:dlg2="openDlg2"
+            @open:dlg3="openDlg3"
+            @open:dlg4="openDlg4"
+            @open:dlg5="openDlg5"
+            @open:dlg6="openDlg6"
+            @open:dlg7="openDlg7"
+            @open:dlg8="openDlg8"
+            @open:dlg9="openDlg9"
+            @open:dlg10="openDlg10"
+            @open:dlg11="openDlg11"
+            @open:dlg12="openDlg12"
+        />
+>>>>>>> 0f1f4a9... Add local archive preparation
 
         <div class="min-h-screen bg-gray-100 pb-5">
             <main>
@@ -41,9 +73,14 @@ import SettingsDialog1 from "@/Pages/Reports/Settings";
 import SettingsDialog2 from "@/Pages/Application/Settings";
 import UploadItemsDialog from "@/Pages/Items/Upload";
 import ArchiveRequestDialog from "@/Pages/Archives/Request";
+<<<<<<< HEAD
 import AddPos from "@/Pages/POS/Add.vue";
 import LoadReceipts from "@/Pages/Receipts/Load";
 import UploadReceipts from "@/Pages/Receipts/Upload";
+||||||| parent of 0f1f4a9... Add local archive preparation
+=======
+import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
+>>>>>>> 0f1f4a9... Add local archive preparation
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
 import FlashMessage from "@/shared/FlashMessage";
@@ -54,6 +91,7 @@ export default {
         LoadReceipts,
         UploadReceipts,
         ArchiveRequestDialog,
+        ArchiveRequestDialog2,
         UploadItemsDialog,
         UploadInvoicesDialog,
         NewCustomerDialog,

@@ -356,7 +356,7 @@
                             </template>
                             <template #content>
                                 <dropdown-link
-                                    :href="route('archive.getArchiveRequests')"
+                                    :href="route('archive.index')"
                                 >
                                     {{ __("Show Archives") }}
                                 </dropdown-link>
@@ -366,6 +366,18 @@
                                     href="#"
                                 >
                                     {{ __("Request Archive Preparation") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    :href="route('archive.getArchiveRequests')"
+                                >
+                                    {{ __("Show Archives (ETA)") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg11()"
+                                    href="#"
+                                >
+                                    {{ __("Request Archive Preparation (ETA)") }}
                                 </dropdown-link>
                             </template>
                         </dropdown>
@@ -450,11 +462,6 @@ export default {
     emits: [
         "open_dlg"
     ],
-    data() {
-        return {
-            isOpen: false,
-        };
-    },
     components: {
         Link,
         LanguageSelector,
@@ -473,6 +480,9 @@ export default {
         },
         openDlg($dlg) {
             this.$emit("open_dlg", $dlg);
+        },
+        openDlg12() {
+            this.$emit("open:dlg12");
         },
     },
     computed: {

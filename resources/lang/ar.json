@@ -214,6 +214,8 @@
 	"Archives": "الأرشيف",
 	"Show Archives": "عرض الأرشيف",
 	"Request Archive Preparation": "طلب تجهيز أرشيف",
+	"Show Archives (ETA)": "عرض أرشيف المصلحة",
+	"Request Archive Preparation (ETA)": "طلب أرشيف من المصلحة",
 	"Settings": "الأعدادات",
 	"Allow Custom Items Description": "السماح بأدخال وصف للصنف",
 	"Automatic Invoice Number": "ترقيم الفواتير تلقائي",
@@ -256,5 +258,8 @@
 	"Direction": "توجية",
 	"Receiving Branch": "المستلم",
 	"Invoice Review": "مراجعة فاتورة",
-	"Discount Amount": "قيمة الخصم"
+	"Discount Amount": "قيمة الخصم",
+	"Submitted": "أرسلت",
+	"Ready": "جاهزة",
+	"Send": "أرسال"
 }
