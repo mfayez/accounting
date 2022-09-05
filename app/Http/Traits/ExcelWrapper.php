@@ -32,7 +32,7 @@ trait ExcelWrapper {
 
 		foreach($rows as $key => $row) {
 			if (!$header_en){
-				$header_en = $row;
+				$header_en = array_map('trim', $row); //trim trilling spaces
 			}
 			else if (!$header_ar)
 				$header_ar = $row;
@@ -63,7 +63,7 @@ trait ExcelWrapper {
 					foreach($row as $key=>$item){
 						$row[$key] = trim(iconv('UTF-8', 'ASCII//IGNORE', $item));
 					}
-					$header_en = $row;
+					$header_en = array_map('trim', $row); //trim trilling spaces
 				}
     	        else if (!$header_ar)
         	        $header_ar = $row;
