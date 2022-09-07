@@ -235,6 +235,9 @@
 	"Choose File": "أختار الملف",
 	"Loading invoices from ETA": "تحميل الفواتير من مصلحة الضرائب",
 	"Name 1": "الاسم",
+	"Name 2": "الاسم",
+	"Parent Name 1": "التصنيف",
+	"Parent Name 2": "التصنيف",
 	"Synchronizing  ": "مزامنة",
 	"Loading items from ETA": "تحميل الأصناف من مصلحة الضرائب",
 	"Month": "الشهر",
@@ -261,5 +264,9 @@
 	"Discount Amount": "قيمة الخصم",
 	"Submitted": "أرسلت",
 	"Ready": "جاهزة",
-	"Send": "أرسال"
+	"Send": "أرسال",
+	"Active Status": "حالة التنشيط",
+	"Standard Code": "كود الصنف",
+	"Description": "الوصف"
+	
 }
