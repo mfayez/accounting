@@ -40,7 +40,7 @@
                         <Link
                             :href="route('dashboard')"
                             :class="{ 'text-[#4099de]': $page.url === '/' }"
-                            class="ms-3 mb-3 lg:mb-0"
+                            class="grid justify-items-center ms-3 mb-3 lg:mb-0"
                             ><i class="fas fa-chart-pie"></i>{{__("Dashboard")}}</Link
                         >
                         <dropdown
@@ -49,7 +49,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]':
                                             $page.url.startsWith('/customers'),
@@ -84,7 +84,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]':
                                             $page.url.startsWith('/branches'),
@@ -117,7 +117,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]': invoiceConditions,
                                     }"
@@ -210,7 +210,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]': itemConditions,
                                     }"
@@ -263,7 +263,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]':
                                             $page.url.startsWith('/reports'),
@@ -344,7 +344,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]':
                                             $page.url.startsWith('/archive'),
