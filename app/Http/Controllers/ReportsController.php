@@ -93,10 +93,10 @@ class ReportsController extends Controller
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount,
-							round(sum(t8.amount), 5) as TotalTaxFees
+							ifnull(round(sum(t8.amount), 5), 0) as TotalTaxFees
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
-							inner join TaxableItem t8 on t8.invoiceline_id = t2.Id
+							left outer join TaxableItem t8 on t8.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
@@ -150,10 +150,14 @@ class ReportsController extends Controller
 			$colIdx += 5;
 		}
 		//copy cell format
-		$cellStyle = $file->getActiveSheet()->getStyle($this->index(2,3));
-		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(3,3).':'.$this->index(8+count($items)*5,3));
 		$cellStyle = $file->getActiveSheet()->getStyle($this->index(9,2));
 		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(10,2).':'.$this->index(count($items)*5+5,2));
+
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(2,3));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(3,3).':'.$this->index(8+count($items)*5,3));
+		
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(2,3));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(3,3).':'.$this->index(8+count($items)*5,3));
 		
 		//fill the data
 		$rowIdx = 5;
@@ -198,6 +202,17 @@ class ReportsController extends Controller
 			}
 			$rowIdx++;
 		}
+		//set bordres for all cells in active worksheet
+		$file->getActiveSheet()->getStyle($this->index(2,3).':'.$this->index(8+count($items)*5,$rowIdx-1))
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+		//set auto filter
+		$file->getActiveSheet()->setAutoFilter($this->index(2,4).':'.$this->index(8+count($items)*5,$rowIdx));
+		//set column width
+		//TODO MFayez
+		//$file->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+	
 		$writer = IOFactory::createWriter($file, 'Xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="Sales_ExportedData.xls"');
