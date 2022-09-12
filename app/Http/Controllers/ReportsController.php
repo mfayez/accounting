@@ -78,29 +78,36 @@ class ReportsController extends Controller
 		//$customerId = -1;
 		//$startDate  = "2019-10-10";
 		//$endDate    = "2030-10-10";
-		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
-							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalSalesAmount as Total, t4.code as Code
+		
+		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date_format(t1.dateTimeIssued, '%d/%m/%Y') as Date, 
+							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalSalesAmount as Total, t4.code as Code,
+							t1.documentType as docType
 						from Invoice t1  
 							inner join Receiver t4 on t4.Id = t1.receiver_id
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
-						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount, t4.code";
+						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount, 
+						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
-		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 2) as Quantity,
-							round(sum(t2.salesTotal), 2) as Total, round(sum(t7.amountEGP), 2) as UnitValue
+		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
+							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount,
+							round(sum(t8.amount), 5) as TotalTaxFees
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
+							inner join TaxableItem t8 on t8.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY)
+							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
 						group by t1.Id, t2.description, t2.itemCode";
 		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$items = array();
 		foreach($data2 as $invLine)
-			array_push($items, $invLine->Code);
-		$items = array_unique($items);
+			array_push($items, array('Code' => $invLine->Code, 'Desc' => $invLine->Desc));
+		//remvoe duplicates from $items
+		$items = array_map("unserialize", array_unique(array_map("serialize", $items)));
+		
 		foreach($data1 as $key=>$val)
 		{
 			$this->mValue = $val->InvKey;
@@ -115,11 +122,40 @@ class ReportsController extends Controller
 		//render excel file now
 		$reader = IOFactory::createReader('Xlsx');
 		$file = $reader->load('./ExcelTemplates/SalesReport.xlsx');
+		
+		//prepare the headers
 		$colIdx = 9;
+		$itemIdx = 1;
 		foreach($items as $col){
-			$file->getActiveSheet()->setCellValue($this->index($colIdx,1), $col);
-			$colIdx += 3;
+			//merge cells
+			$file->getActiveSheet()->mergeCells($this->index($colIdx,1).':'.$this->index($colIdx+4,1));
+			$file->getActiveSheet()->mergeCells($this->index($colIdx,2).':'.$this->index($colIdx+4,2));
+
+			$file->getActiveSheet()->setCellValue($this->index($colIdx,1), $col["Code"]);
+			$file->getActiveSheet()->setCellValue($this->index($colIdx,2), $col["Desc"]);
+			
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+0,3), "قيمة");
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+1,3), "كميه");
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+2,3), "خصم");
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+3,3), "ضريبة");
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+4,3), "سعر");
+
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+0,4), "قيمة".$itemIdx);
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+1,4), "كميه".$itemIdx);
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+2,4), "خصم".$itemIdx);
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+3,4), "ضريبة".$itemIdx);
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+4,4), "سعر".$itemIdx);
+			
+			$itemIdx +=1 ;
+			$colIdx += 5;
 		}
+		//copy cell format
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(2,3));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(3,3).':'.$this->index(8+count($items)*5,3));
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(9,2));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(10,2).':'.$this->index(count($items)*5+5,2));
+		
+		//fill the data
 		$rowIdx = 5;
 		foreach($data1 as $row){
 			$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), $row->Id);
@@ -129,15 +165,36 @@ class ReportsController extends Controller
 			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->Code);
 			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->Client);
 			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->Total);
+
+			if (strtolower($row->docType) == 'i'){
+				//set row color to green
+				$file->getActiveSheet()
+					->getStyle($this->index(2,$rowIdx).':'.$this->index(8+count($items)*5,$rowIdx))
+					->getfill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()
+					->setARGB('FFFFFF');
+			}else{
+				//set row color to orange
+				$file->getActiveSheet()->getStyle($this->index(2,$rowIdx).':'.$this->index(8+count($items)*5,$rowIdx))
+					->getfill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()->setARGB('F4B084');
+			}
+			
+			
 			$colIdx = 9;
 			foreach($items as $col){
-				if (array_key_exists($col, $row->lines)){
-					$file->getActiveSheet()->setCellValue($this->index($colIdx,2), $row->lines[$col]->Desc);
-					$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col]->Total);
-					$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col]->Quantity);
-					$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col]->UnitValue);
+				if (array_key_exists($col["Code"], $row->lines)){
+					if ($col["Desc"] ==  $row->lines[$col["Code"]]->Desc){
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]->UnitValue);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col["Code"]]->Quantity);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col["Code"]]->Discount);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+3,$rowIdx), $row->lines[$col["Code"]]->TotalTaxFees);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+4,$rowIdx), $row->lines[$col["Code"]]->Total);
+					}
 				}
-				$colIdx += 3;
+				$colIdx += 5;
 			}
 			$rowIdx++;
 		}
