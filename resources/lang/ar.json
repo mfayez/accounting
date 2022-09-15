@@ -267,6 +267,7 @@
 	"Send": "أرسال",
 	"Active Status": "حالة التنشيط",
 	"Standard Code": "كود الصنف",
-	"Description": "الوصف"
-	
+	"Description": "الوصف",
+	"You are not authorized to view users": "ليس لدبك صلاحية لعرض المستخدمين",
+	"You are not authorized to add/edit users": "ليس لديك صلاحية لأضافة/تعديل المستخدمين"
 }

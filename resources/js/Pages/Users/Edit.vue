@@ -11,7 +11,7 @@
         <template #content>
             <jet-validation-errors class="mb-4" />
 
-            <form @submit.prevent="submit">
+            <form v-if="$page.props.user.is_admin" @submit.prevent="submit">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <jet-label for="name" :value="__('Name')" />
@@ -70,6 +70,9 @@
                     </div>
                 </div>
             </form>
+            <div v-else>
+                {{__("You are not authorized to add/edit users")}}
+            </div>
         </template>
         <template #footer>
             <div class="flex items-center justify-end mt-4">
@@ -82,6 +85,7 @@
                     @click="submit"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
+                    v-if="$page.props.user.is_admin"
                 >
                     {{ __("Save") }}
                 </jet-button>
