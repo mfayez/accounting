@@ -30,6 +30,7 @@ use App\Models\Upload;
 use App\Models\Settings;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\StoreCreditRequest;
+use App\Http\Requests\StoreDebitRequest;
 
 use App\Http\Traits\ETAAuthenticator;
 use App\Http\Traits\ExcelWrapper;
@@ -272,6 +273,62 @@ class ETAController extends Controller
 	}
 	
 	public function AddCredit(StoreCreditRequest $request)
+	{
+		$url = env("ETA_URL")."/documentsubmissions";
+		$data = $request->validated();
+		//remove extra attributes, no need but you can get them from git history
+		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode'];
+		$data['totalSalesAmount'] = floatval($data['totalSalesAmount']);
+		$data['totalDiscountAmount'] = floatval($data['totalDiscountAmount']);
+		$data['netAmount'] = floatval($data['netAmount']);
+		$data['totalAmount'] = floatval($data['totalAmount']);
+		$data['totalItemsDiscountAmount'] = floatval($data['totalItemsDiscountAmount']);
+		$data['extraDiscountAmount'] = floatval($data['extraDiscountAmount']);
+		foreach($data['invoiceLines'] as $key=>$line){
+			$data['invoiceLines'][$key]['salesTotal'] = floatval($line['salesTotal']);
+			$data['invoiceLines'][$key]['total'] = floatval($line['total']);
+			$data['invoiceLines'][$key]['valueDifference'] = floatval($line['valueDifference']);
+			$data['invoiceLines'][$key]['totalTaxableFees'] = floatval($line['totalTaxableFees']);
+			$data['invoiceLines'][$key]['netTotal'] = floatval($line['netTotal']);
+			$data['invoiceLines'][$key]['itemsDiscount'] = floatval($line['itemsDiscount']);
+			$data['invoiceLines'][$key]['unitValue']['amountEGP'] = floatval($line['unitValue']['amountEGP']);
+		}
+		//return ["documents" => array($data)];
+		$data['status'] = "In Review";
+		$data['statusReason'] = "Manual Entry";
+		$data['issuer_id'] = $data['issuer']['Id'];
+		$data['receiver_id'] = $data['receiver']['Id'];
+		$invoice = new Invoice($data);
+		$invoice->save();
+		foreach($data['invoiceLines'] as $line) {
+			$unitValue = new Value($line['unitValue']);
+			if (!isset($line['amountSold']))
+				$unitValue->amountSold = null;
+			if (!isset($line['currencyExchangeRate']))
+				$unitValue->currencyExchangeRate = null;
+			$unitValue->save();
+			$invoiceline = new InvoiceLine($line);
+			$invoiceline->invoice_id = $invoice->Id;
+			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->save();
+			foreach($line['taxableItems'] as $taxitem) {
+				$item = new TaxableItem($taxitem);
+				$item->invoiceline_id = $invoiceline->Id;
+				$item->save();
+			}
+		}
+		foreach($data["taxTotals"] as $totalTax) {
+			$taxTotal = new TaxTotal($totalTax);
+			$taxTotal->invoice_id = $invoice->Id;
+			$taxTotal->save();
+		}
+		return $invoice;
+		//$this->AuthenticateETA($request);
+		//$response = Http::withToken($this->token)->post($url, ["documents" => array($data)]);
+		//return $response;
+	}
+
+	public function AddDebit(StoreDebitRequest $request)
 	{
 		$url = env("ETA_URL")."/documentsubmissions";
 		$data = $request->validated();

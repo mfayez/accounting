@@ -1,7 +1,7 @@
 <template>
     <jet-dialog-modal :show="showDlg" max-width="5xl" @close="showDlg = false">
         <template #title>
-            {{ __("Invoice Debit Note") }}
+            {{ __("Invoice Credit Note") }}
         </template>
 
         <template #content>
@@ -95,7 +95,7 @@
                     {{__('Close')}}
                 </jet-secondary-button>
                 <div v-show="item.status=='Valid'">
-                    <jet-button class="ms-2" @click="SubmitDebitNote()">
+                    <jet-button class="ms-2" @click="SubmitCreditNote()">
                         {{ __("Approve") }}
                     </jet-button>
                 </div>
@@ -258,7 +258,7 @@ export default {
             }
             return total;
         },
-        SubmitDebitNote() {
+        SubmitCreditNote() {
             axios
                 .post(route("eta.invoices.credit.store"), this.item)
                 .then((response) => {

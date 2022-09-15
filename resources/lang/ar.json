@@ -251,7 +251,9 @@
 	"Branches Sales Report": "تقرير مبيعات الفروع",
 	"Download excel template": "تحميل نموذج الأكسل",
 	"Credit": "خصم",
-	"Invoice Debit Note": "أشعار خصم على الفاتورة",
+	"Debit": "أضافة",
+	"Invoice Credit Note": "أشعار خصم على الفاتورة",
+	"Invoice Debit Note": "أشعار أضافة على الفاتورة",
 	"Are you sure?": "هل انت متأكد؟",
 	"Once approved it will be sent to ETA": "بمجرد الأعتماد سيتم أرسالها الى مصلحة الضرائب",
 	"Invoice has been approved!": "تم أعتماد الفاتورة",
@@ -269,5 +271,9 @@
 	"Standard Code": "كود الصنف",
 	"Description": "الوصف",
 	"You are not authorized to view users": "ليس لدبك صلاحية لعرض المستخدمين",
-	"You are not authorized to add/edit users": "ليس لديك صلاحية لأضافة/تعديل المستخدمين"
+	"You are not authorized to add/edit users": "ليس لديك صلاحية لأضافة/تعديل المستخدمين",
+	"Wrong buyer details": "بيانات المشتري خاطئة",
+	"Wrong invoice details": "بيانات الفاتورة خاطئة",
+	"Rejected": "مرفوضة",
+	"Select cancelation reason": "أختار سبب الإلغاء"
 }
