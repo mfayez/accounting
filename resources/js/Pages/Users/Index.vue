@@ -5,7 +5,7 @@
             {{ __("Are you sure you want to delete this user?") }}
         </confirm>
         <div class="py-4">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div v-if="$page.props.user.is_admin" class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4"
                 >
@@ -93,6 +93,13 @@
                             </tr>
                         </template>
                     </Table>
+                </div>
+            </div>
+            <div v-else class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div
+                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4"
+                >
+                    {{__("You are not authorized to view users")}}
                 </div>
             </div>
         </div>
