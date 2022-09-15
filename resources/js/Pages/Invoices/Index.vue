@@ -3,11 +3,16 @@
     <app-layout>
 		<preview-invoice ref="dlg3" v-model="invItem" />
         <credit-note ref="dlg5" v-model="invItem" />
+        <debit-note ref="dlg6" v-model="invItem" />
         <confirm ref="dlg2" @confirmed="cancelInv2()">
-			<jet-label for="type"  value="Select cancelation reason:" />
+			<jet-label for="type"  :value="__('Select cancelation reason')" />
 			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
-			  <option value="Wrong buyer details">Wrong buyer details</option>
-			  <option value="Wrong invoice details">Wrong invoice details</option>
+			    <option :value="__('Wrong buyer details')">
+                    {{__("Wrong buyer details")}}
+                </option>
+			    <option :value="__('Wrong invoice details')">
+                    {{__("Wrong invoice details")}}
+                </option>
 			</select>
 		</confirm>
 		<confirm ref="dlg4" @confirmed="deleteInv()">
@@ -43,7 +48,7 @@
 
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id" 
-                                :class="{ credit: item.documentType =='C' }"
+                                :class="{ credit: item.documentType =='C', debit: item.documentType =='D' }"
                             >
 									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
 										<div v-for="rowVals in nestedIndex(item, key).split(',')">
@@ -114,8 +119,8 @@
                                             </secondary-button>
                                             
                                             <jet-button
-                                            class="me-2 mt-2"
-                                            v-show="item.status=='Valid'"
+                                                class="me-2 mt-2"
+                                                v-show="item.status=='Valid'"
                                                 @click="openExternal2(item)">
                                                 {{ __("ETA2") }}
                                             </jet-button>
@@ -126,7 +131,15 @@
                                                 @click="creditNoteUpdate(item)"
                                             >
                                                 {{ __("Credit") }}
-                                            </secondary-button>    
+                                            </secondary-button>
+
+                                            <jet-button
+                                                class="me-2 mt-2"
+                                                v-show="item.status=='Valid'"
+                                                @click="debitNoteUpdate(item)"
+                                            >
+                                                {{ __("Debit") }}
+                                            </jet-button>
                                         </div>
 										
 									</td>
@@ -151,6 +164,7 @@ import JetLabel from "@/Jetstream/Label";
 import PreviewInvoice from "@/Pages/Invoices/Preview";
 import UpdateReceived from "@/Pages/Invoices/UpdateReceived";
 import CreditNote from "@/Pages/Invoices/CreditNote";
+import DebitNote from "@/Pages/Invoices/DebitNote";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import JetDangerButton from '@/Jetstream/DangerButton';
@@ -166,6 +180,7 @@ export default {
         PreviewInvoice,
         UpdateReceived,
         CreditNote,
+        DebitNote,
         JetLabel,
         Table: Tailwind2.Table,
         JetButton,
@@ -250,6 +265,12 @@ export default {
             this.invItem = item;
             this.$nextTick(() => {
                 this.$refs.dlg5.ShowDialog();
+            });
+        },
+        debitNoteUpdate(item) {
+            this.invItem = item;
+            this.$nextTick(() => {
+                this.$refs.dlg6.ShowDialog();
             });
         },
         deleteInvoice(item) {
