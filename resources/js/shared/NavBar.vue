@@ -362,7 +362,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg('dlg11')"
+                                    @click.prevent="openDlg('dlg12')"
                                     href="#"
                                 >
                                     {{ __("Request Archive Preparation") }}
@@ -374,7 +374,7 @@
                                 </dropdown-link>
                                 <dropdown-link
                                     as="a"
-                                    @click.prevent="openDlg11()"
+                                    @click.prevent="openDlg('dlg11')"
                                     href="#"
                                 >
                                     {{ __("Request Archive Preparation (ETA)") }}
@@ -468,6 +468,11 @@ export default {
         Dropdown,
         DropdownLink,
         JetApplicationMark,
+    },
+    data() {
+        return {
+            isOpen: false
+        };
     },
     methods: {
         logout() {
