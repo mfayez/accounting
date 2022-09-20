@@ -171,7 +171,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]': invoiceConditions,
                                     }"
@@ -312,7 +312,7 @@
                         >
                             <template #trigger>
                                 <span
-                                    class="cursor-pointer hover:text-[#4099de]"
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
                                         'text-[#4099de]':
                                             $page.url.startsWith('/pos'),
@@ -480,6 +480,9 @@ export default {
         },
         openDlg($dlg) {
             this.$emit("open_dlg", $dlg);
+        },
+        openDlg12() {
+            this.$emit("open:dlg12");
         },
         openDlg12() {
             this.$emit("open:dlg12");

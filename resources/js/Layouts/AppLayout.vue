@@ -12,11 +12,16 @@
         <settings-dialog2 ref="dlg10" />
         <archive-request-dialog ref="dlg11" />
 <<<<<<< HEAD
+<<<<<<< HEAD
         <add-pos ref="addPOS" />
         <load-receipts ref="loadReceipts" />
         <upload-receipts ref="uploadReceipts" />
         <nav-bar @open_dlg="openDlg" />
 ||||||| parent of 0f1f4a9... Add local archive preparation
+||||||| 329e4f6
+=======
+        <archive-request-dialog2 ref="dlg12" />
+>>>>>>> 1aa085a5f37852fedf6f30ecd676fc1d252a9b41
         <nav-bar
             @open:dlg1="openDlg1"
             @open:dlg2="openDlg2"
@@ -29,6 +34,7 @@
             @open:dlg9="openDlg9"
             @open:dlg10="openDlg10"
             @open:dlg11="openDlg11"
+            @open:dlg12="openDlg12"
         />
 =======
         <archive-request-dialog2 ref="dlg12" />
@@ -74,6 +80,7 @@ import SettingsDialog2 from "@/Pages/Application/Settings";
 import UploadItemsDialog from "@/Pages/Items/Upload";
 import ArchiveRequestDialog from "@/Pages/Archives/Request";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import AddPos from "@/Pages/POS/Add.vue";
 import LoadReceipts from "@/Pages/Receipts/Load";
 import UploadReceipts from "@/Pages/Receipts/Upload";
@@ -81,6 +88,10 @@ import UploadReceipts from "@/Pages/Receipts/Upload";
 =======
 import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
 >>>>>>> 0f1f4a9... Add local archive preparation
+||||||| 329e4f6
+=======
+import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
+>>>>>>> 1aa085a5f37852fedf6f30ecd676fc1d252a9b41
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
 import FlashMessage from "@/shared/FlashMessage";
