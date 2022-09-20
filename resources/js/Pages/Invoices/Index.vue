@@ -338,4 +338,7 @@ export default {
 .credit {
     background-color: lightgoldenrodyellow;
 }
+.debit {
+    background-color: palegreen;
+}
 </style>
