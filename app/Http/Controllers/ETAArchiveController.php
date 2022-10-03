@@ -18,7 +18,7 @@ class ETAArchiveController extends Controller
 
     public function getArchiveRequests(Request $request)
     {
-		$url = env("ETA_URL")."/documentPackages/requests";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documentPackages/requests";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"pageSize" => "20",
@@ -33,7 +33,7 @@ class ETAArchiveController extends Controller
 
     public function importArchive(Request $request)
     {
-        $url = env("ETA_URL")."/documentPackages/".$request->input("rid");
+        $url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documentPackages/".$request->input("rid");
 		$this->AuthenticateETA($request);
         //$tmpfile = tempnam(sys_get_temp_dir(), 'xyz') . ".zip";
 		$response = Http::withToken($this->token)->get($url);
@@ -69,7 +69,7 @@ class ETAArchiveController extends Controller
      */
     public function store(Request $request)
     {
-        $url = env("ETA_URL")."/documentPackages/requests";
+        $url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documentPackages/requests";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, [
             "type" => "Summary", 

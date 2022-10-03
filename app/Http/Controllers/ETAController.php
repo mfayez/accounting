@@ -46,7 +46,7 @@ class ETAController extends Controller
 
 		$values = array("YYYY", "YY", "BB", "XXXXXXX", "XXXXXX", "XXXXX", "XXXX");
 		$repalcements = array("%1$04d", "%2$02d", "%3$02d", "%4$07d", "%4$06d", "%4$05d", "%4$04d");
-		$template = str_replace($values, $repalcements, SETTINGS_VAL('application settings', 'invoiceTemplate', env("INVOICE_TEMPALTE")));
+		$template = str_replace($values, $repalcements, SETTINGS_VAL('application settings', 'invoiceTemplate', "XXXXX"));
 		$branchNum = $invoice->issuer_id;
 		$inv = DB::select('SELECT max(convert(internalID, unsigned integer)%100000) as LastInv FROM Invoice WHERE issuer_id = ?', [$branchNum]);
 		$invNum = 1;
@@ -59,7 +59,8 @@ class ETAController extends Controller
 	
 	public function UploadItem(Request $request)
 	{
-		$url = env("ETA_URL")."/codetypes/requests/codes";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/codes";
+		
 		$temp = [];
 		$extension = $request->file->extension();
 		if ($extension == 'xlsx' || $extension == 'xls')
@@ -196,7 +197,7 @@ class ETAController extends Controller
 
 	public function AddInvoice(StoreInvoiceRequest $request)
 	{
-		$url = env("ETA_URL")."/documentsubmissions";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documentsubmissions";
 		$data = $request->validated();
 		//remove extra attributes, no need but you can get them from git history
 		$data['dateTimeIssued'] = $data['dateTimeIssued'] . ":00Z";
@@ -274,7 +275,7 @@ class ETAController extends Controller
 	
 	public function AddCredit(StoreCreditRequest $request)
 	{
-		$url = env("ETA_URL")."/documentsubmissions";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documentsubmissions";
 		$data = $request->validated();
 		//remove extra attributes, no need but you can get them from git history
 		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode'];
@@ -330,7 +331,7 @@ class ETAController extends Controller
 
 	public function AddDebit(StoreDebitRequest $request)
 	{
-		$url = env("ETA_URL")."/documentsubmissions";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documentsubmissions";
 		$data = $request->validated();
 		//remove extra attributes, no need but you can get them from git history
 		$data['taxpayerActivityCode'] = $data['taxpayerActivityCode'];
@@ -386,7 +387,7 @@ class ETAController extends Controller
 
 	public function CancelInvoice(Request $request)
 	{
-		$url = env("ETA_URL")."/documents/state/%s/state";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/state/%s/state";
 		$url = sprintf($url, $request->input("uuid"));
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->put($url, [
@@ -415,7 +416,7 @@ class ETAController extends Controller
 	{
 		//TODO check if there are no branches
 		$myid = Issuer::first()->issuer_id;
-		$url = env("ETA_URL")."/documents/recent";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"PageSize" => "10",
@@ -457,7 +458,7 @@ class ETAController extends Controller
 	public function SyncReceivedInvoices(Request $request)
 	{
 		return;
-		$url = env("ETA_URL")."/documents/recent";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"PageSize" => "10",
@@ -485,7 +486,7 @@ class ETAController extends Controller
 	public function SyncIssuedInvoices(Request $request)
 	{
 		return $this->SyncInvoices($request);
-		$url = env("ETA_URL")."/documents/recent";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"PageSize" => "10",
@@ -513,7 +514,7 @@ class ETAController extends Controller
 	public function SyncItems(Request $request)
 	{
 		$myid = Issuer::first()->issuer_id;
-		$url = env("ETA_URL")."/codetypes/".$request->input("type")."/codes";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/".$request->input("type")."/codes";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "100",
@@ -564,7 +565,7 @@ class ETAController extends Controller
 
 	public function SyncItemsRequests(Request $request)
 	{
-		$url = env("ETA_URL")."/codetypes/requests/my";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/my";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
 			"Ps" => "100",
@@ -600,7 +601,7 @@ class ETAController extends Controller
 
 	public function AddItem(Request $request)
 	{
-		$url = env("ETA_URL")."/codetypes/requests/codes";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/codes";
 		$data = $request->validate([
 			'codeType'		=> ['required', 'string', Rule::in(['EGS', 'GS1'])],
 			'parentCode'	=> ['required', 'integer'],
@@ -737,7 +738,7 @@ class ETAController extends Controller
 	}
 	
 	public function UpdateInvoices(){
-		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/%s/raw";
 		$invoices = Invoice::where('status', '=', 'Invalid')
 					->where('statusReason', '=', '')
 					->get();
@@ -765,7 +766,7 @@ class ETAController extends Controller
 	}
 
 	public function AddMissingETAInvoice($request, $uuid) {
-		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/%s/raw";
 		$this->AuthenticateETA($request);
 		$url = sprintf($urlbase, $uuid);
 		$response = Http::withToken($this->token)->get($url);
@@ -819,7 +820,7 @@ class ETAController extends Controller
 
 
 	public function AddMissingInvoice($request, $uuid) {
-		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/%s/raw";
 		$this->AuthenticateETA($request);
 		$url = sprintf($urlbase, $uuid);
 		$response = Http::withToken($this->token)->get($url);
@@ -899,7 +900,7 @@ class ETAController extends Controller
 	}
 
 	public function LoadMissingInvoices() {	
-		$urlbase = env("ETA_URL")."/documents/%s/raw";
+		$urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/%s/raw";
 		$oldinv = Invoice::whereNotNull('uuid')->pluck('uuid');
 		$missing = ETAInvoice::whereNotIn('uuid', $oldinv)->pluck('uuid');
 		
@@ -1069,7 +1070,7 @@ class ETAController extends Controller
 	}
 
 	public function SetItemsActiveDate($activeFromDate, $activeToDate) {
-		$urlbase = env("ETA_URL")."/codetypes/EGS/codes/%s";
+		$urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/EGS/codes/%s";
 		$items = ETAItem::all();
 		$this->AuthenticateETA2();
 
@@ -1085,5 +1086,16 @@ class ETAController extends Controller
 			else
 				error_log("updating ".$item->itemCode." succeeded!");
 		}
+	}
+
+	public function pingETA(Request $request) {
+		$url = $request['login_url'];
+		$response = Http::asForm()->post($url, [
+			"grant_type" => "client_credentials",
+			"scope" => "InvoicingAPI",
+			"client_id" => $request['client_id'],
+			"client_secret" => $request['client_secret1'],
+		]);
+		return ['status' => $response->status(), 'body' => $response->body()];
 	}
 }

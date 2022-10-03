@@ -252,7 +252,7 @@ class ReceiptController extends Controller
 
     public function SendReceiptToETA($data)
 	{
-		$url = env("ETA_URL")."/receiptsubmissions";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/receiptsubmissions";
 		$response = Http::withToken($this->pos_token)->post($url, ["receipts" => array($data)]);
 		return $response;
 	}

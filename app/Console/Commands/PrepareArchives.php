@@ -107,7 +107,7 @@ class PrepareArchives extends Command
         if ($zip->open(storage_path($fileName), \ZipArchive::CREATE)== TRUE)
         {
             foreach($data as $inv) {
-                $url = env("ETA_URL")."/documents/".$inv->uuid."/pdf";
+                $url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/".$inv->uuid."/pdf";
                 $this->AuthenticateETA2();
                 $file_data = Http::withToken($this->token)->get($url)->body();
                 

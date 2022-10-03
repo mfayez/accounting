@@ -1293,6 +1293,14 @@ select {
 	margin-top: -0.5rem;
 	margin-bottom: -0.5rem;
 }
+.my-2 {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+.my-4 {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
 .ml-3 {
 	margin-left: 0.75rem;
 }
@@ -1994,6 +2002,10 @@ select {
 	--tw-border-opacity: 1;
 	border-color: rgba(110, 231, 183, var(--tw-border-opacity));
 }
+.border-red-500 {
+	--tw-border-opacity: 1;
+	border-color: rgba(239, 68, 68, var(--tw-border-opacity));
+}
 .bg-white {
 	--tw-bg-opacity: 1;
 	background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
@@ -2199,6 +2211,9 @@ select {
 .p-8 {
 	padding: 2rem;
 }
+.p-12 {
+	padding: 3rem;
+}
 .px-4 {
 	padding-left: 1rem;
 	padding-right: 1rem;
@@ -2361,6 +2376,9 @@ select {
 .text-right {
 	text-align: right;
 }
+.align-baseline {
+	vertical-align: baseline;
+}
 .align-middle {
 	vertical-align: middle;
 }
@@ -2426,6 +2444,9 @@ select {
 }
 .capitalize {
 	text-transform: capitalize;
+}
+.italic {
+	font-style: italic;
 }
 .leading-5 {
 	line-height: 1.25rem;
@@ -2998,6 +3019,10 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 .hover\:text-white:hover {
 	--tw-text-opacity: 1;
 	color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+.hover\:text-blue-800:hover {
+	--tw-text-opacity: 1;
+	color: rgba(66, 56, 157, var(--tw-text-opacity));
 }
 .hover\:underline:hover {
 	text-decoration: underline;
@@ -4225,6 +4250,14 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 		width: 80%;
 	}
 
+	.lg\:w-2\/3 {
+		width: 66.666667%;
+	}
+
+	.lg\:w-2\/6 {
+		width: 33.333333%;
+	}
+
 	.lg\:max-w-full {
 		max-width: 100%;
 	}
@@ -4436,6 +4469,18 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 		height: 20rem;
 	}
 
+	.xl\:w-1\/2 {
+		width: 50%;
+	}
+
+	.xl\:w-1\/4 {
+		width: 25%;
+	}
+
+	.xl\:w-2\/5 {
+		width: 40%;
+	}
+
 	.xl\:translate-x-0 {
 		--tw-translate-x: 0px;
 		transform: var(--tw-transform);
@@ -4450,6 +4495,18 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 	}
 }
 @media (min-width: 1536px) {
+
+	.\32xl\:w-1\/3 {
+		width: 33.333333%;
+	}
+
+	.\32xl\:w-2\/3 {
+		width: 66.666667%;
+	}
+
+	.\32xl\:w-2\/6 {
+		width: 33.333333%;
+	}
 
 	.\32xl\:text-base {
 		font-size: 1rem;

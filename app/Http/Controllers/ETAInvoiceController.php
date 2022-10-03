@@ -18,7 +18,7 @@ class ETAInvoiceController extends Controller
 
     public function downloadPDF(Request $request)
     {
-        $url = env("ETA_URL")."/documents/".$request->input("uuid")."/pdf";
+        $url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/".$request->input("uuid")."/pdf";
 		$this->AuthenticateETA($request);
         $response = Http::withToken($this->token)->get($url);
         return response($response->getBody()->getContents(), 200,  [

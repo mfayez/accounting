@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share the translations data in the props of the components.
         Inertia::share([
-          'preview_url' => env("PREVIEW_URL", "https://invoicing.eta.gov.eg/print/documents/"),
+          'preview_url' => SETTINGS_VAL("ETA Settings", "preview_url", "https://invoicing.eta.gov.eg/print/documents/"),
 		      'auto_inv_num' => SETTINGS_VAL('application settings', 'automatic', '0') == '1' ? true : false,
 		      'custom_desc_enabled' => SETTINGS_VAL('application settings', 'custom_desc', '0') == '1' ? true : false,
           'e_receipt_enabled' => SETTINGS_VAL('application settings', 'e_receipt', '0') == '1' ? true : false,

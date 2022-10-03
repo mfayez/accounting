@@ -17,8 +17,13 @@ class SetLocale
             $locale = substr($request->server('HTTP_ACCEPT_LANGUAGE'), 0, 2);
 
             if ($locale != 'ar' && $locale != 'en') {
-                $locale = 'en';
+                $locale = 'ar';
             }
+        }
+        if ($request->route()->getName() === 'setup.step1' || 
+            $request->route()->getName() === 'setup.step2' ||
+            $request->route()->getName() === 'setup.step3') {
+            $locale = 'ar';
         }
 
         App::setLocale($locale);

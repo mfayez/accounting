@@ -13,12 +13,12 @@ trait ETAAuthenticator {
     private function AuthenticateETA2()
 	{
 		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
+			$url = SETTINGS_VAL("ETA Settings", "login_url", "https://id.eta.gov.eg/connect/token");
 			$response = Http::asForm()->post($url, [
 				"grant_type" => "client_credentials",
 				"scope" => "InvoicingAPI",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET") 
+				"client_id" => SETTINGS_VAL("ETA Settings", "client_id", ""),
+				"client_secret" => SETTINGS_VAL("ETA Settings", "client_secret1", "")
 			]);
 			$this->token = $response['access_token'];
 			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
@@ -30,12 +30,12 @@ trait ETAAuthenticator {
 		$this->token = $request->session()->get('eta_token', null);
 		$this->token_expires_at = $request->session()->get('eta_token_expires_at', null);
 		if ($this->token == null || $this->token_expires_at == null || $this->token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
+			$url = SETTINGS_VAL("ETA Settings", "login_url", "https://id.eta.gov.eg/connect/token");
 			$response = Http::asForm()->post($url, [
 				"grant_type" => "client_credentials",
 				"scope" => "InvoicingAPI",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET") 
+				"client_id" => SETTINGS_VAL("ETA Settings", "client_id", ""),
+				"client_secret" => SETTINGS_VAL("ETA Settings", "client_secret1", "")
 			]);
 			$this->token = $response['access_token'];
 			$this->token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);
@@ -50,7 +50,7 @@ trait ETAAuthenticator {
 		$this->pos_token = $request->session()->get('pos_eta_token', null);
 		$this->pos_token_expires_at = $request->session()->get('pos_eta_token_expires_at', null);
 		if ($this->pos_token == null || $this->pos_token_expires_at == null || $this->pos_token_expires_at < Carbon::now()) {
-			$url = env("LOGIN_URL");
+			$url = SETTINGS_VAL("ETA Settings", "login_url", "https://id.eta.gov.eg/connect/token");
 			$response = Http::withHeaders([
 				'posserial' => $pos->serial,
 				'pososversion' => $pos->os_version,
@@ -58,8 +58,8 @@ trait ETAAuthenticator {
 				'presharedkey' => ''
 			])->asForm()->post($url, [
 				"grant_type" => "client_credentials",
-				"client_id" => env("CLIENT_ID"),
-				"client_secret" => env("CLIENT_SECRET"),
+				"client_id" => SETTINGS_VAL("ETA Settings", "client_id", ""),
+				"client_secret" => SETTINGS_VAL("ETA Settings", "client_secret1", "")
 			]);
 			$this->pos_token = $response['access_token'];
 			$this->pos_token_expires_at = Carbon::now()->addSeconds($response['expires_in']-10);

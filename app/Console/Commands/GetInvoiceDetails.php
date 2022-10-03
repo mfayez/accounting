@@ -42,7 +42,7 @@ class GetInvoiceDetails extends Command
     public function handle()
     {
         $uuid = $this->argument('uuid');
-        $urlbase = env("ETA_URL")."/documents/%s/raw";
+        $urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/%s/raw";
         $url = sprintf($urlbase, $uuid);
         $this->AuthenticateETA2();
 		$response = Http::withToken($this->token)->get($url, [

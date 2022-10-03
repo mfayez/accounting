@@ -41,7 +41,7 @@ class GetLLatestInvoices extends Command
      */
     public function handle()
     {
-		$url = env("ETA_URL")."/documents/recent";
+		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/recent";
 		$this->AuthenticateETA2();
 		$response = Http::withToken($this->token)->get($url, [
 			"PageSize" => "100",

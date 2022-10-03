@@ -44,7 +44,28 @@ use Inertia\Inertia;
 //});
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/setup/step1', function () {
+        return Inertia::render('Setup/Step1');
+    })->name('setup.step1');
 
+    Route::get('/setup/step2', function () {
+        return Inertia::render('Setup/Step2');
+    })->name('setup.step2');
+
+    Route::get('/setup/step3', function () {
+        return Inertia::render('Setup/Step3');
+    })->name('setup.step3');
+
+    Route::post('/setup/ping_eta', [ETAController::class, 'pingETA'])->name('setup.ping_eta');
+    Route::get ('/json/settings', [SettingsController::class, 'index_json'])->name("settings.json");
+	Route::post('/json/settings', [SettingsController::class, 'store'])->name("settings.store");
+    Route::resources([
+        'branches' => BranchController::class,
+    ]);
+});
+
+Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function () {
+    
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/dashboard2', function () {
@@ -58,7 +79,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resources([
         'invoices' => InvoiceController::class,
         'customers' => CustomerController::class,
-        'branches' => BranchController::class,
         'items' => ItemController::class,
         'users' => UserController::class,
         'pos' => POSController::class,
@@ -70,9 +90,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/json/customers', [CustomerController::class, 'index_json'])->name("json.customers");
     Route::get('/json/eta/items', [ETAController::class, 'indexItems_json'])->name("json.eta.items");
     
-	Route::get ('/json/settings', [SettingsController::class, 'index_json'])->name("settings.json");
-	Route::post('/json/settings', [SettingsController::class, 'store'])->name("settings.store");
-
     Route::post('/invoice/copy' , [ETAController::class , 'saveCopy'])->name('invoices.copy');
     Route::post('/ETA/Items/Upload', [ETAController::class, 'UploadItem'])->name("eta.items.upload");
     Route::post('/ETA/Items/Sync', [ETAController::class, 'SyncItems'])->name("eta.items.sync");
