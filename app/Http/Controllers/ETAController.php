@@ -414,8 +414,7 @@ class ETAController extends Controller
 
 	public function SyncInvoices(Request $request)
 	{
-		//TODO check if there are no branches
-		$myid = Issuer::first()->issuer_id;
+		$myid = SETTINGS_VAL("Company Settings", "tax_number", "");
 		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/recent";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
@@ -513,7 +512,7 @@ class ETAController extends Controller
 
 	public function SyncItems(Request $request)
 	{
-		$myid = Issuer::first()->issuer_id;
+		$myid = SETTINGS_VAL("Company Settings", "tax_number", "");
 		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/".$request->input("type")."/codes";
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->get($url, [
