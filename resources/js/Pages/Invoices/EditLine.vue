@@ -11,9 +11,9 @@
                     <multiselect
                         v-model="item.item"
                         :options="items"
-                        :label="this.$page.props.locale == 'ar'
-                                ? 'codeNameSecondaryLang'
-                                : 'codeNamePrimaryLang'"
+                        :custom-label="nameWithCode"
+                        label="codeNamePrimaryLang"
+                        track-by="itemCode"
                     	@update:model-value="updateDescription"
                         :placeholder="__('Select item')"
                     />
@@ -372,6 +372,12 @@ export default {
                     }
                 });
             }
+        },
+        nameWithCode ({ codeNamePrimaryLang, codeNameSecondaryLang, itemCode }) {
+            if (this.$page.props.locale == 'ar')
+                return itemCode + ' - ' + codeNameSecondaryLang;
+            else
+                return itemCode + ' - ' +  codeNamePrimaryLang;
         },
     },
     created: function created() {
