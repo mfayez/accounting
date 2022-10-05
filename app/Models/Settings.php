@@ -9,5 +9,5 @@ class Settings extends Model
 {
     protected $table = 'settings';
 
-    protected $fillable = ['name', 'value'];
+    protected $fillable = ['name', 'value', 'type'];
 }
