@@ -41,7 +41,7 @@
                         v-show="tab_idx == 1"
                         class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow"
                     >
-                        <div>
+                        <div class="lg:col-span-2">
                             <jet-label :value="__('Branch')" />
                             <multiselect
                                 v-model="form.issuer"
@@ -51,7 +51,7 @@
                                 :disabled="form.documentType != 'I'"
                             />
                         </div>
-                        <div>
+                        <div class="lg:col-span-2">
                             <jet-label :value="__('Customer')" />
                             <multiselect
                                 v-model="form.receiver"
@@ -59,6 +59,8 @@
                                 :options="customers"
                                 placeholder="Select customer"
                                 :disabled="form.documentType != 'I'"
+                                :custom-label="nameWithId"
+                                track-by="Id"
                             />
                         </div>
                         <div class="lg:col-span-2">
@@ -462,7 +464,10 @@ export default {
                    this.form.documentType == 'C' ? this.__("Credit Note Summary") :
                    this.form.documentType == 'D' ? this.__("Debit Note Summary") : 
                    this.__("Error!!");
-        }
+        },
+        nameWithId ({ name, receiver_id, Id}) {
+            return Id + ' - ' + receiver_id + ' - ' + name;
+        },
     },
     created: function created() {
         axios
