@@ -45,8 +45,14 @@
                     <div class="flex items-center justify-end mt-4">
                         <jet-secondary-button
                             class="me-2"
+                            @click="onDownloadV2"
+                        >
+                            {{ __("Download Summary V2") }}
+                        </jet-secondary-button>
+
+                        <jet-secondary-button
+                            class="me-2"
                             @click="downloadSummary"
-                            :disabled="isDownloadSummaryData"
                         >
                             {{ __("Download Summary") }}
                         </jet-secondary-button>
@@ -188,7 +194,6 @@ export default {
                 startDate: new Date().toISOString().slice(0, 10),
                 endDate: new Date().toISOString().slice(0, 10),
             }),
-            isDownloadSummaryData: true,
         };
     },
     methods: {
@@ -197,7 +202,6 @@ export default {
                 .post(route("reports.summary.details.data"), this.form)
                 .then((response) => {
                     this.data = response.data;
-                    this.isDownloadSummaryData = false;
                 })
                 .catch((error) => {});
         },
@@ -250,6 +254,23 @@ export default {
                     icon: "error",
                 });
             }
+        },
+        onDownloadV2() {
+            axios({
+                url: route("reports.summary.details.download.new"),
+                method: "POST",
+                data: this.form,
+                responseType: "blob",
+            }).then((response) => {
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "report.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            });
         },
     },
     created: function created() {
