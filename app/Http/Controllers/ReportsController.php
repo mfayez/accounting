@@ -54,7 +54,8 @@ class ReportsController extends Controller
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, date(t1.dateTimeIssued) as Date, 
-							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total
+							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total, 
+							t1.Id as LID
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 							inner join Issuer t3 on t3.Id = t1.issuer_id
 							inner join Receiver t4 on t4.Id = t1.receiver_id
@@ -63,7 +64,7 @@ class ReportsController extends Controller
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
-						group by t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount";
+						group by t1.internalID, month(t1.dateTimeIssued), date(t1.dateTimeIssued), t4.name, t1.totalAmount, t1.Id";
 		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		return $data;
 	}

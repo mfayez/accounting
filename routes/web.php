@@ -168,6 +168,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::post('/json/top/receivers', [ChartsController::class, 'topReceivers'])->name("json.top.receivers");
 #pdf stuff
     Route::get('/pdf/invoice/{Id}', [PDFController::class, 'previewInvoice'])->name('pdf.invoice.preview');
+    Route::get('/pdf/invoices/{Ids}', [PDFController::class, 'previewInvoices'])->name('pdf.invoices.preview');
     Route::get('/pdf/invoice/download/{id}', [PDFController::class, 'downloadInvoice'])->name('pdf.invoice.download');
 });
 

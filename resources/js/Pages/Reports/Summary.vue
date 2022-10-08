@@ -42,28 +42,26 @@
                             :itemLabel="__('End Date')"
                         />
                     </div>
-                    <div class="flex items-center justify-end mt-4">
-                        <jet-secondary-button
-                            class="me-2"
-                            @click="onDownloadV2"
-                        >
-                            {{ __("Download Summary V2") }}
-                        </jet-secondary-button>
+                    <div class="flex items-center justify-start mt-4">
+                        <jet-button @click="onShow()">
+                            {{ __("Show") }}
+                        </jet-button>
 
-                        <jet-secondary-button
-                            class="me-2"
-                            @click="downloadSummary"
-                        >
-                            {{ __("Download Summary") }}
-                        </jet-secondary-button>
-
-                        <jet-secondary-button @click="onDownload()">
+                        <jet-secondary-button class="ms-2" @click="onDownload()">
                             {{ __("Download") }}
                         </jet-secondary-button>
 
-                        <jet-button class="ms-2" @click="onShow()">
-                            {{ __("Show") }}
-                        </jet-button>
+                        <jet-secondary-button class="ms-2" @click="downloadSummary">
+                            {{ __("Download Summary") }}
+                        </jet-secondary-button>
+
+                        <jet-secondary-button class="ms-2" @click="onDownloadV2">
+                            {{ __("Download Summary V2") }}
+                        </jet-secondary-button>
+
+                        <jet-secondary-button class="ms-2" @click="onPrint">
+                            {{ __("Print") }}
+                        </jet-secondary-button>
                     </div>
                 </div>
             </div>
@@ -76,6 +74,12 @@
                 >
                     <table class="w-11/12 mx-auto max-w-4xl lg:max-w-full">
                         <thead class="text-center bg-gray-300">
+                            <th
+                                class="bg-[#f8f9fa] p-3 border border-[#eceeef]"
+                            >
+                                <input type="checkbox" v-model="allChecked" v-on:change="checkAll()" />
+                                {{ __("Print") }}
+                            </th>
                             <th
                                 class="bg-[#f8f9fa] p-3 border border-[#eceeef]"
                             >
@@ -113,6 +117,10 @@
                                 v-for="row in data"
                                 :key="row"
                             >
+                                <td class="p-2 border border-[#eceeef]">
+                                    <input type="checkbox" v-model="row.print" v-on:change="updateCheckBoxes()"/>
+                                </td>
+
                                 <td class="p-2 border border-[#eceeef]">
                                     {{ row.Id }}
                                 </td>
@@ -194,6 +202,7 @@ export default {
                 startDate: new Date().toISOString().slice(0, 10),
                 endDate: new Date().toISOString().slice(0, 10),
             }),
+            allChecked: false,
         };
     },
     methods: {
@@ -202,6 +211,10 @@ export default {
                 .post(route("reports.summary.details.data"), this.form)
                 .then((response) => {
                     this.data = response.data;
+                    this.data.forEach((row) => {
+                        row.print = false;
+                    });
+                    this.allChecked = false;
                 })
                 .catch((error) => {});
         },
@@ -271,6 +284,34 @@ export default {
                 document.body.appendChild(link);
                 link.click();
             });
+        },
+        checkAll() {
+            this.$nextTick(() => {
+                this.data.forEach((row) => {
+                    row.print = this.allChecked;
+                });
+            });
+        },
+        updateCheckBoxes() {
+            //next tick
+            this.$nextTick(() => {
+                this.allChecked = this.data.every((row) => row.print);
+            });
+        },
+        onPrint() {
+            let selected = this.data.filter((row) => row.print);
+            let ids = selected.map((row) => row.LID);
+            if (selected.length > 0) {
+                window.open(route("pdf.invoices.preview", ids.join(',')));
+            } else {
+                swal({
+                    title:
+                        document.body.lang == "en"
+                            ? "Please Select At Least One Record"
+                            : "برجاء اختيار فاتورة واحدة على الأقل",
+                    icon: "error",
+                });
+            }
         },
     },
     created: function created() {

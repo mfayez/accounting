@@ -20,6 +20,21 @@ class PDFController extends Controller
         return view('pdf.bill', compact('data'));
     }
 
+    public function previewInvoices($ids)
+    {
+        $ids = explode(',', $ids);
+        $invoices = Invoice::with('issuer')
+            ->with("receiver")
+            ->with("invoiceLines")
+            ->with("invoiceLines.unitValue")
+            ->with("taxTotals")
+            ->with("invoiceLines.taxableItems")
+            ->with('receiver.address')
+            ->whereIn('id', $ids)
+            ->get();
+        return view('pdf.bills', compact('invoices'));
+    }
+
     public function downloadInvoice(int $id, PDF $pdf)
     {
 		$data = Invoice::with('issuer')
