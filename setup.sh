@@ -21,6 +21,9 @@ ln -s $PWD/vendor $1/vendor
 ln -s $PWD/webpack.config.js $1/webpack.config.js
 ln -s $PWD/webpack.mix.js $1/webpack.mix.js
 cp $PWD/env-template $1/.env
+cp -r $PWD/public $1/public
+cp -r $PWD/bootstrap $1/bootstrap
+cp -r $PWD/storage $1/storage
 
 #replace file placeholder with project name
 sed -i "s/P_DBNAME/$2/g" $1/.env
