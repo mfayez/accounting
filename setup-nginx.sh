@@ -8,3 +8,4 @@ sed -i "s*P_LaravelPath*$1*g" /etc/nginx/conf.d/$foldername.conf
 nginx -t
 nginx -s reload
 firewall-cmd --permanent --zone=public --add-port=$2/tcp
+firewall-cmd --reload
