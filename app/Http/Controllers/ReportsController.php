@@ -60,7 +60,6 @@ class ReportsController extends Controller
 							inner join Issuer t3 on t3.Id = t1.issuer_id
 							inner join Receiver t4 on t4.Id = t1.receiver_id
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
-						    left outer join TaxableItem t6 on t6.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
@@ -93,11 +92,9 @@ class ReportsController extends Controller
 						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
-							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount,
-							ifnull(round(sum(t8.amount), 5), 0) as TotalTaxFees
+							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
-							left outer join TaxableItem t8 on t8.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
@@ -195,7 +192,7 @@ class ReportsController extends Controller
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]->UnitValue);
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col["Code"]]->Quantity);
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col["Code"]]->Discount);
-						$file->getActiveSheet()->setCellValue($this->index($colIdx+3,$rowIdx), $row->lines[$col["Code"]]->TotalTaxFees);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+3,$rowIdx), 0);
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+4,$rowIdx), $row->lines[$col["Code"]]->Total);
 					}
 				}
@@ -233,8 +230,9 @@ class ReportsController extends Controller
 		//$endDate    = "2030-10-10";
 		
 		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date_format(t1.dateTimeIssued, '%d/%m/%Y') as Date, 
-							ifnull(sum(t5.amount), 0) as TaxTotal, t4.name as Client, t1.totalSalesAmount as Total, t4.code as Code, t1.totalAmount as TotalAmount,
+							ifnull(sum(case when t5.taxType = 'T4' then 0 else t5.amount end), 0) as TaxTotal, t4.name as Client,
 							ifnull(sum(case when t5.taxType = 'T4' then t5.amount else 0 end), 0) as TaxT4,
+							t1.totalSalesAmount as Total, t4.code as Code, t1.totalAmount as TotalAmount,
 							t1.documentType as docType
 						from Invoice t1  
 							inner join Receiver t4 on t4.Id = t1.receiver_id
@@ -246,12 +244,9 @@ class ReportsController extends Controller
 						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
-							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount,
-							ifnull(round(sum(case t8.taxtype when 'T4' then 0 else  amount end), 5), 0) as TotalTaxFees,
-							ifnull(round(sum(case t8.taxtype when 'T4' then amount else  0 end), 5), 0) as TotalTaxFeesDeducted
+							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
-							left outer join TaxableItem t8 on t8.invoiceline_id = t2.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and t1.dateTimeIssued between ? and DATE_ADD(?, INTERVAL 1 DAY) and t1.status = 'Valid'
