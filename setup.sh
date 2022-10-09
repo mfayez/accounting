@@ -1,6 +1,5 @@
 mkdir $1
 ln -s $PWD/app $1/app
-ln -s $PWD/artisan $1/artisan
 ln -s $PWD/composer.json $1/composer.json
 ln -s $PWD/composer.lock $1/composer.lock
 ln -s $PWD/config $1/config
@@ -20,7 +19,9 @@ ln -s $PWD/tests $1/tests
 ln -s $PWD/vendor $1/vendor
 ln -s $PWD/webpack.config.js $1/webpack.config.js
 ln -s $PWD/webpack.mix.js $1/webpack.mix.js
+
 cp $PWD/env-template $1/.env
+cp $PWD/artisan $1/artisan
 cp -r $PWD/public $1/public
 cp -r $PWD/bootstrap $1/bootstrap
 cp -r $PWD/storage $1/storage
@@ -31,6 +32,8 @@ sed -i "s/P_DBUSER/$3/g" $1/.env
 sed -i "s/P_DBPASSWORD/$4/g" $1/.env
 
 cd $1
+php artisan key:generate
+php artisan link:storage
 php artisan migrate
 php artisan db:seed
 php artisan route:cache
