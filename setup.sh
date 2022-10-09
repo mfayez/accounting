@@ -37,3 +37,5 @@ php artisan link:storage
 php artisan migrate:fresh
 php artisan db:seed
 php artisan route:cache
+
+$1/fix.sh
