@@ -349,12 +349,12 @@ class ReportsController extends Controller
 			$rowIdx++;
 		}
 		//set bordres for all cells in active worksheet
-		$file->getActiveSheet()->getStyle($this->index(2,3).':'.$this->index(8+count($items)*3,$rowIdx-1))
+		$file->getActiveSheet()->getStyle($this->index(2,3).':'.$this->index(10+count($items)*3,$rowIdx-1))
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 		//set auto filter
-		$file->getActiveSheet()->setAutoFilter($this->index(2,4).':'.$this->index(8+count($items)*3,$rowIdx));
+		$file->getActiveSheet()->setAutoFilter($this->index(1,3).':'.$this->index(10+count($items)*3,$rowIdx));
 		//set column width
 		//TODO MFayez
 		//$file->getActiveSheet()->getColumnDimension('A')->setWidth(5);
