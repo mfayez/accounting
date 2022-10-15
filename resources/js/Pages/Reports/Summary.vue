@@ -33,12 +33,12 @@
                         </div>
                         <TextField
                             v-model="form.startDate"
-                            itemType="date"
+                            itemType="datetime-local"
                             :itemLabel="__('Start Date')"
                         />
                         <TextField
                             v-model="form.endDate"
-                            itemType="date"
+                            itemType="datetime-local"
                             :itemLabel="__('End Date')"
                         />
                     </div>
@@ -199,8 +199,8 @@ export default {
             form: this.$inertia.form({
                 issuer: "",
                 receiver: "",
-                startDate: new Date().toISOString().slice(0, 10),
-                endDate: new Date().toISOString().slice(0, 10),
+                startDate: new Date().toISOString().slice(0, 16),
+                endDate: new Date().toISOString().slice(0, 16),
             }),
             allChecked: false,
         };
