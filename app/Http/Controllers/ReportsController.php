@@ -91,14 +91,14 @@ class ReportsController extends Controller
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
 						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
-		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
+		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
-						group by t1.Id, t2.description, t2.itemCode";
+						group by t1.Id, trim(t2.description), t2.itemCode";
 		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$items = array();
 		foreach($data2 as $invLine)
@@ -243,14 +243,14 @@ class ReportsController extends Controller
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
 						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
-		$strSqlStmt2 = "select t1.Id as InvKey, t2.description as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
+		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
 							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
-						group by t1.Id, t2.description, t2.itemCode";
+						group by t1.Id, trim(t2.description), t2.itemCode";
 		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$items = array();
 		foreach($data2 as $invLine)
