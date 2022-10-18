@@ -735,6 +735,13 @@ class ETAController extends Controller
     {
 		return ETAItem::all()->toArray();
 	}
+
+	public function indexVendors_json()
+	{
+		$strSqlStmt1 = "select distinct issuerId as id, issuerName as name from ETAInvoices;";
+		$data = DB::select($strSqlStmt1);
+		return $data;
+	}
 	
 	public function UpdateInvoices(){
 		$urlbase = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/documents/%s/raw";

@@ -8,12 +8,25 @@
                     </h4>
                 </div>
                 <div class="bg-white shadow-xl sm:rounded-lg px-4 pb-4 pt-4">
-					<div class="grid lg:grid-cols-2 gap-4 sm:grid-cols-1 h-1/2 overflow">
+					<div class="grid lg:grid-cols-3 gap-4 sm:grid-cols-1 h-1/2 overflow">
+                        <div>
+                            <jet-label :value="__('Vendor')" />
+                            <multiselect
+                                v-model="form.vendor"
+                                label="name"
+                                :options="vendors"
+                                placeholder="Select vendor"
+                            />
+                        </div>
 						<TextField v-model="form.startDate" itemType="date" :itemLabel="__('Start Date')" />
 						<TextField v-model="form.endDate"   itemType="date" :itemLabel="__('End Date')" />
 					</div>
 					<div class="flex items-center justify-end mt-4">
-			    		<jet-secondary-button @click="onDownload()">
+			    		<jet-secondary-button @click="onDownloadSummary()">
+   							{{__('Download Summary')}}
+        				</jet-secondary-button>
+
+                        <jet-secondary-button class="ms-2" @click="onDownload()">
    							{{__('Download')}}
         				</jet-secondary-button>
 	
@@ -132,6 +145,7 @@
             return {
 				data: [],
 				errors: [],
+                vendors: [],
                 form: this.$inertia.form({
 					startDate: new Date().toISOString().slice(0, 10),
 					endDate: new Date().toISOString().slice(0, 10),
@@ -162,8 +176,33 @@
 					link.click();
 				});
 			},
+            onDownloadSummary: function() {
+				axios({
+					url: route('reports.summary.purchase.download2'), 
+					method: 'POST',
+					data: this.form,
+					responseType: 'blob',
+				}).then((response) => {
+					const url = window.URL.createObjectURL(new Blob([response.data]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'report.xlsx');
+					document.body.appendChild(link);
+					link.click();
+				});
+			},
 		},
 		created: function created() {
+            axios
+            .get(route("json.eta.vendors"))
+            .then((response) => {
+                var temp = [{ id: -1, name: "All" }];
+                this.vendors = temp.concat(response.data);
+                this.form.vendor = this.vendors[0];
+            })
+            .catch((error) => {
+                console.log(error);
+            });
 		}
     }
 </script>

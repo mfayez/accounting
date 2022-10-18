@@ -18,7 +18,7 @@ class ETAInvoice extends \Illuminate\Database\Eloquent\Model
     protected $fillable = ['uuid', 'submissionUUID', 'longId', 'internalId', 'typeName', 'typeVersionName', 'issuerId',
         'issuerName', 'receiverId', 'receiverName', 'dateTimeIssued', 'dateTimeReceived', 'totalSales', 'totalDiscount',
         'netAmount', 'total', 'cancelRequestDate', 'rejectRequestDate', 'cancelRequestDelayedDate', 'rejectRequestDelayedDate',
-        'declineCancelRequestDate', 'declineRejectRequestDate', 'status', 'createdByUserId', 'receiver_id', 'reviewer', 'comment'];
+        'declineCancelRequestDate', 'declineRejectRequestDate', 'status', 'createdByUserId', 'receiver_id', 'reviewer', 'comment', 'document'];
 
     public function getDates()
     {

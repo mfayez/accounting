@@ -376,11 +376,14 @@ class ReportsController extends Controller
 	{
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$vendorId	= $request->input('vendor')['id'];
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, CAST(t1.dateTimeIssued as date) as Date, 
 							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
 						from ETAInvoices t1 
-						where CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'";
-		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
+						where (issuerId = ? or ? = -1) 
+						and CAST(t1.dateTimeIssued as date) between ? and ? 
+						and t1.status = 'Valid'";
+		$data = DB::select($strSqlStmt1, [$vendorId, $vendorId, $startDate, $endDate]);
 		return $data;
 	}
 	
@@ -388,11 +391,14 @@ class ReportsController extends Controller
 	{
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$vendorId	= $request->input('vendor')['id'];
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, CAST(t1.dateTimeIssued as date) as Date, 
 							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
 						from ETAInvoices t1 
-						where CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'";
-		$data = DB::select($strSqlStmt1, [$startDate, $endDate]);
+						where (issuerId = ? or ? = -1) 
+						and CAST(t1.dateTimeIssued as date) between ? and ? 
+						and t1.status = 'Valid'";
+		$data = DB::select($strSqlStmt1, [$vendorId, $vendorId, $startDate, $endDate]);
 		
 		//render excel file now
 		$reader = IOFactory::createReader('Xlsx');
@@ -408,6 +414,170 @@ class ReportsController extends Controller
 			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->Total);
 			$rowIdx++;
 		}
+		$writer = IOFactory::createWriter($file, 'Xlsx');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+	}
+
+	public function purchaseDownloadSummary(Request $request)
+	{
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$vendorId	= $request->input('vendor')['id'];
+		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date_format(t1.dateTimeIssued, '%d/%m/%Y') as Date, 
+							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Total, t1.total as TotalAmount, t1.typeName as docType,
+							t1.document as Document
+						from ETAInvoices t1 
+						where (issuerId = ? or ? = -1) 
+						and CAST(t1.dateTimeIssued as date) between ? and ? 
+						and t1.status = 'Valid'";
+
+		$data = DB::select($strSqlStmt1, [$vendorId, $vendorId, $startDate, $endDate]);
+		$data2 = array();
+		foreach($data as $key=>$row){
+			$data[$key]->T4 = 0;
+			$data[$key]->TX = 0;
+			if(strlen($row->Document) < 10) {
+				continue;
+			}
+			
+			$original_doc = json_decode($row->Document);
+			if (!$original_doc)
+				continue;
+			
+			//find tax types and add it to the array
+			if(property_exists($original_doc, 'taxTotals')) {
+				$taxItems = $original_doc->taxTotals;
+				foreach($taxItems as $taxItem){
+					if($taxItem->taxType == 'T4')
+					$data[$key]->T4 += $taxItem->amount;
+					else
+					$data[$key]->TX += $taxItem->amount;
+				}
+			}
+
+			//explode invoice lines and add them to data2
+			if(property_exists($original_doc, 'invoiceLines')) {
+				$invoice_lines = $original_doc->invoiceLines;
+				foreach($invoice_lines as $line){
+					array_push($data2, array("InvKey" => $row->InvKey,
+								"Desc" => $line->description,
+								"Code" => $line->itemCode,
+								"Quantity" => $line->quantity,
+								"Total" => $line->salesTotal,
+								"UnitValue" => $line->unitValue->amountEGP,
+								"Discount" => 0));//$line->discount ? $line->discount->amount : 0));
+								//todo mfayez fix discount
+				}
+			}
+		}
+
+		$items = array();
+		foreach($data2 as $invLine)
+			array_push($items, array('Code' => $invLine['Code'], 'Desc' => $invLine['Desc']));
+		//remvoe duplicates from $items
+		$items = array_map("unserialize", array_unique(array_map("serialize", $items)));
+
+		foreach($data as $key=>$val)
+		{
+			$this->mValue = $val->InvKey;
+			$invLines = array_filter($data2, function($v, $k) {
+							    return  $v['InvKey'] == $this->mValue;
+						}, ARRAY_FILTER_USE_BOTH);
+			$data[$key]->lines = array();
+			foreach($invLines as $invLine)
+				$data[$key]->lines[$invLine['Code']] = $invLine;
+		}
+		
+		//render excel file now
+		$reader = IOFactory::createReader('Xlsx');
+		$file = $reader->load('./ExcelTemplates/PurchasesReportNew.xlsx');
+		$colIdx = 11;
+		foreach($items as $col){
+			//merge cells
+			$file->getActiveSheet()->mergeCells($this->index($colIdx,1).':'.$this->index($colIdx+2,1));
+			$file->getActiveSheet()->mergeCells($this->index($colIdx,2).':'.$this->index($colIdx+2,2));
+
+			$file->getActiveSheet()->setCellValue($this->index($colIdx,1), $col["Code"]);
+			$file->getActiveSheet()->setCellValue($this->index($colIdx,2), $col["Desc"]);
+			
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+0,3), "سعر");
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+1,3), "كميه");
+			$file->getActiveSheet()->setCellValue($this->index($colIdx+2,3), "القيمة");
+			
+			$colIdx += 3;
+		}
+		//copy cell format
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(11,2));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(12,2).':'.$this->index(count($items)*3+5,2));
+
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(2,3));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(3,3).':'.$this->index(8+count($items)*5,3));
+		
+		//fill the data
+		$rowIdx = 4;
+		$serial = 1;
+		foreach($data as $row){
+			$file->getActiveSheet()->setCellValue($this->index(1,$rowIdx), $serial++);
+			$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), $row->Id);
+			$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Month);
+			$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $row->Date);
+			$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $row->SellerTaxId);
+			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->Seller);
+			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->TotalAmount);
+			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->T4);
+			$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), $row->TX);
+			$file->getActiveSheet()->setCellValue($this->index(10,$rowIdx), $row->Total);
+
+			if (strtolower($row->docType) == 'i'){
+				//set row color to green
+				$file->getActiveSheet()
+					->getStyle($this->index(1,$rowIdx).':'.$this->index(10+count($items)*3,$rowIdx))
+					->getfill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()
+					->setARGB('FFFFFF');
+			}else if (strtolower($row->docType) == 'c'){
+				//set row color to orange
+				$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(10+count($items)*3,$rowIdx))
+					->getfill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()->setARGB('FF5555');
+			} else {
+				//set row color to red
+				$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(10+count($items)*3,$rowIdx))
+					->getfill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()->setARGB('55FF55');
+			}
+
+			$colIdx = 11;
+			foreach($items as $col){
+				if (array_key_exists($col["Code"], $row->lines)){
+					if ($col["Desc"] ==  $row->lines[$col["Code"]]['Desc']){
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]['UnitValue']);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col["Code"]]['Quantity']);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col["Code"]]['Total']);
+					}
+				}
+				$colIdx += 3;
+			}
+			$rowIdx++;
+
+		}
+		//set bordres for all cells in active worksheet
+		$file->getActiveSheet()->getStyle($this->index(2,3).':'.$this->index(10+count($items)*3,$rowIdx-1))
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+		//set auto filter
+		$file->getActiveSheet()->setAutoFilter($this->index(1,3).':'.$this->index(10+count($items)*3,$rowIdx));
+		//set column width
+		//TODO MFayez
+		//$file->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+
 		$writer = IOFactory::createWriter($file, 'Xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');

@@ -89,6 +89,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::get('/json/branches', [BranchController::class, 'index_json'])->name("json.branches");
     Route::get('/json/customers', [CustomerController::class, 'index_json'])->name("json.customers");
     Route::get('/json/eta/items', [ETAController::class, 'indexItems_json'])->name("json.eta.items");
+    Route::get('/json/eta/vendors', [ETAController::class, 'indexVendors_json'])->name("json.eta.vendors");
     
     Route::post('/invoice/copy' , [ETAController::class , 'saveCopy'])->name('invoices.copy');
     Route::post('/ETA/Items/Upload', [ETAController::class, 'UploadItem'])->name("eta.items.upload");
@@ -128,13 +129,14 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
 #reports, each report should have 3 functions
     Route::get('/reports/summary', [ReportsController::class, 'summary'])->name("reports.summary.details");
     Route::post('/reports/summary/data', [ReportsController::class, 'summaryData'])->name("reports.summary.details.data");
-    Route::post('/reports/summary/download', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
-    Route::post('/reports/summary/download', [ReportsController::class, 'summaryDownloadNew'])->name("reports.summary.details.download.new");
+    Route::post('/reports/summary/download1', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
+    Route::post('/reports/summary/download2', [ReportsController::class, 'summaryDownloadNew'])->name("reports.summary.details.download.new");
     Route::post('/reports/summaryOnly/download', [ReportsController::class, 'summaryOnlyData'])->name("reports.summary.summaryOnlyData.download");
 
     Route::get('/reports/purchase', [ReportsController::class, 'purchase'])->name("reports.summary.purchase");
     Route::post('/reports/purchase/data', [ReportsController::class, 'purchaseData'])->name("reports.summary.purchase.data");
-    Route::post('/reports/purchase/download', [ReportsController::class, 'purchaseDownload'])->name("reports.summary.purchase.download");
+    Route::post('/reports/purchase/download1', [ReportsController::class, 'purchaseDownload'])->name("reports.summary.purchase.download");
+    Route::post('/reports/purchase/download2', [ReportsController::class, 'purchaseDownloadSummary'])->name("reports.summary.purchase.download2");
 
     Route::get('/reports/branches/sales', [ReportsController::class, 'branchesSales'])->name("reports.branches.sales");
     Route::post('/reports/branches/sales/data', [ReportsController::class, 'branchesSalesData'])->name("reports.branches.sales.data");

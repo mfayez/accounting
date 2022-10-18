@@ -276,5 +276,6 @@
 	"Wrong buyer details": "بيانات المشتري خاطئة",
 	"Wrong invoice details": "بيانات الفاتورة خاطئة",
 	"Rejected": "مرفوضة",
-	"Select cancelation reason": "أختار سبب الإلغاء"
+	"Select cancelation reason": "أختار سبب الإلغاء",
+	"Vendor": "المورد"
 }
