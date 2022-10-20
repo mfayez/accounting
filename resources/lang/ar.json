@@ -277,5 +277,6 @@
 	"Wrong invoice details": "بيانات الفاتورة خاطئة",
 	"Rejected": "مرفوضة",
 	"Select cancelation reason": "أختار سبب الإلغاء",
-	"Vendor": "المورد"
+	"Vendor": "المورد",
+	"Archive": "أرشيف"
 }

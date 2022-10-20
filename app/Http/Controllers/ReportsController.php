@@ -378,7 +378,8 @@ class ReportsController extends Controller
 		$endDate    = $request->input('endDate');
 		$vendorId	= $request->input('vendor')['id'];
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, CAST(t1.dateTimeIssued as date) as Date, 
-							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total
+							t1.issuerName as Seller, t1.issuerId as SellerTaxId, t1.totalSales as Sales, t1.netAmount as Net, t1.total as Total,
+							t1.Id as LID
 						from ETAInvoices t1 
 						where (issuerId = ? or ? = -1) 
 						and CAST(t1.dateTimeIssued as date) between ? and ? 
