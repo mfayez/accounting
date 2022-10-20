@@ -185,6 +185,7 @@ import JetLabel from "@/Jetstream/Label";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import swal from "sweetalert";
 
 export default {
     components: {
@@ -208,6 +209,7 @@ export default {
     data() {
         return {
             errors: [],
+            old_id: "",
             form: this.$inertia.form({
                 name: "",
                 type: "B",
@@ -229,7 +231,9 @@ export default {
     methods: {
         submit() {
             const form = new FormData();
-            form.append("branchLogo", this.form.branchLogo);
+            if (this.form.branchLogo) {
+                form.append("branchLogo", this.form.branchLogo);
+            }
             form.append("name", this.form.name);
             form.append("issuer_id", this.form.issuer_id);
             form.append("type", this.form.type);
@@ -248,30 +252,61 @@ export default {
                 this.form.address.additionalInformation
             );
 
-            axios
-                .post(route("branches.store"), form, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                })
-                .then((response) => {
-                    this.form.processing = false;
-                    swal({
-                        title: "تم الحفظ بنجاح",
-                        text: "سيتم تحويلك الى البرنامج الأن",
-                        icon: "success",
-                        button: "موافق",
-                    }).then(() => {
+            if (this.old_id){
+                form.append("_method", "PUT");
+                axios
+                    .post(route("branches.update", { branch: this.old_id }),
+                        form,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    )
+                    .then((response) => {
                         this.form.processing = false;
-                        this.$inertia.visit(route("dashboard"));
+                        swal({
+                            title: "تم الحفظ بنجاح",
+                            text: "سيتم تحويلك الى البرنامج الأن",
+                            icon: "success",
+                            button: "موافق",
+                        }).then(() => {
+                            this.form.processing = false;
+                            this.$inertia.visit(route("dashboard"));
+                        });
+                    })
+                    .catch((error) => {
+                        this.form.processing = false;
+                        this.$page.props.errors = error.response.data.errors;
+                        this.errors = error.response.data.errors; //.password[0];
+                        //this.$refs.password.focus()
                     });
-                })
-                .catch((error) => {
-                    this.form.processing = false;
-                    this.$page.props.errors = error.response.data.errors;
-                    this.errors = error.response.data.errors; //.password[0];
-                    //this.$refs.password.focus()
-                });
+            } else {
+                axios
+                    .post(route("branches.store"), form, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    })
+                    .then((response) => {
+                        this.form.processing = false;
+                        swal({
+                            title: "تم الحفظ بنجاح",
+                            text: "سيتم تحويلك الى البرنامج الأن",
+                            icon: "success",
+                            button: "موافق",
+                        }).then(() => {
+                            this.form.processing = false;
+                            this.$inertia.visit(route("dashboard"));
+                        });
+                    })
+                    .catch((error) => {
+                        this.form.processing = false;
+                        this.$page.props.errors = error.response.data.errors;
+                        this.errors = error.response.data.errors; //.password[0];
+                        //this.$refs.password.focus()
+                    });
+            }
         },
         goBack() {
             window.location.href = route("setup.step2");
@@ -290,6 +325,23 @@ export default {
             .then(response => {
                 this.form.name = response.data.company_name;
                 this.form.issuer_id = response.data.tax_number;                
+            }).catch(error => {
+            });
+        axios.get(route('json.branches'))
+            .then(response => {
+                this.old_id = response.data[0].Id;
+                this.form.name = response.data[0].name;
+                this.form.issuer_id = response.data[0].issuer_id;
+                this.form.address.branchID = response.data[0].address.branchID;
+                this.form.address.country = response.data[0].address.country;
+                this.form.address.governate = response.data[0].address.governate;
+                this.form.address.regionCity = response.data[0].address.regionCity;
+                this.form.address.street = response.data[0].address.street;
+                this.form.address.buildingNumber =
+                    response.data[0].address.buildingNumber;
+                this.form.address.postalCode = response.data[0].address.postalCode;
+                this.form.address.additionalInformation =
+                    response.data[0].address.additionalInformation;
             }).catch(error => {
             });
     },

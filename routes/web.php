@@ -90,6 +90,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::get('/json/customers', [CustomerController::class, 'index_json'])->name("json.customers");
     Route::get('/json/eta/items', [ETAController::class, 'indexItems_json'])->name("json.eta.items");
     Route::get('/json/eta/vendors', [ETAController::class, 'indexVendors_json'])->name("json.eta.vendors");
+    Route::get('/json/ActivityCodes.json', [SettingsController::class, 'indexActivityCodes_json'])->name("json.eta.activityCodes");
     
     Route::post('/invoice/copy' , [ETAController::class , 'saveCopy'])->name('invoices.copy');
     Route::post('/ETA/Items/Upload', [ETAController::class, 'UploadItem'])->name("eta.items.upload");

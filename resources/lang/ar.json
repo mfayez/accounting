@@ -278,5 +278,7 @@
 	"Rejected": "مرفوضة",
 	"Select cancelation reason": "أختار سبب الإلغاء",
 	"Vendor": "المورد",
-	"Archive": "أرشيف"
+	"Archive": "أرشيف",
+	"Company Activity": "نشاط الشركة",
+	"Select Company Activities": "أختار نشاط الشركة"
 }

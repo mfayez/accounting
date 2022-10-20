@@ -46,6 +46,19 @@
                     <input-error :message="form.errors.tax_number" />
                 </div>
 
+                <div class="mt-4">
+                    <jet-label :value="__('Company Activity')" />
+                    <multiselect
+                        v-model="form.activities"
+                        :options="activities"
+                        :custom-label="nameWithCode"
+                        label="Desc_ar"
+                        track-by="code"
+                        :placeholder="__('Select Company Activities')"
+                        :multiple="true"
+                    />
+                </div>
+
                 <div class="mt-8 flex justify justify-between">
                     <button
                         class="w-1/3 px-4 py-2 my-4 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
@@ -69,21 +82,29 @@
     </div>
 </template>
 
+<style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
+
 <script>
 import InputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
+import Multiselect from "@suadelabs/vue3-multiselect";
 import swal from "sweetalert";
 
 export default {
     components: {
         InputError,
+        JetLabel,
+        Multiselect,
     },
     props: {},
     data() {
         return {
+            activities: [],
             form: this.$inertia.form({
                 type: 'Company Settings',
                 company_name: "",
                 tax_number: "",
+                activities: []
             }),
         };
     },
@@ -111,6 +132,9 @@ export default {
         goBack() {
             window.location.href = route("setup.step1");
         },
+        nameWithCode ({ Desc_ar, code }) {
+            return code + ' - ' + Desc_ar;
+        },
     },
     computed: {
         formIsProcessing() {
@@ -119,10 +143,24 @@ export default {
     },
     created() {
         this.form.reset("type", "Company Settings");
+        axios
+            .get("/json/ActivityCodesAll.json")
+            .then((response) => {
+                this.activities = response.data;
+                this.form.activities = this.form.activities;
+            })
+            .catch((error) => {});
+        axios
+            .get("/json/ActivityCodes.json")
+            .then((response) => {
+                this.form.activities =  response.data;
+            })
+            .catch((error) => {});
         axios.get(route('settings.json'), { params: { type: this.form.type} })
             .then(response => {
                 this.form.company_name = response.data.company_name;
-                this.form.tax_number = response.data.tax_number;                
+                this.form.tax_number = response.data.tax_number; 
+                
             }).catch(error => {
             });
     },
