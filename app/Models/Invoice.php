@@ -117,20 +117,17 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
 		left outer join (
 			select
 				invoice_id,
-				sum(amount) as amount
+				sum( case when taxType = 'T4' then -amount else amount end) as amount
 			from
 				TaxTotal
-			WHERE
-				DATE(created_at) >= :from
-				AND DATE(created_at) <= :to
 			group by
 				invoice_id
 		) t2 on t1.Id = t2.invoice_id
 	WHERE
-		DATE(t1.created_at) >= :from2
-		AND DATE(t1.created_at) <= :to2
+		DATE(t1.dateTimeIssued) >= :from
+		AND DATE(t1.dateTimeIssued) <= :to
 	group by
-		Status", ['from' => $from, 'to' => $to, 'from2' => $from, 'to2' => $to]);
+		Status", ['from' => $from, 'to' => $to]);
     }
 
 }
