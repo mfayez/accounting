@@ -37,9 +37,9 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 
 Route::middleware('auth:sanctum')->get('/configurations', function (Request $request) {
     $temp = [
-		"client_id" => SETTINGS_VAL('ETA Settings', 'client_id', '');
-        "client_secret" = SETTINGS_VAL('ETA Settings', 'client_secret1', '');
-    	"production" => strpos(SETTINGS_VAL("ETA Settings", "login_url", "https://id.eta.gov.eg/connect/token"), "preprod") > 1 ? False : True,
+		"client_id" => SETTINGS_VAL('ETA Settings', 'client_id', ''),
+        "client_secret" = SETTINGS_VAL('ETA Settings', 'client_secret1', ''),
+    	"production" => strpos(SETTINGS_VAL("ETA Settings", "login_url", "https://id.eta.gov.eg/connect/token"), "preprod") > 1 ? False : True
 	];
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
