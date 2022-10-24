@@ -173,7 +173,10 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::get('/pdf/invoice/{Id}', [PDFController::class, 'previewInvoice'])->name('pdf.invoice.preview');
     Route::get('/pdf/invoices/{Ids}', [PDFController::class, 'previewInvoices'])->name('pdf.invoices.preview');
     Route::get('/pdf/invoice/download/{id}', [PDFController::class, 'downloadInvoice'])->name('pdf.invoice.download');
+    
     Route::get('/reports/branches/purchases/{Ids}', [ETAInvoiceController::class, 'branchesPurchases'])->name("pdf.purchases");
+    Route::get('/reports/zip/invoices/{Ids}', [ETAInvoiceController::class, 'archiveInvoices'])->name("zip.invoices");
+    
 });
 
 Route::middleware(['web'])->group(function () {

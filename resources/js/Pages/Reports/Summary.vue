@@ -62,6 +62,10 @@
                         <jet-secondary-button class="ms-2" @click="onPrint">
                             {{ __("Print") }}
                         </jet-secondary-button>
+
+                        <jet-secondary-button class="ms-2" @click="onArchive">
+                            {{ __("Archive") }}
+                        </jet-secondary-button>
                     </div>
                 </div>
             </div>
@@ -78,7 +82,7 @@
                                 class="bg-[#f8f9fa] p-3 border border-[#eceeef]"
                             >
                                 <input type="checkbox" v-model="allChecked" v-on:change="checkAll()" />
-                                {{ __("Print") }}
+                                {{ __("Select All") }}
                             </th>
                             <th
                                 class="bg-[#f8f9fa] p-3 border border-[#eceeef]"
@@ -303,6 +307,21 @@ export default {
             let ids = selected.map((row) => row.LID);
             if (selected.length > 0) {
                 window.open(route("pdf.invoices.preview", ids.join(',')));
+            } else {
+                swal({
+                    title:
+                        document.body.lang == "en"
+                            ? "Please Select At Least One Record"
+                            : "برجاء اختيار فاتورة واحدة على الأقل",
+                    icon: "error",
+                });
+            }
+        },
+        onArchive() {
+            let selected = this.data.filter((row) => row.print);
+            let ids = selected.map((row) => row.LID);
+            if (selected.length > 0) {
+                window.open(route("zip.invoices", ids.join(',')));
             } else {
                 swal({
                     title:

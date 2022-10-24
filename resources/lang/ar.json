@@ -280,5 +280,7 @@
 	"Vendor": "المورد",
 	"Archive": "أرشيف",
 	"Company Activity": "نشاط الشركة",
-	"Select Company Activities": "أختار نشاط الشركة"
+	"Select Company Activities": "أختار نشاط الشركة",
+	"Selected": "مختار",
+	"Select All": "أختار الكل"
 }
