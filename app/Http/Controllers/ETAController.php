@@ -802,6 +802,12 @@ class ETAController extends Controller
 		$invoice->reviewer = "";
 		$invoice->comment = "";
 		//$invoice->statusreason = $errors;
+		//check if $invoice->document is valid json
+		//		check if $invoice->document is valid xml format
+		//			if yes, then save it
+		if (json_decode($invoice->document) == null) {
+			$invoice->document = "{}";
+		}
 		$invoice->save();
 		/*
 		foreach($document->invoiceLines as $line) {
