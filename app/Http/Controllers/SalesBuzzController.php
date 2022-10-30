@@ -131,7 +131,10 @@ class SalesBuzzController extends Controller
 		$invoice->totalItemsDiscountAmount = 0;
 		$invoice->status = "In Review";	
 		$invoice->internalID = $sb_invoice['OrderID'];
-		$invoice->dateTimeIssued = Carbon::createFromTimestamp(substr($sb_invoice['InvoiceDate'], 6, -7));
+		if (strlen($sb_invoice['InvoiceDate']) > 15)
+			$invoice->dateTimeIssued = Carbon::createFromTimestamp(substr($sb_invoice['InvoiceDate'], 6, 10));
+		else
+			$invoice->dateTimeIssued = Carbon::now()->toDateString();
 		$invoice->taxpayerActivityCode = $activity;
 		$invoice->save();
 
