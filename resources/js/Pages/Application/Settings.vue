@@ -18,6 +18,10 @@
 						<jet-label for="automatic" :value="__('Activate E-Receipt')" class="ms-2"/>
 					</div>
 					<div class="col-span-2">
+                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.sales_buzz" />
+						<jet-label for="automatic" :value="__('Activate Sales Buz Integration')" class="ms-2"/>
+					</div>
+					<div class="col-span-2">
                         <jet-checkbox name="custom_desc" id="custom_desc" v-model:checked="form.custom_desc" />
 						<jet-label for="custom_desc" :value="__('Allow Custom Items Description')" class="ms-2"/>
 					</div>
@@ -99,6 +103,7 @@
                     automatic: false,
 					e_invoice: true,
 					e_receipt: false,
+					sales_buzz: false,
 					invoiceTemplate: '',
 					invoiceVersion: '1.0'
                 }),
@@ -119,6 +124,7 @@
 						this.form.custom_desc = this.settings.custom_desc == '1' ? true : false;
 						this.form.e_invoice = this.settings.e_invoice == '1' ? true : false;
 						this.form.e_receipt = this.settings.e_receipt == '1' ? true : false;
+						this.form.sales_buzz = this.settings.sales_buzz == '1' ? true : false;
         		    }).catch(error => {
             		});
 			},

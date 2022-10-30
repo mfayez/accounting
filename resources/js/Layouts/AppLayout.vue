@@ -17,6 +17,8 @@
         <archive-request-dialog2 ref="dlg12" />
         <nav-bar @open_dlg="openDlg" />
         <archive-request-dialog2 ref="dlg12" />
+        <sb-load-invoices-dialog ref="dlg13" />
+        <sb-items-map-dialog ref="dlg14" />
 
         <div class="min-h-screen bg-gray-100 pb-5">
             <main>
@@ -46,6 +48,8 @@ import ArchiveRequestDialog from "@/Pages/Archives/Request";
 import AddPos from "@/Pages/POS/Add.vue";
 import LoadReceipts from "@/Pages/Receipts/Load";
 import UploadReceipts from "@/Pages/Receipts/Upload";
+import SbLoadInvoicesDialog from "@/Pages/SalesBuzz/Load"
+import SbItemsMapDialog from "@/Pages/SalesBuzz/ItemsMap"
 import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
@@ -68,6 +72,8 @@ export default {
         LoadInvoicesDialog,
 		SettingsDialog1,
 		SettingsDialog2,
+        SbLoadInvoicesDialog,
+        SbItemsMapDialog,
         NavBar,
         AppFooter,
         FlashMessage,

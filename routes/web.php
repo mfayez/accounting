@@ -17,6 +17,7 @@ use App\Http\Controllers\ETAArchiveController;
 use App\Http\Controllers\ETAInvoiceController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\SalesBuzzController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -176,6 +177,11 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     
     Route::get('/reports/branches/purchases/{Ids}', [ETAInvoiceController::class, 'branchesPurchases'])->name("pdf.purchases");
     Route::get('/reports/zip/invoices/{Ids}', [ETAInvoiceController::class, 'archiveInvoices'])->name("zip.invoices");
+
+#salesbuzz stuff
+    Route::get('/sb/items/map', [SalesBuzzController::class, 'indexMap'])->name("sb.map.index");
+    Route::post('/sb/items/map/upload', [SalesBuzzController::class, 'UploadItemsMap'])->name("sb.items.map.upload");
+    Route::post('/sb/sync_orders', [SalesBuzzController::class, 'syncSalesOrders'])->name("sb.sync_orders");
     
 });
 

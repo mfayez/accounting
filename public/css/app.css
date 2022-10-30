@@ -4108,6 +4108,10 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 		grid-column: span 1 / span 1;
 	}
 
+	.lg\:col-span-3 {
+		grid-column: span 3 / span 3;
+	}
+
 	.lg\:-mx-6 {
 		margin-left: -1.5rem;
 		margin-right: -1.5rem;

@@ -337,6 +337,48 @@
                                 </dropdown-link>
                             </template>
                         </dropdown>
+
+                        <dropdown
+                            :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.sales_buzz_enabled"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': invoiceConditions,
+                                    }"
+                                >
+                                    <i class="fa fa-file"></i>
+                                    {{ __("Sales Buzz") }}
+                                </span>
+                            </template>
+
+                            <template #content>
+                                <dropdown-link
+                                    :href="route('sb.map.index')"
+                                >
+                                    {{ __("Show Items Map") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('dlg14')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Items Map") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('dlg13')"
+                                    href="#"
+                                >
+                                    {{ __("Load Invoices from Sales Buzz") }}
+                                </dropdown-link>
+                            </template>
+                        </dropdown>
+
                         <dropdown
                             :align="alignDropDown()"
                             width="48"
