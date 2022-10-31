@@ -79,19 +79,41 @@ class SalesBuzzController extends Controller
                     ->get($url);
 		
 		$sb_data = $response->json();
+		
 		$activity = $data['taxpayerActivityCode']['code'];
 		$issuer = $data['issuer']['Id'];
 
+		$date1 = Carbon::now();
 		foreach($sb_data["GetAR_OrderResult"]["RootResults"] as $invoice) {
+			if ($invoice['ItemsTotal'] < 0 || $invoice['OrderStatus'] != 4)
+				continue;
+				
 			$invoice_lines = collect($sb_data["GetAR_OrderResult"]["IncludedResults"])->where("OrderID", $invoice["OrderID"]);
 			$invoice2 = Invoice::firstWhere(['internalID' => $invoice['OrderID']]);
-			if (!$invoice2)
-				$this->AddMissingInvoice($invoice, $invoice_lines, $issuer, $activity);
+			if ($invoice2 && $invoice2->status != "Valid")
+			{
+				//remove all invoice attributes, and re-create
+				foreach($invoice2->invoiceLines as $line) {
+					$line->discount()->delete();
+					$line->taxableItems()->delete();
+					$line->delete();
+					$line->unitValue()->delete();
+				}
+				$invoice2->taxTotals()->delete();
+				$invoice2->delete();
+				$invoice2 = $this->AddMissingInvoice($invoice, $invoice_lines, $issuer, $activity);
+			}
+			else if (!$invoice2)
+			{
+				$invoice2 = $this->AddMissingInvoice($invoice, $invoice_lines, $issuer, $activity);
+			}
+			if ($invoice2->dateTimeIssued < $date1)
+				$date1 = $invoice2->dateTimeIssued;
 		}
 
 		return ["totalPages" => min($data['value'] + 1, 100),
 				"currentPage" => $data['value'],
-				"cookie" => $this->salezbuzz_cookies
+				"lastDate" => $date1,
 			];	
 	}
 	
@@ -105,7 +127,7 @@ class SalesBuzzController extends Controller
 			$item2->country = "EG";
 			$item2->governate = "Cairo";
 			$item2->regionCity = $sb_invoice['DeliveryAddress'];
-			$item2->street = "";
+			$item2->street = $sb_invoice['DeliveryAddress'];;
 			$item2->buildingNumber = "1";
 			$item2->postalCode = "12345";
 			$item2->save();
@@ -179,6 +201,7 @@ class SalesBuzzController extends Controller
 
 		$invoice->normalize();
 		$invoice->save();
+		return $invoice;
 	}
 
 	public function UploadItemsMap(Request $request)

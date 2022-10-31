@@ -71,17 +71,8 @@
                         placeholder="Select activity"
                     />
                 </div>
-                <div class="lg:col-span-3">
-                    <jet-label :value="__('Synchronization Period')" />
-                    <select
-                        id="period"
-                        v-model="form.period"
-                        class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
-                    >
-                        <option value="7">{{ __("Current Week") }}</option>
-                        <option value="30">{{ __("Current Month") }}</option>
-                        <option value="90">{{ __("Last Three Months") }}</option>
-                    </select>
+                <div class="lg:col-span-3 flex justify-center">
+                    <jet-label :value="lastDate" />
                 </div>
             </div>
 			<div class="mt-8">
@@ -157,6 +148,7 @@
 					value: 0,
 					maxValue: 100
 				},
+                lastDate: 'N/A',
                 processing: false,
 				form: {
 					value: 0,
@@ -205,6 +197,7 @@
                 axios.post(route('sb.sync_orders'), this.form)
                     .then(response => {
                         this.progress1.maxValue = response.data.totalPages;
+                        this.lastDate = response.data.lastDate;
                         this.progress1.value  = this.progress1.value + 1;
                         if (this.progress1.value < this.progress1.maxValue)
                             this.$nextTick(() => this.LoadSB());
