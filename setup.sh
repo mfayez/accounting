@@ -20,6 +20,10 @@ ln -s $PWD/vendor $1/vendor
 ln -s $PWD/webpack.config.js $1/webpack.config.js
 ln -s $PWD/webpack.mix.js $1/webpack.mix.js
 
+cp -r $PWD/public $1/public
+rm -r $1/public/js
+ln -s $PWD/public/js $1/public/js
+
 cp $PWD/env-template $1/.env
 cp $PWD/artisan $1/artisan
 cp -r $PWD/public $1/public
