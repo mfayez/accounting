@@ -4,6 +4,9 @@ server {
     server_name _;
     root        P_LaravelPath/public;
     index       index.php;
+    ssl on;
+    ssl_certificate /root/ssl2/mastersoftids_com.crt;
+    ssl_certificate_key /root/ssl2/mastersoftids.key;
 
     charset utf-8;
     gzip on;

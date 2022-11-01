@@ -37,7 +37,7 @@ sed -i "s/P_DBPASSWORD/$4/g" $1/.env
 
 cd $1
 php artisan key:generate
-php artisan link:storage
+php artisan storage:link
 php artisan migrate:fresh
 php artisan db:seed
 php artisan route:cache
