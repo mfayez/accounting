@@ -88,11 +88,13 @@ class SalesBuzzController extends Controller
 			if ($invoice['OrderStatus'] != 4)
 				continue;
 				
-			$invoice_lines = collect($sb_data["GetAR_OrderResult"]["IncludedResults"])->where("OrderID", $invoice["OrderID"]);
+			$invoice_lines = collect($sb_data["GetAR_OrderResult"]["IncludedResults"])
+							->where("OrderID", $invoice["OrderID"])
+							->where("__type", "AR_OrderLines:#BI.SalesBuzz.BackOffice.Web");
 			$invoice2 = Invoice::firstWhere(['internalID' => $invoice['OrderID']]);
 			if (!$invoice2)// && $invoice2->status != "Valid") //check else part
 			{
-				if ($invoice['CompleteOrderReverse'] == false){
+				//if ($invoice['CompleteOrderReverse'] == false){
 					//remove all invoice attributes, and re-create
 					/*foreach($invoice2->invoiceLines as $line) {
 						$line->discount()->delete();
@@ -103,13 +105,13 @@ class SalesBuzzController extends Controller
 					$invoice2->taxTotals()->delete();
 					$invoice2->delete();*/
 					$invoice2 = $this->AddMissingInvoice($invoice, $invoice_lines, $issuer, $activity);
-				}
-				else
-				{
-					$old_inv = Invoice::firstWhere(['internalID' => $invoice['RefOrder']]);
-					if ($old_inv)
-						$invoice2 = $this->ReverseInvoice($old_inv, $invoice);
-				}
+				//}
+				//else
+				//{
+					//$old_inv = Invoice::firstWhere(['internalID' => $invoice['RefOrder']]);
+					//if ($old_inv)
+					//	$invoice2 = $this->ReverseInvoice($old_inv, $invoice);
+				//}
 			}
 			if ($invoice2)
 				if ($invoice2->dateTimeIssued < $date1)
@@ -120,26 +122,6 @@ class SalesBuzzController extends Controller
 				"currentPage" => $data['value'],
 				"lastDate" => $date1,
 			];	
-	}
-
-	private function ReverseInvoice($old_inv, $sb_invocie)
-	{
-		$new_inv = $old_inv->replicate()
-							->fill(['internalID' => $sb_invocie['OrderID'],
-									'documentType' => 'C',
-									'statusreason' => "تحميل الفاتورة من SalesBuzz",
-		]);
-		$new_inv->save();
-		foreach($old_inv->invoiceLines as $inv_line){
-			$unitValue = $inv_line->unitValue->replicate();
-			$unitValue->save();
-			$inv_line->replicate()
-					 ->fill(['invoice_id' => $new_inv->Id,
-					 		 'unitValue_id' => $unitValue->Id,
-							 'status' => 'In Review'
-					 ])->save();
-		}
-		return $new_inv;
 	}
 	
 	private function AddMissingInvoice($sb_invoice, $sb_invoice_lines, $issuer, $activity)
@@ -168,7 +150,7 @@ class SalesBuzzController extends Controller
 		$invoice->issuer_id = $issuer;
 		$invoice->receiver_id = $receiver->Id;
 		$invoice->statusreason = "تحميل الفاتورة من SalesBuzz";
-		$invoice->documentType = "I";
+		$invoice->documentType = $sb_invoice['CompleteOrderReverse'] == false ? "I" : "C";
 		$invoice->documentTypeVersion = SETTINGS_VAL('application settings', 'invoiceVersion', '1.0');;
 		$invoice->totalDiscountAmount = 0;
 		$invoice->totalSalesAmount = 0;
@@ -189,29 +171,43 @@ class SalesBuzzController extends Controller
 			if (!isset($line['ItemID']))
 				continue;
 			$mapItem = SBItemMap::find($line['ItemID']);
-			if (!$mapItem)
+			if (!$mapItem) {
+				$mapItem = new SBItemMap();
+				$mapItem->SBCode = $line['ItemID'];
+				$mapItem->ItemNameA = $line['ItemNameA'];
+				$mapItem->ItemNameE = $line['ItemNameE'];
+				$mapItem->save();
 				continue;
+			}
+			//if there is not map for this item ignore it
+			if (is_null($mapItem->ETACode))
+				continue;
+				
 			$unitValue = new Value(['currencySold' => "EGP", 
-				'amountEGP' => $line['UnitPrice']
+				'amountEGP' => $line['UnitPrice'] < 0 ? -$line['UnitPrice'] : $line['UnitPrice'],
 			]);
 			$unitValue->save();
 			$invoiceline = new InvoiceLine((array)$line);
 			$invoiceline->description = $line['ItemNameA'];
 			$invoiceline->itemType = "GS1";
 			$invoiceline->itemCode = $mapItem->ETACode;
-			$invoiceline->unitType = "EA";
-			$invoiceline->quantity = $line['Qty'];
+			if ($line["UOM"] == "CTN")
+				$invoiceline->unitType = "CT";
+			else
+				$invoiceline->unitType = "EA";
+			$invoiceline->quantity = $line['Qty'] < 0 ? -$line['Qty'] : $line['Qty'];
 			$invoiceline->internalCode = $line['ItemID'];
-			$invoiceline->salesTotal = $line['LineTotal'];
-			$invoiceline->total = $line['LineTotal'];
+			$invoiceline->salesTotal = $line['LineCost'] < 0 ? -$line['LineCost'] : $line['LineCost'];	//done
+			$invoiceline->netTotal = $line['LineCost'] < 0 ? -$line['LineCost'] : $line['LineCost'];	//done
+			$invoiceline->itemsDiscount = $line["PromotionsTotal"] < 0 ? -$line["PromotionsTotal"] : $line["PromotionsTotal"]; //done
+			$invoiceline->total = $invoiceline->salesTotal - $invoiceline->itemsDiscount;	//done
 			$invoiceline->valueDifference = 0;
 			$invoiceline->totalTaxableFees = 0;
-			$invoiceline->netTotal = $line['LineTotal'];
-			$invoiceline->itemsDiscount = 0;
 			$invoiceline->invoice_id = $invoice->Id;
 			$invoiceline->unitValue_id = $unitValue->Id;
 			$invoiceline->save();
-			/*foreach($line->taxableItems as $taxitem) {
+
+            /*foreach($line->taxableItems as $taxitem) {
 				$item = new TaxableItem((array)$taxitem);
 				$item->invoiceline_id = $invoiceline->Id;
 				$item->save();
@@ -227,6 +223,26 @@ class SalesBuzzController extends Controller
 		$invoice->normalize();
 		$invoice->save();
 		return $invoice;
+	}
+
+	private function ReverseInvoice($old_inv, $sb_invocie)
+	{
+		$new_inv = $old_inv->replicate()
+							->fill(['internalID' => $sb_invocie['OrderID'],
+									'documentType' => 'C',
+									'statusreason' => "تحميل الفاتورة من SalesBuzz",
+		]);
+		$new_inv->save();
+		foreach($old_inv->invoiceLines as $inv_line){
+			$unitValue = $inv_line->unitValue->replicate();
+			$unitValue->save();
+			$inv_line->replicate()
+					 ->fill(['invoice_id' => $new_inv->Id,
+					 		 'unitValue_id' => $unitValue->Id,
+							 'status' => 'In Review'
+					 ])->save();
+		}
+		return $new_inv;
 	}
 
 	public function UploadItemsMap(Request $request)
@@ -275,10 +291,7 @@ class SalesBuzzController extends Controller
         return Inertia::render('SalesBuzz/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
-                'name' => __('Name'),
-                'issuer_id' => __('Tax Registration ID/National ID'),
-            ])->addColumns([
+            $table->addColumns([
                 'SBCode' 	=> __('SalesBuzz Code'),
                 'ETACode' 	=> __('ETA Code'),
                 'ItemNameA' => __('Arabic Name'),
