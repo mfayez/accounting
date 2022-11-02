@@ -135,7 +135,7 @@ class SalesBuzzController extends Controller
 			$item->code = $sb_invoice['CustomerNo'];
 			$item->name = $sb_invoice['CustomerNameA'];
 			$item->receiver_id = "0";
-			$item->type = "B";
+			$item->type = "P";
 			$item2->receiver()->save($item);
 			$receiver = $item;
 		}
