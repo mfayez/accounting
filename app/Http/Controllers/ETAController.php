@@ -632,10 +632,23 @@ class ETAController extends Controller
 		SETTINGS_SET_VAL(Auth::user()->name, "index.issued.columns", json_encode($columns));
 
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
-            $query->where(function ($query) use ($value) {
+			$from = Carbon::parse("2000-01-01")->startOfDay();
+			$to = Carbon::parse("2100-01-01")->endOfDay();
+			try {
+				$from = Carbon::createFromFormat("d/m/Y", $value)->startOfDay();
+				$to = $from->copy()->endOfDay();
+			}
+			catch (\Exception $err) {
+			}
+			
+            $query->where(function ($query) use ($value, $from, $to) {
                 $query->where('totalDiscountAmount', '=', "{$value}")
                     ->orWhere('netAmount', '=', "{$value}")
-                    ->orWhere('internalID', '=', "{$value}");
+                    ->orWhere('internalID', '=', "{$value}")
+					->orWhere(function ($query) use ($from, $to) {
+						$query->where('dateTimeIssued', '>=', "{$from}")
+							->where('dateTimeIssued', '<', "{$to}");
+					});
             });
         });
 
