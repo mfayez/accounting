@@ -47,11 +47,10 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
             $total += $line->total;
             $totalItemsDiscountAmount += $line->itemsDiscount;
         }
-        $this->netAmount = $salesTotal;
-        $this->totalSalesAmount = $salesTotal;
-        $this->totalAmount = $total;
+        $this->netAmount = round($salesTotal, 5);
+        $this->totalSalesAmount = round($salesTotal, 5);
+        $this->totalAmount = round($total, 5);
         $this->totalItemsDiscountAmount = round($totalItemsDiscountAmount, 5);
-        $this->totalItemsDiscountAmount = $totalItemsDiscountAmount;
     }
 
     public function updateTaxTotals()
