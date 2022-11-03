@@ -50,7 +50,8 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
         $this->netAmount = $salesTotal;
         $this->totalSalesAmount = $salesTotal;
         $this->totalAmount = $total;
-        $this->totalItemsDiscountAmount = $totalItemsDiscountAmount;;
+        $this->totalItemsDiscountAmount = round($totalItemsDiscountAmount, 5);
+        $this->totalItemsDiscountAmount = $totalItemsDiscountAmount;
     }
 
     public function updateTaxTotals()
