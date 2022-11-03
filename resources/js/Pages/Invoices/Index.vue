@@ -55,7 +55,7 @@
 											{{ 
                                                 key == 'status' || key == 'statusReason' ? __(rowVals) :
                                                (key == 'dateTimeIssued' || key == 'dateTimeReceived' ? 
-                                                    new Date(rowVals).toLocaleDateString() : 
+                                                    new Date(rowVals).toISOString().slice(0,10) : 
                                                     rowVals
                                                ) 
                                             }}
