@@ -41,13 +41,16 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     {
         $salesTotal = 0;
         $total = 0;
+        $totalItemsDiscountAmount = 0;
         foreach ($this->invoiceLines as $line) {
             $salesTotal += $line->salesTotal;
             $total += $line->total;
+            $totalItemsDiscountAmount += $line->itemsDiscount;
         }
         $this->netAmount = $salesTotal;
         $this->totalSalesAmount = $salesTotal;
         $this->totalAmount = $total;
+        $this->totalItemsDiscountAmount = $totalItemsDiscountAmount;;
     }
 
     public function updateTaxTotals()
