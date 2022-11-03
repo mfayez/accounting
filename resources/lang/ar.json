@@ -301,5 +301,8 @@
 	"SalesBuzz Code": "كود سالز بز",
 	"ETA Code": "كود مصلحة الضرائب",
 	"Arabic Name": "الأسم بالعربية",
-	"English Name": "الأسم بالأنجليزية"
+	"English Name": "الأسم بالأنجليزية",
+	"Bulk Actions": "أجراءات على الأختيار",
+	"Approve Selected": "أعتماد الفواتير الأختيار",
+	"Please select at least one invoice!": "أختار على الأقل فاتورة واحدة!"
 }

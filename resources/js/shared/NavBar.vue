@@ -173,7 +173,7 @@
                                 <span
                                     class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
-                                        'text-[#4099de]': invoiceConditions,
+                                        'text-[#4099de]': receiptConditions,
                                     }"
                                 >
                                     <i class="fa fa-file"></i>
@@ -348,7 +348,7 @@
                                 <span
                                     class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
                                     :class="{
-                                        'text-[#4099de]': invoiceConditions,
+                                        'text-[#4099de]': salesBuzzConditions,
                                     }"
                                 >
                                     <i class="fa fa-file"></i>
@@ -544,6 +544,13 @@ export default {
         },
         itemConditions() {
             return this.$page.url.startsWith("/ETA/Items");
+        },
+        salesBuzzConditions() {
+            return this.$page.url.startsWith("/sb/");
+        },
+        receiptConditions() {
+            return this.$page.url.startsWith("/receipts") ||
+                this.$page.url.startsWith("/ETA/Receipts");
         },
     },
 };

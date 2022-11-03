@@ -1020,11 +1020,22 @@ class ETAController extends Controller
 
 	public function ApproveInvoice(Request $request)
 	{
-		$inv = Invoice::findOrFail($request->input('Id'));
-		$inv->status = 'approved';
-		$inv->statusreason = 'Approved by ' . Auth::user()->name;
-		$inv->save();
-		return "Invoice approved";
+		$counter = 0;
+		$ids = $request->input('Id');
+		if (!is_array($ids))
+			$ids = [$ids];
+		
+        foreach($ids as $id) {
+			$inv = Invoice::findOrFail($id);
+			if ($inv->status == "In Review")
+			{
+				$inv->status = 'approved';
+				$inv->statusreason = 'Approved by ' . Auth::user()->name;
+				$inv->save();
+				$counter++;
+			}
+		}
+		return __("$counter Invoice(s) approved");
 	}
 	
 	public function DeleteInvoice(Request $request)
