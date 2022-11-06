@@ -200,7 +200,7 @@ class SalesBuzzController extends Controller
 			$invoiceline->salesTotal = $line['LineCost'] < 0 ? -$line['LineCost'] : $line['LineCost'];	//done
 			$invoiceline->netTotal = $line['LineCost'] < 0 ? -$line['LineCost'] : $line['LineCost'];	//done
 			$invoiceline->itemsDiscount = $line["PromotionsTotal"] < 0 ? -$line["PromotionsTotal"] : $line["PromotionsTotal"]; //done
-			$invoiceline->total = $invoiceline->salesTotal - $invoiceline->itemsDiscount;	//done
+			$invoiceline->total = $invoiceline->netTotal - $invoiceline->itemsDiscount;	//done
 			$invoiceline->valueDifference = 0;
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->invoice_id = $invoice->Id;
