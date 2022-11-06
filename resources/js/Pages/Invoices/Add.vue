@@ -364,11 +364,11 @@ export default {
                             taxitem.value
                         );
                 }
-                this.form.netAmount = round(this.form.netAmount, 5);
-                this.form.totalAmount = round(this.form.totalAmount, 5);
-                this.form.extraDiscountAmount = round(this.form.extraDiscountAmount, 5);
-                this.form.totalItemsDiscountAmount = round(this.form.totalItemsDiscountAmount, 5);
-                this.form.totalSalesAmount = round(this.form.totalSalesAmount, 5);
+                this.form.netAmount = Math.round(this.form.netAmount * 100000) / 100000;
+                this.form.totalAmount = Math.round(this.form.totalAmount * 100000) / 100000;
+                this.form.extraDiscountAmount = Math.round(this.form.extraDiscountAmount * 100000) / 100000;
+                this.form.totalItemsDiscountAmount = Math.round(this.form.totalItemsDiscountAmount * 100000) / 100000;
+                this.form.totalSalesAmount = Math.round(this.form.totalSalesAmount * 100000) / 100000;
             }
             for (let item of Object.keys(taxTotals))
                 this.form.taxTotals.push({
