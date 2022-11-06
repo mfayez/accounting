@@ -150,7 +150,7 @@ class SalesBuzzController extends Controller
 		$invoice->issuer_id = $issuer;
 		$invoice->receiver_id = $receiver->Id;
 		$invoice->statusreason = "تحميل الفاتورة من SalesBuzz";
-		$invoice->documentType = $sb_invoice['CompleteOrderReverse'] == false ? "I" : "C";
+		$invoice->documentType = $sb_invoice['CompleteOrderReverse'] || $sb_invoice["ReturnReason"] > 0 ? "C" : "I";
 		$invoice->documentTypeVersion = SETTINGS_VAL('application settings', 'invoiceVersion', '1.0');;
 		$invoice->totalDiscountAmount = 0;
 		$invoice->totalSalesAmount = 0;
