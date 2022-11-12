@@ -450,12 +450,12 @@ class ETAController extends Controller
 					{
 						$invoice2->status = $item['status'];
 						//$invoice2->statusreason = $item['documentStatusReason'];
-						$invoice2->cancelRequestDate 		= $this->fixDate(item['cancelRequestDate']);
-						$invoice2->rejectRequestDate 		= $this->fixDate(item['rejectRequestDate']);
-						$invoice2->cancelRequestDelayedDate	= $this->fixDate(item['cancelRequestDelayedDate']);
-						$invoice2->rejectRequestDelayedDate	= $this->fixDate(item['rejectRequestDelayedDate']);
-						$invoice2->declineCancelRequestDate = $this->fixDate(item['declineCancelRequestDate']);
-						$invoice2->declineRejectRequestDate = $this->fixDate(item['declineRejectRequestDate']);
+						$invoice2->cancelRequestDate 		= $this->fixDate($item['cancelRequestDate']);
+						$invoice2->rejectRequestDate 		= $this->fixDate($item['rejectRequestDate']);
+						$invoice2->cancelRequestDelayedDate	= $this->fixDate($item['cancelRequestDelayedDate']);
+						$invoice2->rejectRequestDelayedDate	= $this->fixDate($item['rejectRequestDelayedDate']);
+						$invoice2->declineCancelRequestDate = $this->fixDate($item['declineCancelRequestDate']);
+						$invoice2->declineRejectRequestDate = $this->fixDate($item['declineRejectRequestDate']);
 						$invoice2->save();
 					} else {
 						//recover missing item
