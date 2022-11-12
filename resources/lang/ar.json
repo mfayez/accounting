@@ -304,5 +304,7 @@
 	"English Name": "الأسم بالأنجليزية",
 	"Bulk Actions": "أجراءات على الأختيار",
 	"Approve Selected": "أعتماد الفواتير الأختيار",
-	"Please select at least one invoice!": "أختار على الأقل فاتورة واحدة!"
+	"Please select at least one invoice!": "أختار على الأقل فاتورة واحدة!",
+	"Cancel Pending": "تم ارسال طلب الإلغاء",
+	"Reject Pending": "تم ارسال طلب الرفض"
 }

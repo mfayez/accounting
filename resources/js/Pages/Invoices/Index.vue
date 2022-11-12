@@ -81,11 +81,12 @@
                                 <td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
                                     <div v-for="rowVals in nestedIndex(item, key).split(',')">
                                         {{ 
-                                            key == 'status' || key == 'statusReason' ? __(rowVals) :
+                                            key == 'status' ? render_status(item, rowVals) :
+                                            (key == 'statusReason' ? __(rowVals) :
                                             (key == 'dateTimeIssued' || key == 'dateTimeReceived' ? 
                                                 new Date(rowVals).toISOString().slice(0,10) : 
                                                 rowVals
-                                            ) 
+                                            )) 
                                         }}
                                     </div>
                                 </td>
@@ -388,6 +389,13 @@ export default {
         },
         alignDropDown() {
             return this.$page.props.locale == "en" ? "left" : "right";
+        },
+        render_status: function(item, status) {
+            if (item.cancelRequestDate && item.status != 'Cancelled') 
+                return this.__("Cancel Pending");
+            if (item.rejectRequestDate && item.status != 'Rejected')
+                return this.__("Reject Pending");
+            return this.__(status);
         },
         nestedIndex: function (item, key) {
             try {

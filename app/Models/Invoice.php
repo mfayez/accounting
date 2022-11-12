@@ -30,7 +30,10 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
     protected $fillable = ['issuer_id', 'receiver_id', 'documentType', 'documentTypeVersion', 'dateTimeIssued', 'taxpayerActivityCode',
         'internalID', 'purchaseOrderReference', 'purchaseOrderDescription', 'salesOrderReference', 'salesOrderDescription',
         'proformaInvoiceNumber', 'totalDiscountAmount', 'totalSalesAmount', 'netAmount', 'totalAmount', 'extraDiscountAmount',
-        'totalItemsDiscountAmount', 'uuid', 'submissionUUID', 'longId', 'createdByUserId', 'status', 'statusReason', 'upload_id'];
+        'totalItemsDiscountAmount', 'uuid', 'submissionUUID', 'longId', 'createdByUserId', 'status', 'statusReason', 'upload_id',
+        'cancelRequestDate', 'rejectRequestDate', 'cancelRequestDelayedDate', 'rejectRequestDelayedDate', 'declineCancelRequestDate',
+        'declineRejectRequestDate',
+    ];
 
     public function getDates()
     {
