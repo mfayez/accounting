@@ -432,6 +432,12 @@ class ETAController extends Controller
 					{
 						$invoice2->status = $item['status'];
 						$invoice2->statusreason = $item['documentStatusReason'];
+						$invoice2->cancelRequestDate 		= $item['cancelRequestDate'];
+						$invoice2->rejectRequestDate 		= $item['rejectRequestDate'];
+						$invoice2->cancelRequestDelayedDate	= $item['cancelRequestDelayedDate'];
+						$invoice2->rejectRequestDelayedDate	= $item['rejectRequestDelayedDate'];
+						$invoice2->declineCancelRequestDate = $item['declineCancelRequestDate'];
+						$invoice2->declineRejectRequestDate = $item['declineRejectRequestDate'];
 						$invoice2->save();
 					} else {
 						$this->AddMissingInvoice($request, $item['uuid']);
@@ -444,6 +450,12 @@ class ETAController extends Controller
 					{
 						$invoice2->status = $item['status'];
 						//$invoice2->statusreason = $item['documentStatusReason'];
+						$invoice2->cancelRequestDate 		= $item['cancelRequestDate'];
+						$invoice2->rejectRequestDate 		= $item['rejectRequestDate'];
+						$invoice2->cancelRequestDelayedDate	= $item['cancelRequestDelayedDate'];
+						$invoice2->rejectRequestDelayedDate	= $item['rejectRequestDelayedDate'];
+						$invoice2->declineCancelRequestDate = $item['declineCancelRequestDate'];
+						$invoice2->declineRejectRequestDate = $item['declineRejectRequestDate'];
 						$invoice2->save();
 					} else {
 						//recover missing item
@@ -500,10 +512,10 @@ class ETAController extends Controller
 				{
 					$invoice2->status = $item['status'];
 					$invoice2->statusreason = $item['documentStatusReason'];
-					$invoice2->cancelReqquestDate 		= $item['cancelRequestDate'];
+					$invoice2->cancelRequestDate 		= $item['cancelRequestDate'];
 					$invoice2->rejectRequestDate 		= $item['rejectRequestDate'];
-					$invoice2->cancelRequestDelayDate 	= $item['cancelRequestDelayedDate'];
-					$invoice2->rejectRequestDelayDate 	= $item['rejectRequestDelayedDate'];
+					$invoice2->cancelRequestDelayedDate	= $item['cancelRequestDelayedDate'];
+					$invoice2->rejectRequestDelayedDate	= $item['rejectRequestDelayedDate'];
 					$invoice2->declineCancelRequestDate = $item['declineCancelRequestDate'];
 					$invoice2->declineRejectRequestDate = $item['declineRejectRequestDate'];
 					$invoice2->save();
