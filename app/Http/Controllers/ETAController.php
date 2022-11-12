@@ -432,12 +432,12 @@ class ETAController extends Controller
 					{
 						$invoice2->status = $item['status'];
 						$invoice2->statusreason = $item['documentStatusReason'];
-						$invoice2->cancelRequestDate 		= $item['cancelRequestDate'];
-						$invoice2->rejectRequestDate 		= $item['rejectRequestDate'];
-						$invoice2->cancelRequestDelayedDate	= $item['cancelRequestDelayedDate'];
-						$invoice2->rejectRequestDelayedDate	= $item['rejectRequestDelayedDate'];
-						$invoice2->declineCancelRequestDate = $item['declineCancelRequestDate'];
-						$invoice2->declineRejectRequestDate = $item['declineRejectRequestDate'];
+						$invoice2->cancelRequestDate 		= $this->fixDate($item['cancelRequestDate']);
+						$invoice2->rejectRequestDate 		= $this->fixDate($item['rejectRequestDate']);
+						$invoice2->cancelRequestDelayedDate	= $this->fixDate($item['cancelRequestDelayedDate']);
+						$invoice2->rejectRequestDelayedDate	= $this->fixDate($item['rejectRequestDelayedDate']);
+						$invoice2->declineCancelRequestDate = $this->fixDate($item['declineCancelRequestDate']);
+						$invoice2->declineRejectRequestDate = $this->fixDate($item['declineRejectRequestDate']);
 						$invoice2->save();
 					} else {
 						$this->AddMissingInvoice($request, $item['uuid']);
@@ -450,12 +450,12 @@ class ETAController extends Controller
 					{
 						$invoice2->status = $item['status'];
 						//$invoice2->statusreason = $item['documentStatusReason'];
-						$invoice2->cancelRequestDate 		= $item['cancelRequestDate'];
-						$invoice2->rejectRequestDate 		= $item['rejectRequestDate'];
-						$invoice2->cancelRequestDelayedDate	= $item['cancelRequestDelayedDate'];
-						$invoice2->rejectRequestDelayedDate	= $item['rejectRequestDelayedDate'];
-						$invoice2->declineCancelRequestDate = $item['declineCancelRequestDate'];
-						$invoice2->declineRejectRequestDate = $item['declineRejectRequestDate'];
+						$invoice2->cancelRequestDate 		= $this->fixDate(item['cancelRequestDate']);
+						$invoice2->rejectRequestDate 		= $this->fixDate(item['rejectRequestDate']);
+						$invoice2->cancelRequestDelayedDate	= $this->fixDate(item['cancelRequestDelayedDate']);
+						$invoice2->rejectRequestDelayedDate	= $this->fixDate(item['rejectRequestDelayedDate']);
+						$invoice2->declineCancelRequestDate = $this->fixDate(item['declineCancelRequestDate']);
+						$invoice2->declineRejectRequestDate = $this->fixDate(item['declineRejectRequestDate']);
 						$invoice2->save();
 					} else {
 						//recover missing item
@@ -512,12 +512,12 @@ class ETAController extends Controller
 				{
 					$invoice2->status = $item['status'];
 					$invoice2->statusreason = $item['documentStatusReason'];
-					$invoice2->cancelRequestDate 		= $item['cancelRequestDate'];
-					$invoice2->rejectRequestDate 		= $item['rejectRequestDate'];
-					$invoice2->cancelRequestDelayedDate	= $item['cancelRequestDelayedDate'];
-					$invoice2->rejectRequestDelayedDate	= $item['rejectRequestDelayedDate'];
-					$invoice2->declineCancelRequestDate = $item['declineCancelRequestDate'];
-					$invoice2->declineRejectRequestDate = $item['declineRejectRequestDate'];
+					$invoice2->cancelRequestDate 		= $this->fixDate($item['cancelRequestDate']);
+					$invoice2->rejectRequestDate 		= $this->fixDate($item['rejectRequestDate']);
+					$invoice2->cancelRequestDelayedDate	= $this->fixDate($item['cancelRequestDelayedDate']);
+					$invoice2->rejectRequestDelayedDate	= $this->fixDate($item['rejectRequestDelayedDate']);
+					$invoice2->declineCancelRequestDate = $this->fixDate($item['declineCancelRequestDate']);
+					$invoice2->declineRejectRequestDate = $this->fixDate($item['declineRejectRequestDate']);
 					$invoice2->save();
 				} else {
 					$this->AddMissingInvoice($request, $item['uuid']);
@@ -1151,5 +1151,13 @@ class ETAController extends Controller
 			"client_secret" => $request['client_secret1'],
 		]);
 		return ['status' => $response->status(), 'body' => $response->body()];
+	}
+
+	private function fixDate($date) {
+		if (strlen($date) == 0)
+			return null;
+		if (strlen($date > 16))
+			$date = strsub($date, 0, 16);
+		return $date;
 	}
 }
