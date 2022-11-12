@@ -1157,7 +1157,7 @@ class ETAController extends Controller
 		if (strlen($date) == 0)
 			return null;
 		if (strlen($date > 16))
-			$date = strsub($date, 0, 16);
+			$date = substr($date, 0, 16);
 		return $date;
 	}
 }
