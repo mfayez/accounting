@@ -232,7 +232,7 @@ class ReportsController extends Controller
 		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date_format(t1.dateTimeIssued, '%d/%m/%Y') as Date, 
 							ifnull(sum(case when t5.taxType = 'T4' then 0 else t5.amount end), 0) as TaxTotal, t4.name as Client,
 							ifnull(sum(case when t5.taxType = 'T4' then t5.amount else 0 end), 0) as TaxT4,
-							t1.totalSalesAmount as Total, t4.code as Code, t1.totalAmount as TotalAmount,
+							t1.totalSalesAmount as Total, t4.code as Code, t4.receiver_id as RTaxID, t1.totalAmount as TotalAmount,
 							t1.documentType as docType
 						from Invoice t1  
 							inner join Receiver t4 on t4.Id = t1.receiver_id
@@ -241,7 +241,7 @@ class ReportsController extends Controller
 							and   (t1.receiver_id = ? or ? = -1)
 							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
-						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
+						t4.code, t4.receiver_id, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
 		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
 		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
@@ -274,7 +274,7 @@ class ReportsController extends Controller
 		$file = $reader->load('./ExcelTemplates/SalesReportNew.xlsx');
 		
 		//prepare the headers
-		$colIdx = 11;
+		$colIdx = 12;
 		foreach($items as $col){
 			//merge cells
 			$file->getActiveSheet()->mergeCells($this->index($colIdx,1).':'.$this->index($colIdx+2,1));
@@ -290,8 +290,8 @@ class ReportsController extends Controller
 			$colIdx += 3;
 		}
 		//copy cell format
-		$cellStyle = $file->getActiveSheet()->getStyle($this->index(11,2));
-		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(12,2).':'.$this->index(count($items)*3+5,2));
+		$cellStyle = $file->getActiveSheet()->getStyle($this->index(12,2));
+		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(13,2).':'.$this->index(count($items)*3+5,2));
 
 		$cellStyle = $file->getActiveSheet()->getStyle($this->index(2,3));
 		$file->getActiveSheet()->duplicateStyle($cellStyle, $this->index(3,3).':'.$this->index(8+count($items)*5,3));
@@ -305,37 +305,38 @@ class ReportsController extends Controller
 			$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Month);
 			$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $row->Date);
 			$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $row->Code);
-			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->Client);
-			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->TotalAmount);
-			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->TaxT4);
-			$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), $row->TaxTotal);
-			$file->getActiveSheet()->setCellValue($this->index(10,$rowIdx), $row->Total);
+			$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->RTaxID);
+			$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $row->Client);
+			$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $row->TotalAmount);
+			$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), $row->TaxT4);
+			$file->getActiveSheet()->setCellValue($this->index(10,$rowIdx), $row->TaxTotal);
+			$file->getActiveSheet()->setCellValue($this->index(11,$rowIdx), $row->Total);
 
 
 			if (strtolower($row->docType) == 'i'){
 				//set row color to green
 				$file->getActiveSheet()
-					->getStyle($this->index(1,$rowIdx).':'.$this->index(10+count($items)*3,$rowIdx))
+					->getStyle($this->index(1,$rowIdx).':'.$this->index(11+count($items)*3,$rowIdx))
 					->getfill()
 					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 					->getStartColor()
 					->setARGB('FFFFFF');
 			}else if (strtolower($row->docType) == 'c'){
 				//set row color to orange
-				$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(10+count($items)*3,$rowIdx))
+				$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(11+count($items)*3,$rowIdx))
 					->getfill()
 					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 					->getStartColor()->setARGB('FF5555');
 			} else {
 				//set row color to red
-				$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(10+count($items)*3,$rowIdx))
+				$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(11+count($items)*3,$rowIdx))
 					->getfill()
 					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 					->getStartColor()->setARGB('55FF55');
 			}
 			
 			
-			$colIdx = 11;
+			$colIdx = 12;
 			foreach($items as $col){
 				if (array_key_exists($col["Code"], $row->lines)){
 					if ($col["Desc"] ==  $row->lines[$col["Code"]]->Desc){
@@ -349,12 +350,12 @@ class ReportsController extends Controller
 			$rowIdx++;
 		}
 		//set bordres for all cells in active worksheet
-		$file->getActiveSheet()->getStyle($this->index(2,3).':'.$this->index(10+count($items)*3,$rowIdx-1))
+		$file->getActiveSheet()->getStyle($this->index(2,3).':'.$this->index(11+count($items)*3,$rowIdx-1))
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 		//set auto filter
-		$file->getActiveSheet()->setAutoFilter($this->index(1,3).':'.$this->index(10+count($items)*3,$rowIdx));
+		$file->getActiveSheet()->setAutoFilter($this->index(1,3).':'.$this->index(11+count($items)*3,$rowIdx));
 		//set column width
 		//TODO MFayez
 		//$file->getActiveSheet()->getColumnDimension('A')->setWidth(5);
