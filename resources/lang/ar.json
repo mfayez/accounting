@@ -221,6 +221,7 @@
 	"Allow Custom Items Description": "السماح بأدخال وصف للصنف",
 	"Automatic Invoice Number": "ترقيم الفواتير تلقائي",
 	"Invoice Template":"نموذج ترقيم الفواتير",
+	"Invoice Version": "نسخة الفاتورة",
 	"Application Settings": "أعدادات البرنامج",
 	"Select Branches": "أختار الفروع",
 	"Customer Information": "بيانات العميل",

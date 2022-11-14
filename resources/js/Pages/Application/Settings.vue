@@ -30,14 +30,14 @@
 						<jet-label for="automatic" :value="__('Automatic Invoice Number')" class="ms-2"/>
 					</div>
 					
-					<div class="col-span-2">
+					<div class="col-span-1">
 						<jet-label for="invoice_version" :value="__('Invoice Version')" />
 						<jet-input id="invoice_version" type="text" 
 							class="mt-1 block w-full" v-model="form.invoiceVersion" 
 							v-model:active="form.automatic" v-model:required="form.automatic" autofocus />
 					</div>
 					
-					<div class="col-span-2">
+					<div class="col-span-1">
 						<jet-label for="invoice_template" :value="__('Invoice Template')" />
 						<jet-input id="invoice_template" type="text" 
 							class="mt-1 block w-full" v-model="form.invoiceTemplate" 
