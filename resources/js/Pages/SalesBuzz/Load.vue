@@ -196,6 +196,10 @@
                 this.form.value = this.progress1.value + 1;                
                 axios.post(route('sb.sync_orders'), this.form)
                     .then(response => {
+                        if (response.data.code == 404){
+                            swal("Error", response.data.message, "error");
+                            return;
+                        }
                         this.progress1.maxValue = response.data.totalPages;
                         this.lastDate = response.data.lastDate;
                         this.progress1.value  = this.progress1.value + 1;

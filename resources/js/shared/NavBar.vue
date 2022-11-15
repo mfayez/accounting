@@ -358,7 +358,12 @@
 
                             <template #content>
                                 <dropdown-link
-                                    :href="route('sb.map.index')"
+                                    :href="route('sb.branches.map.index')"
+                                >
+                                    {{ __("Show Branches Map") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    :href="route('sb.items.map.index')"
                                 >
                                     {{ __("Show Items Map") }}
                                 </dropdown-link>

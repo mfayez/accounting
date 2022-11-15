@@ -307,5 +307,6 @@
 	"Approve Selected": "أعتماد الفواتير الأختيار",
 	"Please select at least one invoice!": "أختار على الأقل فاتورة واحدة!",
 	"Cancel Pending": "تم ارسال طلب الإلغاء",
-	"Reject Pending": "تم ارسال طلب الرفض"
+	"Reject Pending": "تم ارسال طلب الرفض",
+	"Sales Buzz URL": "رابط سالز بز"
 }

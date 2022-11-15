@@ -10,7 +10,7 @@ trait SalesBuzzAuthenticator {
 	protected $salezbuzz_cookies = "";
 	protected $salezbuzz_headers = [];
 
-    private function AuthenticateSB(Request $request, $username, $password, $buid)
+    private function AuthenticateSB(Request $request, $username, $password, $buid, $url)
 	{
 		//check if $request session has salesbuzz token
 		if ($request && $request->session()->has("salesbuzz_token") && $request->session()->get("salesbuzz_token") != ""){
@@ -20,7 +20,7 @@ trait SalesBuzzAuthenticator {
 			];
 			return;
 		}
-		$url = "https://sb.hkdist.com/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-AuthenticationService.svc/json/Login";
+		$url = "$url/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-AuthenticationService.svc/json/Login";
         $response = Http::post($url, [
             "userName"=>"$username:$buid:ar-EG",
             "password"=> $password,

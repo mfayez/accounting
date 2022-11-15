@@ -30,6 +30,7 @@ use App\Models\Issuer;
 use App\Models\Upload;
 use App\Models\Settings;
 use App\Models\SBItemMap;
+use App\Models\SBBranchMap;
 
 use App\Http\Traits\SalesBuzzAuthenticator;
 use App\Http\Traits\ExcelWrapper;
@@ -51,22 +52,32 @@ class SalesBuzzController extends Controller
 			'taxpayerActivityCode'	=> 'required',
 						
 		]);
+
+		$branchMap = SBBranchMap::where('branch_id', $data['issuer']['Id'])->first();
+		if (!isset($branchMap)){
+			return [
+				'code'      =>  404,
+				'message'   =>  "SalesBuzz Configuration is incomplete! Please contact system support."
+			];
+		}
+		$url = $branchMap->sb_url;
 		
-		$this->AuthenticateSB($request, $data['username'], $data['password'], $data['buid']);
+		$this->AuthenticateSB($request, $data['username'], $data['password'], $data['buid'], $url);
 		if ($this->salezbuzz_cookies == ""){
-			return Response::json(array(
+			return [
 				'code'      =>  404,
 				'message'   =>  "SalesBuzz Authentication Failed"
-			), 404);
+			];
+			
 		}
 
 		$pageSize = 10;
 		$skip = ($data['value'] - 1) * $pageSize;
         //get orders now
 		
-        $url = "https://sb.hkdist.com/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$skip=$skip&\$take=$pageSize&\$includeTotalCount=True";
+        $url = "$url/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$skip=$skip&\$take=$pageSize&\$includeTotalCount=True";
 		if ($skip == 0)
-			$url = "https://sb.hkdist.com/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$take=$pageSize&\$includeTotalCount=True";	
+			$url = "$url/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$take=$pageSize&\$includeTotalCount=True";	
 		/*$timestamp = Carbon::now()
 						->add(1969, 'year')
 						->sub($data['period'], 'day')
@@ -270,7 +281,7 @@ class SalesBuzzController extends Controller
 		}
 	}
 
-	public function indexMap(Request $request)
+	public function indexItemsMap(Request $request)
 	{
 		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
@@ -288,7 +299,7 @@ class SalesBuzzController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('SalesBuzz/Index', [
+        return Inertia::render('SalesBuzz/IndexItemsMap', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
             $table->addColumns([
@@ -299,4 +310,33 @@ class SalesBuzzController extends Controller
             ]);
         });
 	}
+
+	public function indexBranchesMap(Request $request)
+	{
+		$data = DB::select("SELECT t1.Id as BID, t1.Name as BName, t2.sb_url as SBUrl
+			from Issuer t1 left outer join
+				sb_branches_map t2 on t1.Id = t2.branch_id"
+		);
+
+		return Inertia::render('SalesBuzz/IndexBranchesMap', [
+            'items' => $data,
+        ]);
+    }
+
+	public function updateBranchesMap(Request $request){
+		$data = $request->validate([
+			'BID' => 'required',
+			'SBUrl' => 'required'
+		]);
+
+		$branch_map = SBBranchMap::updateOrCreate(
+			['branch_id' => $data['BID']],
+			['branch_id' => $data['BID'],
+			 'sb_url' => $data['SBUrl']
+			]
+		);
+
+	}
 }
+
+
