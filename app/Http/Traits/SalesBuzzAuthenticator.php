@@ -20,7 +20,7 @@ trait SalesBuzzAuthenticator {
 			];
 			return;
 		}
-		$url = "$url/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-AuthenticationService.svc/json/Login";
+		$url = "$url/ClientBin/BI-SalesBuzz-BackOffice-Web-AuthenticationService.svc/json/Login";
         $response = Http::post($url, [
             "userName"=>"$username:$buid:ar-EG",
             "password"=> $password,

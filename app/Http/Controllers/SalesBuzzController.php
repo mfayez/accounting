@@ -75,9 +75,9 @@ class SalesBuzzController extends Controller
 		$skip = ($data['value'] - 1) * $pageSize;
         //get orders now
 		
-        $url = "$url/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$skip=$skip&\$take=$pageSize&\$includeTotalCount=True";
+        $url = "$url/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$skip=$skip&\$take=$pageSize&\$includeTotalCount=True";
 		if ($skip == 0)
-			$url = "$url/salesbuzzbo/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$take=$pageSize&\$includeTotalCount=True";	
+			$url = "$url/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/json/GetAR_Order?StopLoading=false&\$take=$pageSize&\$includeTotalCount=True";	
 		/*$timestamp = Carbon::now()
 						->add(1969, 'year')
 						->sub($data['period'], 'day')
