@@ -151,8 +151,8 @@ class SalesBuzzController extends Controller
 			$item2 = new Address();
 			$item2->country = "EG";
 			$item2->governate = "Cairo";
-			$item2->regionCity = $sb_invoice['b_DeliveryAddress'];
-			$item2->street = $sb_invoice['b_DeliveryAddress'];;
+			$item2->regionCity = is_array($sb_invoice['b_DeliveryAddress']) ? "N/A" : $sb_invoice['b_DeliveryAddress'];
+			$item2->street = is_array($sb_invoice['b_DeliveryAddress']) ? "N/A" : $sb_invoice['b_DeliveryAddress'];
 			$item2->buildingNumber = "1";
 			$item2->postalCode = "12345";
 			$item2->save();
