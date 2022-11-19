@@ -28,6 +28,11 @@ trait SalesBuzzAuthenticator {
             "ADAuthenticationLogin"=>"0",
             //"BUID" => "11102",
         ]);
+		//this may be used with binary urls
+		/*$response = Http::contentType("text/plain")->send('POST', $url, [
+			'body' => 'FETCH....'
+		])->json();*/
+		
         $cookies = collect($response->cookies->toArray())->keyBy('Name')->map->Value;
         $cookieString = $cookies->map(function($value, $key){
             return $key . '=' . $value;
