@@ -308,5 +308,12 @@
 	"Please select at least one invoice!": "أختار على الأقل فاتورة واحدة!",
 	"Cancel Pending": "تم ارسال طلب الإلغاء",
 	"Reject Pending": "تم ارسال طلب الرفض",
-	"Sales Buzz URL": "رابط سالز بز"
+	"Sales Buzz URL": "رابط سالز بز",
+	"Show Branches Map": "عرض خريطة الفروع",
+	"Name Arabic": "الأسم بالعربية",
+	"Name English": "الأسم بالأنجليزية",
+	"Item Map": "خريطة الأصناف",
+	"SBCode": "كود سالز بز",
+	"ETACode": "كود مصلحة الضرائب",
+	"Are you sure you want to delete this item?": "هل انت متأكد من حذف هذا الصنف؟"
 }

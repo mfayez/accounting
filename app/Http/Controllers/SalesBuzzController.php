@@ -320,6 +320,32 @@ class SalesBuzzController extends Controller
         });
 	}
 
+	public function updateItem(Request $request)
+	{
+		$map = $request->validate([
+			'SBCode' => 'required',
+			'ETACode' => 'required',
+			'ItemNameA' => 'required',
+			'ItemNameE' => 'required',
+		]);
+		SBItemMap::updateOrCreate(
+			['SBCode' => $map['SBCode']],
+			['SBCode' => $map['SBCode'],
+			 'ETACode' => $map['ETACode'], 
+			 'ItemNameA' => $map['ItemNameA'],
+			 'ItemNameE' => $map['ItemNameE']
+			]
+		);
+	}
+
+	public function deleteItem(Request $request)
+	{
+		$map = $request->validate([
+			'SBCode' => 'required'
+		]);
+		SBItemMap::findOrFail($map['SBCode'])->delete();
+	}
+
 	public function indexBranchesMap(Request $request)
 	{
 		$data = DB::select("SELECT t1.Id as BID, t1.Name as BName, t2.sb_url as SBUrl

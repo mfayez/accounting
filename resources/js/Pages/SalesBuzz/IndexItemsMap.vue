@@ -1,6 +1,10 @@
 <template>
     <!-- prettier-ignore -->
     <app-layout>
+        <edit-item-map ref="dlg2" :item_map="currentItem" />
+        <confirm ref="dlg4" @confirmed="deleteItemMap2()">
+			<jet-label for="type"  :value="__('Are you sure you want to delete this item?')" />
+		</confirm>
 		<div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
@@ -72,6 +76,7 @@ import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import JetDangerButton from '@/Jetstream/DangerButton';
 import Dropdown from "@/Jetstream/Dropdown";
+import EditItemMap from "@/Pages/SalesBuzz/EditItemMap";
 import swal from "sweetalert";
 
 export default {
@@ -85,6 +90,7 @@ export default {
         JetButton,
         JetDangerButton,
         SecondaryButton,
+        EditItemMap,
     },
     props: {
         items: Object,
@@ -100,10 +106,27 @@ export default {
     methods: {
         editItemMap(item) {
             this.currentItem = item;
-        },
-        
+            this.$nextTick(() => this.$refs.dlg2.ShowDialog());
+        },        
         deleteItemMap(item) {
             this.currentItem = item;
+            this.$refs.dlg4.ShowModal();
+        },
+        deleteItemMap2() {
+            axios
+                .post(route("sb.items.map.delete"), {SBCode: this.currentItem.SBCode})
+                .then((response) => {
+                    this.$store.dispatch("setSuccessFlashMessage", true);
+                    this.showDialog = false;
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                })
+                .catch((error) => {
+                    this.$page.props.errors = error.response.data.errors;
+                    this.errors = error.response.data.errors; //.password[0];
+                    //this.$refs.password.focus()
+                });
         },
         nestedIndex: function (item, key) {
             try {
