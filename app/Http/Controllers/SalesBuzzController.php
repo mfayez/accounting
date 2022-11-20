@@ -200,6 +200,8 @@ class SalesBuzzController extends Controller
 			//if there is not map for this item ignore it
 			if (is_null($mapItem->ETACode))
 				continue;
+			if ($line['c_Qty'] == 0)
+				continue;
 				
 			$unitValue = new Value(['currencySold' => "EGP", 
 				'amountEGP' => $line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'],
@@ -212,7 +214,6 @@ class SalesBuzzController extends Controller
 			if ($line["c_UOM"] == "CTN")
 				$invoiceline->unitType = "CT";
 			else
-
 				$invoiceline->unitType = "EA";
 			$invoiceline->quantity = $line['c_Qty'] < 0 ? -$line['c_Qty'] : $line['c_Qty'];
 			$invoiceline->internalCode = $line['c_ItemID'];
@@ -220,6 +221,11 @@ class SalesBuzzController extends Controller
 			$invoiceline->netTotal = $line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'];	//done
 			$invoiceline->itemsDiscount = $line["c_PromotionsTotal"] < 0 ? -$line["c_PromotionsTotal"] : $line["c_PromotionsTotal"]; //done
 			$invoiceline->total = $invoiceline->netTotal - $invoiceline->itemsDiscount;	//done
+			if ($invoiceline->total < 0)
+			{
+				$invoiceline->total = 0;
+				$invoiceline->itemsDiscount = -$invoiceline->netTotal;
+			}
 			$invoiceline->valueDifference = 0;
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->invoice_id = $invoice->Id;
