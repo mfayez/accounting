@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/invoices/pending', function (Request $r
 	])->where(function($query) {
 		$query->where('status', '=', 'approved');
 //			  ->orWhereNull('status');
-	})->get();
+	})->take(10)->get();
 	return response()->json($temp);//->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
 
