@@ -102,6 +102,7 @@ class SalesBuzzController extends Controller
 		$issuer = $data['issuer']['Id'];
 
 		$date1 = Carbon::now();
+		$lastInv = null;
 		foreach($sb_data["GetAR_OrderResponse"]["GetAR_OrderResult"]["a_RootResults"]["b_AR_Order"] as $invoice) {
 			if ($invoice['b_OrderStatus'] != 4)
 				continue;
@@ -131,6 +132,7 @@ class SalesBuzzController extends Controller
 					//	$invoice2 = $this->ReverseInvoice($old_inv, $invoice);
 				//}
 			}
+			$lastInv = $invoice["b_OrderID"];
 			if ($invoice2)
 				if ($invoice2->dateTimeIssued < $date1)
 					$date1 = $invoice2->dateTimeIssued;
@@ -139,6 +141,7 @@ class SalesBuzzController extends Controller
 		return ["totalPages" => min($data['value'] + 1, 100),
 				"currentPage" => $data['value'],
 				"lastDate" => $date1,
+				"lastInvoice" => $lastInv
 			];	
 	}
 	
@@ -168,7 +171,7 @@ class SalesBuzzController extends Controller
 		$invoice->issuer_id = $issuer;
 		$invoice->receiver_id = $receiver->Id;
 		$invoice->statusreason = "تحميل الفاتورة من SalesBuzz";
-		$invoice->documentType = $sb_invoice['b_CompleteOrderReverse'] || $sb_invoice['b_ReturnReason']["@i_nil`"] ? "I" : "C";
+		$invoice->documentType = is_array($sb_invoice['b_ReturnReason']) ? "I" : "C";
 		$invoice->documentTypeVersion = SETTINGS_VAL('application settings', 'invoiceVersion', '1.0');;
 		$invoice->totalDiscountAmount = 0;
 		$invoice->totalSalesAmount = 0;
@@ -217,8 +220,8 @@ class SalesBuzzController extends Controller
 				$invoiceline->unitType = "EA";
 			$invoiceline->quantity = $line['c_Qty'] < 0 ? -$line['c_Qty'] : $line['c_Qty'];
 			$invoiceline->internalCode = $line['c_ItemID'];
-			$invoiceline->salesTotal = $line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'];	//done
-			$invoiceline->netTotal = $line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'];	//done
+			$invoiceline->salesTotal = $line['c_LineTotal'] < 0 ? -$line['c_LineTotal'] : $line['c_LineTotal'];	//done
+			$invoiceline->netTotal = $line['c_LineTotal'] < 0 ? -$line['c_LineTotal'] : $line['c_LineTotal'];	//done
 			$invoiceline->itemsDiscount = $line["c_PromotionsTotal"] < 0 ? -$line["c_PromotionsTotal"] : $line["c_PromotionsTotal"]; //done
 			$invoiceline->total = $invoiceline->netTotal - $invoiceline->itemsDiscount;	//done
 			if ($invoiceline->total < 0)

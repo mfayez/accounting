@@ -74,6 +74,9 @@
                 <div class="lg:col-span-3 flex justify-center">
                     <jet-label :value="lastDate" />
                 </div>
+                <div class="lg:col-span-3 flex justify-center">
+                    <jet-label :value="lastInv" />
+                </div>
             </div>
 			<div class="mt-8">
 				<label for="sync1">{{__('Synchronizing Invoices...')}}</label><br/>
@@ -149,6 +152,7 @@
 					maxValue: 100
 				},
                 lastDate: 'N/A',
+                lastInv: 'N/A',
                 processing: false,
 				form: {
 					value: 0,
@@ -202,6 +206,7 @@
                         }
                         this.progress1.maxValue = response.data.totalPages;
                         this.lastDate = response.data.lastDate;
+                        this.lastInv = response.data.lastInvoice;
                         this.progress1.value  = this.progress1.value + 1;
                         if (this.progress1.value < this.progress1.maxValue)
                             this.$nextTick(() => this.LoadSB());
