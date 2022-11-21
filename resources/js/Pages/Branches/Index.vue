@@ -43,7 +43,7 @@
                                 >
                                     {{ __("Type(B|P)") }}
                                 </th>
-                                <th v-if="Object.keys(images).length > 0">
+                                <th style="text-align:center"   >
                                     {{ __("Branch Logo") }}
                                 </th>
                                 <th @click.prevent="">{{ __("Actions") }}</th>
@@ -183,7 +183,8 @@ export default {
     text-align: start;
 }
 img {
-    max-width: 100%;
+    max-width: 50%;
     max-height: 100%;
+    margin: auto;
 }
 </style>
