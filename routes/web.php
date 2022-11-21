@@ -148,6 +148,8 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::post('/reports/customers/sales/data', [ReportsController::class, 'customersSalesData'])->name("reports.customers.sales.data");
     Route::post('/reports/customers/sales/download', [ReportsController::class, 'customersSalesDownload'])->name("reports.customers.sales.download");
 
+    Route::get('/reports/invoices/statuses', [ReportsController::class, 'getInvoiceStatus'])->name("reports.invoices.statuses");
+
 #excel exports
     Route::get('/excel/items', function () {
         return App\Models\ETAItem::get()

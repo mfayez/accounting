@@ -53,6 +53,8 @@ class ReportsController extends Controller
 		$customerId = $request->input('receiver')['Id'];
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
+
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, CAST(t1.dateTimeIssued as date) as Date, 
 							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total, 
 							t1.Id as LID
@@ -62,9 +64,9 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, t1.Id";
-		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		return $data;
 	}
 	
@@ -74,6 +76,7 @@ class ReportsController extends Controller
 		$customerId = $request->input('receiver')['Id'];
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
 		//$branchId   = -1;
 		//$customerId = -1;
 		//$startDate  = "2019-10-10";
@@ -87,19 +90,19 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
 						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
-		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, trim(t2.description), t2.itemCode";
-		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$items = array();
 		foreach($data2 as $invLine)
 			array_push($items, array('Code' => $invLine->Code, 'Desc' => $invLine->Desc));
@@ -224,6 +227,7 @@ class ReportsController extends Controller
 		$customerId = $request->input('receiver')['Id'];
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
 		//$branchId   = -1;
 		//$customerId = -1;
 		//$startDate  = "2019-10-10";
@@ -239,19 +243,19 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
 						t4.code, t4.receiver_id, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
-		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, trim(t2.description), t2.itemCode";
-		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$items = array();
 		foreach($data2 as $invLine)
 			array_push($items, array('Code' => $invLine->Code, 'Desc' => $invLine->Desc));
@@ -719,5 +723,19 @@ class ReportsController extends Controller
 		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
 		header('Cache-Control: max-age=0');
 		$writer->save('php://output');
+	}
+
+
+	#helpers
+	public function getInvoiceStatus()
+	{
+		$data = Invoice::select('status')->distinct()->get();
+		$result = [];
+		$result[] = ['value' => 'all', 'name' => __('All')];
+		foreach($data as $row){
+			$result[] = ["name" => __($row->status),
+						 "value" => $row->status];
+		}
+		return $result;
 	}
 }

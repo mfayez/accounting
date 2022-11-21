@@ -1193,11 +1193,11 @@ select {
 .col-span-2 {
 	grid-column: span 2 / span 2;
 }
-.col-span-3 {
-	grid-column: span 3 / span 3;
-}
 .col-span-1 {
 	grid-column: span 1 / span 1;
+}
+.col-span-3 {
+	grid-column: span 3 / span 3;
 }
 .col-span-8 {
 	grid-column: span 8 / span 8;
@@ -1573,6 +1573,9 @@ select {
 .w-screen {
 	width: 100vw;
 }
+.w-2\/5 {
+	width: 40%;
+}
 .w-1\/3 {
 	width: 33.333333%;
 }
@@ -1602,9 +1605,6 @@ select {
 }
 .w-11 {
 	width: 2.75rem;
-}
-.w-2\/5 {
-	width: 40%;
 }
 .min-w-0 {
 	min-width: 0px;
@@ -4107,12 +4107,12 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 		grid-column: span 2 / span 2;
 	}
 
-	.lg\:col-span-1 {
-		grid-column: span 1 / span 1;
-	}
-
 	.lg\:col-span-3 {
 		grid-column: span 3 / span 3;
+	}
+
+	.lg\:col-span-1 {
+		grid-column: span 1 / span 1;
 	}
 
 	.lg\:-mx-6 {
@@ -4284,6 +4284,10 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 
 	.lg\:grid-cols-5 {
 		grid-template-columns: repeat(5, minmax(0, 1fr));
+	}
+
+	.lg\:grid-cols-2 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
 	.lg\:flex-row {
