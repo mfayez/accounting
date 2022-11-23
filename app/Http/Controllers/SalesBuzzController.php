@@ -111,7 +111,7 @@ class SalesBuzzController extends Controller
 							->where("c_OrderID", $invoice["b_OrderID"])
 							->where("@i_type", "c:AR_OrderLines");
 			$invoice2 = Invoice::firstWhere(['internalID' => $invoice['b_OrderID']]);
-			if ($invoice2->status == 'In Review')
+			if ($invoice2 && $invoice2->status == 'In Review')
 			{
 				foreach($invoice2->invoiceLines as $line) {
 					$line->discount()->delete();
