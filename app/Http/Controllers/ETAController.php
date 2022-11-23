@@ -681,6 +681,7 @@ class ETAController extends Controller
 				if ($upload_id)
             		$query->where('upload_id', '=', $upload_id);
            	})
+			->where("issuer_id", "=", Auth::user()->issuers->pluck("Id")->toArray())
 			//->join("Receiver", "Invoice.receiver_id", "Receiver.Id")
 			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
             ->defaultSort('-Invoice.Id')
