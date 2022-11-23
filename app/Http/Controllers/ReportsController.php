@@ -413,13 +413,9 @@ class ReportsController extends Controller
 		foreach($data1 as $key=>$val)
 		{
 			$this->mValue = $val->InvKey;
-			$invLines = array_filter($data2, function($v, $k) {
+			$data1[$key]->lines = array_filter($data2, function($v, $k) {
 							    return  $v->InvKey == $this->mValue;
 						}, ARRAY_FILTER_USE_BOTH);
-			$data1[$key]->lines = array();
-			foreach($invLines as $invLine)
-				$data1[$key]->lines[$invLine->Code] = $invLine;
-
 		}
 		//render excel file now
 		$reader = IOFactory::createReader('Xlsx');
