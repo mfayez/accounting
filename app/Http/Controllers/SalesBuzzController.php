@@ -111,6 +111,18 @@ class SalesBuzzController extends Controller
 							->where("c_OrderID", $invoice["b_OrderID"])
 							->where("@i_type", "c:AR_OrderLines");
 			$invoice2 = Invoice::firstWhere(['internalID' => $invoice['b_OrderID']]);
+			if ($invoice2->status == 'In Review')
+			{
+				foreach($invoice2->invoiceLines as $line) {
+					$line->discount()->delete();
+					$line->taxableItems()->delete();
+					$line->delete();
+					$line->unitValue()->delete();
+				}
+				$invoice2->taxTotals()->delete();
+				$invoice2->delete();
+				$invoice2 = null;
+			}
 			if (!$invoice2)// && $invoice2->status != "Valid") //check else part
 			{
 				//if ($invoice['CompleteOrderReverse'] == false){
