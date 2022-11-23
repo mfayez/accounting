@@ -133,6 +133,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::post('/reports/summary/data', [ReportsController::class, 'summaryData'])->name("reports.summary.details.data");
     Route::post('/reports/summary/download1', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
     Route::post('/reports/summary/download2', [ReportsController::class, 'summaryDownloadNew'])->name("reports.summary.details.download.new");
+    Route::post('/reports/summary/download2', [ReportsController::class, 'summaryDownloadCompact'])->name("reports.summary.details.download.compact");
     Route::post('/reports/summaryOnly/download', [ReportsController::class, 'summaryOnlyData'])->name("reports.summary.summaryOnlyData.download");
 
     Route::get('/reports/purchase', [ReportsController::class, 'purchase'])->name("reports.summary.purchase");

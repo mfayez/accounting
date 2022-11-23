@@ -68,6 +68,10 @@
                             {{ __("Download Summary V2") }}
                         </jet-secondary-button>
 
+                        <jet-secondary-button class="ms-2" @click="onDownloadV3">
+                            {{ __("Download Summary Compact") }}
+                        </jet-secondary-button>
+
                         <jet-secondary-button class="ms-2" @click="onPrint">
                             {{ __("Print") }}
                         </jet-secondary-button>
@@ -291,6 +295,24 @@ export default {
             this.form.status = this.selected_status.value;
             axios({
                 url: route("reports.summary.details.download.new"),
+                method: "POST",
+                data: this.form,
+                responseType: "blob",
+            }).then((response) => {
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "report.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            });
+        },
+        onDownloadV3() {
+            this.form.status = this.selected_status.value;
+            axios({
+                url: route("reports.summary.details.download.compact"),
                 method: "POST",
                 data: this.form,
                 responseType: "blob",
