@@ -217,9 +217,13 @@ class SalesBuzzController extends Controller
 				continue;
 			if ($line['c_Qty'] == 0)
 				continue;
-				
+
+			$extraUnitValue = 0;	
+			if (is_string($line["c_TaxID"]) && $line["c_TaxID"] != "Tax14")
+				$extraUnitValue = floatval($line["c_TaxesTotal"]) / $line['c_Qty'];
 			$unitValue = new Value(['currencySold' => "EGP", 
-				'amountEGP' => $line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'],
+				#'amountEGP' => round(($line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] + 0.004), 2),
+				'amountEGP' => $extraUnitValue + ( $line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] )
 			]);
 			$unitValue->save();
 			$invoiceline = new InvoiceLine((array)$line);
@@ -232,8 +236,10 @@ class SalesBuzzController extends Controller
 				$invoiceline->unitType = "EA";
 			$invoiceline->quantity = $line['c_Qty'] < 0 ? -$line['c_Qty'] : $line['c_Qty'];
 			$invoiceline->internalCode = $line['c_ItemID'];
-			$invoiceline->salesTotal = $line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'];	//done
-			$invoiceline->netTotal = $line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'];	//done
+			#$invoiceline->salesTotal = round(($line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'])+0.004, 2);	//done
+			#$invoiceline->netTotal = round(($line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost']) + 0.004, 2);	//done
+			$invoiceline->salesTotal = $unitValue->amountEGP * $invoiceline->quantity;
+			$invoiceline->netTotal = $unitValue->amountEGP * $invoiceline->quantity;
 			$invoiceline->itemsDiscount = $line["c_PromotionsTotal"] < 0 ? -$line["c_PromotionsTotal"] : $line["c_PromotionsTotal"]; //done
 			//sometimes c_PromotionsTotal is zero despite there is a discount
 			//we can use c_LineTotal to populate $invoiceline->netTotal and recalcualte the discount
@@ -247,6 +253,15 @@ class SalesBuzzController extends Controller
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->invoice_id = $invoice->Id;
 			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->save();
+
+			if (is_string($line["c_TaxesTotal"]) && $line["c_TaxID"] == "Tax14") {
+				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($line["c_TaxesTotal"])]);
+				$item1->rate = round($item1->amount * 100 / ($invoiceline->salesTotal - $invoiceline->itemsDiscount), 2);
+				$item1->invoiceline_id = $invoiceline->Id;
+				$item1->save();
+				$invoiceline->total += $item1->amount;
+			}
 			$invoiceline->save();
 
             /*foreach($line->taxableItems as $taxitem) {
@@ -263,6 +278,7 @@ class SalesBuzzController extends Controller
 		}*/
 
 		$invoice->normalize();
+		$invoice->updateTaxTotals();
 		$invoice->save();
 		return $invoice;
 	}
