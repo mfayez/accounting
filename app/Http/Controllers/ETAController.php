@@ -571,7 +571,7 @@ class ETAController extends Controller
 					$item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
 					$item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
 				}
-				if ($item['codeCategorization']['level4']){}
+				if ($item['codeCategorization']['level4']){
 			    	$item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
 	            	$item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
 			    	$item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
