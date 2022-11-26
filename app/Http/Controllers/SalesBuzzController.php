@@ -247,7 +247,7 @@ class SalesBuzzController extends Controller
 			if ($invoiceline->total < 0)
 			{
 				$invoiceline->total = 0;
-				$invoiceline->itemsDiscount = -$invoiceline->netTotal;
+				$invoiceline->itemsDiscount = $invoiceline->netTotal;
 			}
 			$invoiceline->valueDifference = 0;
 			$invoiceline->totalTaxableFees = 0;
