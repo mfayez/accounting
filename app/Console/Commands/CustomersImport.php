@@ -76,6 +76,13 @@ class CustomersImport extends Command
                 $receiver->name = $row['name'];
                 $receiver->code = $row['code'];
                 $receiver->receiver_id = $row['RIN'];
+                //if length of receiver_id is 9 then this is a B type
+                if (strlen($receiver->receiver_id) == 9) {
+                    $receiver->type = 'B';
+                } else {
+                    $receiver->receiver_id = $row['NSN'];
+                    $receiver->type = 'P';
+                }
                 $address->governate = $row['Governate'];
                 $address->regionCity = $row['city'];
                 $address->street = $row['street'];
