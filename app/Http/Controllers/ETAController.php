@@ -39,7 +39,7 @@ class ETAController extends Controller
 {
 	use ETAAuthenticator;
 	use ExcelWrapper;
-	
+
 	public function generateInvoiceNumber($invoice, $excel=false){
 		if (strcmp(SETTINGS_VAL('application settings', 'automatic', '0'), '1') != 0) return;
 		if ($invoice->internalID != 'automatic' && $excel == false) return;
@@ -56,11 +56,11 @@ class ETAController extends Controller
 		$year2 = $year % 100;
 		$invoice->internalID = sprintf($template, $year, $year2, $branchNum, $invNum);
 	}
-	
+
 	public function UploadItem(Request $request)
 	{
 		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/codes";
-		
+
 		$temp = [];
 		$extension = $request->file->extension();
 		if ($extension == 'xlsx' || $extension == 'xls')
@@ -72,13 +72,10 @@ class ETAController extends Controller
 		$this->AuthenticateETA($request);
 		$response = Http::withToken($this->token)->post($url, ["items" => $temp]);
 		return $response;
-		
 	}
-	public function UploadInvoice(Request $request)
+
+	public function UploadCustomer(Request $request)
 	{
-		//$request->validate([
-        //    'file' => 'required|file|mimes:csv',
-        //]);
 		$temp = [];
 		$extension = $request->file->extension();
 		if ($extension == 'xlsx' || $extension == 'xls')
@@ -87,15 +84,64 @@ class ETAController extends Controller
 			$temp = $this->csvToArray($request->file);
 		else
 			return json_encode(["Error" => true, "Message" => __("Unsupported File Type!")]);
-		
+
+		foreach ($temp as $key => $data) {
+			$receiver_detailes = [
+				'receiver_id' => $temp[$key]['receiver_id'],
+				'name' => $temp[$key]['name'],
+				'code' => $temp[$key]['code'],
+				'type' => (strlen($temp[$key]['receiver_id']) == 9) ? "B" : null,
+				//'address_id'=>'' #<-----!!?
+			];
+			$address_detailes = [
+				'country' => $temp[$key]['country'],
+				'governate' => $temp[$key]['governate'],
+				'regionCity' => $temp[$key]['regionCity'],
+				'street' => $temp[$key]['street'],
+				'buildingNumber' => $temp[$key]['buildingNumber'],
+				'postalCode' => $temp[$key]['postalCode'],
+				'floor' => $temp[$key]['floor'],
+				'room' => $temp[$key]['room'],
+				'landmark' => $temp[$key]['landmark'],
+				'additionalInformation' => $temp[$key]['additionalInformation']
+			];
+			$receiver = Receiver::where('code', '=', $temp[$key]['code'])->first();
+			if (!$receiver) {
+				$newAddress = new Address((array)$address_detailes);
+				$newAddress->save();
+				$newReceiver = new Receiver((array)$receiver_detailes);
+				$newAddress->receiver()->save($newReceiver);
+				
+			} else {
+				$receiver->address->update((array)$address_detailes);
+				$receiver->update((array)$receiver_detailes);
+			}
+		}
+		return $temp;
+	}
+
+	public function UploadInvoice(Request $request)
+	{
+		//$request->validate([
+		//    'file' => 'required|file|mimes:csv',
+		//]);
+		$temp = [];
+		$extension = $request->file->extension();
+		if ($extension == 'xlsx' || $extension == 'xls')
+			$temp = $this->xlsxToArray($request->file, $extension);
+		else if ($extension == 'csv')
+			$temp = $this->csvToArray($request->file);
+		else
+			return json_encode(["Error" => true, "Message" => __("Unsupported File Type!")]);
+
 		$upload = new Upload();
 		$upload->userId = Auth::id();
 		$upload->fileName = $request->file->getClientOriginalName();
 		$upload->recordsCount = count($temp);
 		$upload->status = 'Uploading';
 		$upload->save();
-		$inserted = array(); 
-		$updated = array(); 
+		$inserted = array();
+		$updated = array();
 		foreach($temp as $key=>$invoice_data)
 		{
 			if (isset($inserted[$invoice_data['internalID']])) {
@@ -111,7 +157,7 @@ class ETAController extends Controller
 			$invoice->totalAmount = 0;
 			$invoice->extraDiscountAmount = 0;
 			$invoice->totalItemsDiscountAmount = 0;
-			$invoice->status = "In Review";	
+			$invoice->status = "In Review";
 			$invoice->statusreason = "Excel Upload";
 			$invoice->upload_id = $upload->Id;
 			$this->generateInvoiceNumber($invoice, true);
@@ -128,7 +174,7 @@ class ETAController extends Controller
 				continue;
 			}
 			$temp[$key]["hasError"] = false;
-			
+
 			$unitValue = new Value($invoice_data);
 			$unitValue->save();
 			$invoiceline = new InvoiceLine($invoice_data);
@@ -140,7 +186,7 @@ class ETAController extends Controller
 			$invoiceline->netTotal = $invoice_data["salesTotal"];// - $invoiceline->itemsDiscount;
 			$invoiceline->valueDifference = 0;
 			$invoiceline->totalTaxableFees = 0;
-			
+
 			$invoiceline->save();
 			/*
 			foreach($invoice_data as $key=>$taxVal)
@@ -182,7 +228,7 @@ class ETAController extends Controller
 				$updated[$invoice_data['internalID']] = $invoice->Id;
 			}
 		}
-		
+
 		$upload->status = 'Review';
 		$upload->save();
 		return $temp;
