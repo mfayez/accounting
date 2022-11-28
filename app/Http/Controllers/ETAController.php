@@ -602,18 +602,26 @@ class ETAController extends Controller
 	            $item2->requesterTaxpayernameAr = $item['requesterTaxpayer']['nameAr'];
 			}
 			if ($item['codeCategorization']){
-        	    $item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
-	            $item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
-        	    $item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
-	            $item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
-        	    $item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
-	            $item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
-        	    $item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
-	            $item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
-        	    $item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
-	            $item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
-        	    $item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
-	            $item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
+				if ($item['codeCategorization']['level1']){
+					$item2->codeCategorizationlevel1id = $item['codeCategorization']['level1']['id'];
+					$item2->codeCategorizationlevel1name = $item['codeCategorization']['level1']['name'];
+					$item2->codeCategorizationlevel1nameAr = $item['codeCategorization']['level1']['nameAr'];
+				}
+				if ($item['codeCategorization']['level2']){
+					$item2->codeCategorizationlevel2id = $item['codeCategorization']['level2']['id'];
+					$item2->codeCategorizationlevel2name = $item['codeCategorization']['level2']['name'];
+					$item2->codeCategorizationlevel2nameAr = $item['codeCategorization']['level2']['nameAr'];
+				}
+				if ($item['codeCategorization']['level3']){
+					$item2->codeCategorizationlevel3id = $item['codeCategorization']['level3']['id'];
+					$item2->codeCategorizationlevel3name = $item['codeCategorization']['level3']['name'];
+					$item2->codeCategorizationlevel3nameAr = $item['codeCategorization']['level3']['nameAr'];
+				}
+				if ($item['codeCategorization']['level4']){
+			    	$item2->codeCategorizationlevel4id = $item['codeCategorization']['level4']['id'];
+	            	$item2->codeCategorizationlevel4name = $item['codeCategorization']['level4']['name'];
+			    	$item2->codeCategorizationlevel4nameAr = $item['codeCategorization']['level4']['nameAr'];
+				}
 			}
 		    if ($item2->codeTypeName == null)
 			    $item2->codeTypeName = $item["codeTypeNamePrimaryLang"];
@@ -727,6 +735,7 @@ class ETAController extends Controller
 				if ($upload_id)
             		$query->where('upload_id', '=', $upload_id);
            	})
+			->whereIn("issuer_id", Auth::user()->issuers->pluck("Id")->toArray())
 			//->join("Receiver", "Invoice.receiver_id", "Receiver.Id")
 			//->join("Issuer", "Invoice.issuer_id", "Issuer.Id")
             ->defaultSort('-Invoice.Id')

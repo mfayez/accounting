@@ -53,6 +53,8 @@ class ReportsController extends Controller
 		$customerId = $request->input('receiver')['Id'];
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
+
 		$strSqlStmt1 = "select t1.internalID as Id, month(t1.dateTimeIssued) as Month, CAST(t1.dateTimeIssued as date) as Date, 
 							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalAmount as Total, 
 							t1.Id as LID
@@ -62,9 +64,9 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, t1.Id";
-		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		return $data;
 	}
 	
@@ -74,6 +76,7 @@ class ReportsController extends Controller
 		$customerId = $request->input('receiver')['Id'];
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
 		//$branchId   = -1;
 		//$customerId = -1;
 		//$startDate  = "2019-10-10";
@@ -87,19 +90,19 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
 						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
-		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, trim(t2.description), t2.itemCode";
-		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$items = array();
 		foreach($data2 as $invLine)
 			array_push($items, array('Code' => $invLine->Code, 'Desc' => $invLine->Desc));
@@ -224,6 +227,7 @@ class ReportsController extends Controller
 		$customerId = $request->input('receiver')['Id'];
 		$startDate  = $request->input('startDate');
 		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
 		//$branchId   = -1;
 		//$customerId = -1;
 		//$startDate  = "2019-10-10";
@@ -239,19 +243,19 @@ class ReportsController extends Controller
 						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
 						t4.code, t4.receiver_id, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
-		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, round(sum(t2.quantity), 5) as Quantity,
 							round(sum(t2.salesTotal), 5) as Total, round(sum(t7.amountEGP), 5) as UnitValue, round(sum(t2.itemsDiscount),5) as Discount
 						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
 						    inner join Value t7 on t7.Id = t2.unitValue_id
 						where (t1.issuer_id = ? or ? = -1)
 							and   (t1.receiver_id = ? or ? = -1)
-							and CAST(t1.dateTimeIssued as date) between ? and ? and t1.status = 'Valid'
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
 						group by t1.Id, trim(t2.description), t2.itemCode";
-		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate]);
+		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
 		$items = array();
 		foreach($data2 as $invLine)
 			array_push($items, array('Code' => $invLine->Code, 'Desc' => $invLine->Desc));
@@ -360,6 +364,112 @@ class ReportsController extends Controller
 		//TODO MFayez
 		//$file->getActiveSheet()->getColumnDimension('A')->setWidth(5);
 	
+		$writer = IOFactory::createWriter($file, 'Xlsx');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Sales_ExportedData.xls"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');		
+	}
+
+	public function summaryDownloadCompact(Request $request)
+	{
+		$branchId   = $request->input('issuer')['Id'];
+		$customerId = $request->input('receiver')['Id'];
+		$startDate  = $request->input('startDate');
+		$endDate    = $request->input('endDate');
+		$status		= $request->input('status');
+		//$branchId   = -1;
+		//$customerId = -1;
+		//$startDate  = "2019-10-10";
+		//$endDate    = "2030-10-10";
+		
+		$strSqlStmt1 = "select t1.Id as InvKey, t1.internalID as Id, month(t1.dateTimeIssued) as Month, date_format(t1.dateTimeIssued, '%d/%m/%Y') as Date, 
+							sum(t5.amount) as TaxTotal, t4.name as Client, t1.totalSalesAmount as Total, t4.code as Code,
+							t1.documentType as docType
+						from Invoice t1  
+							inner join Receiver t4 on t4.Id = t1.receiver_id
+						    left outer join TaxTotal t5 on t5.invoice_id = t1.Id
+						where (t1.issuer_id = ? or ? = -1)
+							and   (t1.receiver_id = ? or ? = -1)
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')
+						group by t1.Id, t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t4.name, t1.totalAmount, 
+						t4.code, t1.totalSalesAmount, t1.documentType, t1.dateTimeIssued";
+		$data1 = DB::select($strSqlStmt1, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
+		$strSqlStmt2 = "select t1.Id as InvKey, trim(t2.description) as 'Desc', t2.itemCode as Code, t2.quantity as Quantity,
+							t2.salesTotal as SalesTotal, t7.amountEGP as UnitValue, t2.itemsDiscount as Discount, t2.total as Total,
+							t2.itemsDiscount as Discount
+						from Invoice t1 inner join InvoiceLine t2 on t1.Id = t2.invoice_id
+						    inner join Value t7 on t7.Id = t2.unitValue_id
+						where (t1.issuer_id = ? or ? = -1)
+							and   (t1.receiver_id = ? or ? = -1)
+							and CAST(t1.dateTimeIssued as date) between ? and ? and (t1.status = ? or ? = 'all')";
+		$data2 = DB::select($strSqlStmt2, [$branchId, $branchId, $customerId, $customerId, $startDate, $endDate, $status, $status]);
+		$items = array();
+		foreach($data2 as $invLine)
+			array_push($items, array('Code' => $invLine->Code, 'Desc' => $invLine->Desc));
+		//remvoe duplicates from $items
+		$items = array_map("unserialize", array_unique(array_map("serialize", $items)));
+		
+		foreach($data1 as $key=>$val)
+		{
+			$this->mValue = $val->InvKey;
+			$data1[$key]->lines = array_filter($data2, function($v, $k) {
+							    return  $v->InvKey == $this->mValue;
+						}, ARRAY_FILTER_USE_BOTH);
+		}
+		//render excel file now
+		$reader = IOFactory::createReader('Xlsx');
+		$file = $reader->load('./ExcelTemplates/SalesReportCompact.xlsx');
+		
+		//fill the data
+		$rowIdx = 2;
+		$serial = 1;
+		foreach($data1 as $row){
+			foreach($row->lines as $line){
+				$file->getActiveSheet()->setCellValue($this->index(1,$rowIdx), $serial);
+				$file->getActiveSheet()->setCellValue($this->index(2,$rowIdx), $row->Id);
+				$file->getActiveSheet()->setCellValue($this->index(3,$rowIdx), $row->Month);
+				$file->getActiveSheet()->setCellValue($this->index(4,$rowIdx), $row->Date);
+				$file->getActiveSheet()->setCellValue($this->index(5,$rowIdx), $row->Code);
+				$file->getActiveSheet()->setCellValue($this->index(6,$rowIdx), $row->Client);
+				$file->getActiveSheet()->setCellValue($this->index(7,$rowIdx), $line->Code);
+				$file->getActiveSheet()->setCellValue($this->index(8,$rowIdx), $line->Desc);
+				$file->getActiveSheet()->setCellValue($this->index(9,$rowIdx), $line->UnitValue);
+				$file->getActiveSheet()->setCellValue($this->index(10,$rowIdx), $line->Quantity);
+				$file->getActiveSheet()->setCellValue($this->index(11,$rowIdx), $line->SalesTotal);
+				$file->getActiveSheet()->setCellValue($this->index(12,$rowIdx), $line->Discount);
+				$file->getActiveSheet()->setCellValue($this->index(13,$rowIdx), round($line->SalesTotal - $line->Discount, 5));
+				$file->getActiveSheet()->setCellValue($this->index(14,$rowIdx), round($line->Total - $line->SalesTotal + $line->Discount, 5));
+				$file->getActiveSheet()->setCellValue($this->index(15,$rowIdx), $line->Total);
+				
+				$serial = $serial + 1;
+				
+				if (strtolower($row->docType) == 'i'){
+					//set row color to green
+					$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(15,$rowIdx))
+						->getfill()
+						->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+						->getStartColor()
+						->setARGB('FFFFFF');
+				}else{
+					//set row color to orange
+					$file->getActiveSheet()->getStyle($this->index(1,$rowIdx).':'.$this->index(15,$rowIdx))
+						->getfill()
+						->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+						->getStartColor()->setARGB('F4B084');
+				}
+				
+				$rowIdx++;
+			}
+		}
+		//set bordres for all cells in active worksheet
+		$file->getActiveSheet()->getStyle($this->index(1,1).':'.$this->index(15,$rowIdx-1))
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+		//set auto filter
+		$file->getActiveSheet()->setAutoFilter($this->index(1,1).':'.$this->index(15,$rowIdx-1));
+		
 		$writer = IOFactory::createWriter($file, 'Xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="Sales_ExportedData.xls"');
@@ -719,5 +829,19 @@ class ReportsController extends Controller
 		header('Content-Disposition: attachment;filename="Purchase_ExportedData.xls"');
 		header('Cache-Control: max-age=0');
 		$writer->save('php://output');
+	}
+
+
+	#helpers
+	public function getInvoiceStatus()
+	{
+		$data = Invoice::select('status')->distinct()->get();
+		$result = [];
+		$result[] = ['value' => 'all', 'name' => __('All')];
+		foreach($data as $row){
+			$result[] = ["name" => __($row->status),
+						 "value" => $row->status];
+		}
+		return $result;
 	}
 }

@@ -41,8 +41,8 @@
                         </ul>
                     </div>
                 </div>
-                <div class="logo mx-auto justify-top ">
-                    <img src="{{ BranchLogo($data->issuer_id) }}" alt="logo" class="">
+                <div class="flex justify-center">
+                    <img src="{{ BranchLogo($data->issuer_id) }}" alt="logo" class="m-auto">
                 </div>
                 <div class="w-auto mx-auto h-auto mb-2 me-2">
                     {{

@@ -11,7 +11,7 @@
                 </div>
                 <div class="bg-white shadow-xl sm:rounded-lg px-4 pb-4 pt-4">
                     <div
-                        class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow"
+                        class="grid lg:grid-cols-2 gap-4 sm:grid-cols-1 h-1/2 overflow"
                     >
                         <div>
                             <jet-label :value="__('Branch')" />
@@ -41,6 +41,15 @@
                             itemType="date"
                             :itemLabel="__('End Date')"
                         />
+                        <div>
+                            <jet-label :value="__('Status')" />
+                            <multiselect
+                                v-model="selected_status"
+                                label="name"
+                                :options="statuses"
+                                placeholder="Select status"
+                            />
+                        </div>
                     </div>
                     <div class="flex items-center justify-start mt-4">
                         <jet-button @click="onShow()">
@@ -57,6 +66,10 @@
 
                         <jet-secondary-button class="ms-2" @click="onDownloadV2">
                             {{ __("Download Summary V2") }}
+                        </jet-secondary-button>
+
+                        <jet-secondary-button class="ms-2" @click="onDownloadV3">
+                            {{ __("Download Summary Compact") }}
                         </jet-secondary-button>
 
                         <jet-secondary-button class="ms-2" @click="onPrint">
@@ -200,17 +213,21 @@ export default {
             customers: [],
             data: [],
             errors: [],
+            statuses: [],
+            selected_status: null,
             form: this.$inertia.form({
                 issuer: "",
                 receiver: "",
                 startDate: new Date().toISOString().slice(0, 10),
                 endDate: new Date().toISOString().slice(0, 10),
+                status: "",
             }),
             allChecked: false,
         };
     },
     methods: {
         onShow: function () {
+            this.form.status = this.selected_status.value;
             axios
                 .post(route("reports.summary.details.data"), this.form)
                 .then((response) => {
@@ -223,6 +240,7 @@ export default {
                 .catch((error) => {});
         },
         onDownload: function () {
+            this.form.status = this.selected_status.value;
             axios({
                 url: route("reports.summary.details.download"),
                 method: "POST",
@@ -240,6 +258,7 @@ export default {
             });
         },
         downloadSummary() {
+            this.form.status = this.selected_status.value;
             if (this.form.issuer && this.form.receiver) {
                 axios
                     .post(
@@ -273,8 +292,27 @@ export default {
             }
         },
         onDownloadV2() {
+            this.form.status = this.selected_status.value;
             axios({
                 url: route("reports.summary.details.download.new"),
+                method: "POST",
+                data: this.form,
+                responseType: "blob",
+            }).then((response) => {
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "report.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            });
+        },
+        onDownloadV3() {
+            this.form.status = this.selected_status.value;
+            axios({
+                url: route("reports.summary.details.download.compact"),
                 method: "POST",
                 data: this.form,
                 responseType: "blob",
@@ -348,6 +386,14 @@ export default {
             .then((response) => {
                 var temp = [{ Id: -1, name: "All" }];
                 this.customers = temp.concat(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        axios
+            .get(route("reports.invoices.statuses"))
+            .then((response) => {
+                this.statuses = response.data;
             })
             .catch((error) => {
                 console.log(error);

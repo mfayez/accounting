@@ -1567,6 +1567,9 @@ select {
 .w-screen {
 	width: 100vw;
 }
+.w-2\/5 {
+	width: 40%;
+}
 .w-1\/3 {
 	width: 33.333333%;
 }
@@ -4271,6 +4274,10 @@ html:lang(ar) .max-w-7xl > div > div > div div.w-auto svg {
 
 	.lg\:grid-cols-5 {
 		grid-template-columns: repeat(5, minmax(0, 1fr));
+	}
+
+	.lg\:grid-cols-2 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
 	.lg\:flex-row {

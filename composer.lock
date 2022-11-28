@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "781aaca66d6a721f7b86c49f29f4c9b5",
+    "content-hash": "1e6c155ebe1a71d1e8ecf54892ac9344",
     "packages": [
         {
             "name": "alkoumi/laravel-arabic-numbers",
@@ -302,6 +302,53 @@
                 }
             ],
             "time": "2021-11-25T20:13:02+00:00"
+        },
+        {
+            "name": "casperbiering/dotnet-binary-xml",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/casperbiering/dotnet-binary-xml.git",
+                "reference": "a9e5d0015c497b4ca1ea44c0094a15ee00991412"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/casperbiering/dotnet-binary-xml/zipball/a9e5d0015c497b4ca1ea44c0094a15ee00991412",
+                "reference": "a9e5d0015c497b4ca1ea44c0094a15ee00991412",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gmp": "*",
+                "ext-mbstring": "*",
+                "ext-xmlreader": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CasperBiering\\Dotnet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Casper Biering",
+                    "email": "casper@biering.dk"
+                }
+            ],
+            "description": "Parsing and writing of .NET Binary Format",
+            "support": {
+                "issues": "https://github.com/casperbiering/dotnet-binary-xml/issues",
+                "source": "https://github.com/casperbiering/dotnet-binary-xml/tree/v2.0.0"
+            },
+            "time": "2022-08-29T14:34:33+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -9668,5 +9715,5 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.0.0"
 }

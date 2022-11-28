@@ -135,6 +135,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::post('/reports/summary/data', [ReportsController::class, 'summaryData'])->name("reports.summary.details.data");
     Route::post('/reports/summary/download1', [ReportsController::class, 'summaryDownload'])->name("reports.summary.details.download");
     Route::post('/reports/summary/download2', [ReportsController::class, 'summaryDownloadNew'])->name("reports.summary.details.download.new");
+    Route::post('/reports/summary/compact', [ReportsController::class, 'summaryDownloadCompact'])->name("reports.summary.details.download.compact");
     Route::post('/reports/summaryOnly/download', [ReportsController::class, 'summaryOnlyData'])->name("reports.summary.summaryOnlyData.download");
 
     Route::get('/reports/purchase', [ReportsController::class, 'purchase'])->name("reports.summary.purchase");
@@ -149,6 +150,8 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::get('/reports/customers/sales', [ReportsController::class, 'customersSales'])->name("reports.customers.sales");
     Route::post('/reports/customers/sales/data', [ReportsController::class, 'customersSalesData'])->name("reports.customers.sales.data");
     Route::post('/reports/customers/sales/download', [ReportsController::class, 'customersSalesDownload'])->name("reports.customers.sales.download");
+
+    Route::get('/reports/invoices/statuses', [ReportsController::class, 'getInvoiceStatus'])->name("reports.invoices.statuses");
 
 #excel exports
     Route::get('/excel/items', function () {
@@ -181,9 +184,14 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::get('/reports/zip/invoices/{Ids}', [ETAInvoiceController::class, 'archiveInvoices'])->name("zip.invoices");
 
 #salesbuzz stuff
-    Route::get('/sb/items/map', [SalesBuzzController::class, 'indexMap'])->name("sb.map.index");
+    Route::get('/sb/branches/map', [SalesBuzzController::class, 'indexBranchesMap'])->name("sb.branches.map.index");
+    Route::get('/sb/items/map', [SalesBuzzController::class, 'indexItemsMap'])->name("sb.items.map.index");
     Route::post('/sb/items/map/upload', [SalesBuzzController::class, 'UploadItemsMap'])->name("sb.items.map.upload");
+    Route::post('/sb/items/map/update', [SalesBuzzController::class, 'updateItem'])->name("sb.items.map.update");
+    Route::post('/sb/items/map/delete', [SalesBuzzController::class, 'deleteItem'])->name("sb.items.map.delete");
+    
     Route::post('/sb/sync_orders', [SalesBuzzController::class, 'syncSalesOrders'])->name("sb.sync_orders");
+    Route::post('/sb/branches/map', [SalesBuzzController::class, 'updateBranchesMap'])->name("sb.branches.map.update");
     
 });
 
