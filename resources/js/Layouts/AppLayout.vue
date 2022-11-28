@@ -19,6 +19,7 @@
         <archive-request-dialog2 ref="dlg12" />
         <sb-load-invoices-dialog ref="dlg13" />
         <sb-items-map-dialog ref="dlg14" />
+        <upload-customers-dialog ref="dlg15"/>
 
         <div class="min-h-screen bg-gray-100 pb-5">
             <main>
@@ -41,6 +42,7 @@ import LoadItemsDialog from "@/Pages/Items/Load";
 import LoadInvoicesDialog from "@/Pages/Invoices/Load";
 import NewItemDialog from "@/Pages/Items/Edit";
 import UploadInvoicesDialog from "@/Pages/Invoices/Upload";
+import UploadCustomersDialog from "@/Pages/Customers/Upload";
 import SettingsDialog1 from "@/Pages/Reports/Settings";
 import SettingsDialog2 from "@/Pages/Application/Settings";
 import UploadItemsDialog from "@/Pages/Items/Upload";
@@ -64,6 +66,7 @@ export default {
         ArchiveRequestDialog2,
         UploadItemsDialog,
         UploadInvoicesDialog,
+        UploadCustomersDialog,
         NewCustomerDialog,
         NewItemDialog,
         NewUserDialog,

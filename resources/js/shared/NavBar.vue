@@ -75,6 +75,13 @@
                                 <dropdown-link as="a" :href="route('excel.customers')">
                                     {{ __("Download") }}
                                 </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('dlg15')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Customers") }}
+                                </dropdown-link>
                             </template>
                         </dropdown>
                         <dropdown
