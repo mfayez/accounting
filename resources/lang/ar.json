@@ -317,5 +317,6 @@
 	"ETACode": "كود مصلحة الضرائب",
 	"Are you sure you want to delete this item?": "هل انت متأكد من حذف هذا الصنف؟",
 	"All": "الكل",
-	"Download Summary Compact": "تحميل ملخص مضغوط"
+	"Download Summary Compact": "تحميل ملخص مضغوط",
+	"Upload Customers": "رفع العملاء(ملف اكسل)"
 }
