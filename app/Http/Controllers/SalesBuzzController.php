@@ -240,7 +240,7 @@ class SalesBuzzController extends Controller
 
 			$extraUnitValue = 0;	
 			if (is_string($line["c_TaxID"]) && $line["c_TaxID"] != "Tax14")
-				$extraUnitValue = floatval($line["c_TaxesTotal"]) / $line['c_Qty'];
+				$extraUnitValue = abs(floatval($line["c_TaxesTotal"])) / $line['c_Qty'];
 			$unitValue = new Value(['currencySold' => "EGP", 
 				#'amountEGP' => round(($line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] + 0.004), 2),
 				'amountEGP' => $extraUnitValue + ( $line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] )
@@ -276,7 +276,7 @@ class SalesBuzzController extends Controller
 			$invoiceline->save();
 
 			if (is_string($line["c_TaxesTotal"]) && $line["c_TaxID"] == "Tax14") {
-				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => floatval($line["c_TaxesTotal"])]);
+				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => abs(floatval($line["c_TaxesTotal"]))]);
 				$item1->rate = round($item1->amount * 100 / ($invoiceline->salesTotal - $invoiceline->itemsDiscount), 2);
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
