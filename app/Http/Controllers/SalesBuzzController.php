@@ -44,6 +44,19 @@ class SalesBuzzController extends Controller
     use SalesBuzzAuthenticator;
 	use ExcelWrapper;
     
+	public function UploadInvoice(Request $request)
+	{
+		$data = $request->validate([
+			'issuer'				=> 'required',
+			'taxpayerActivityCode'	=> 'required',
+			'data'					=> 'required',
+		]);
+		//convert data from base64 to binary->then xml
+		$decoder = new Decoder();
+		$data2 = $decoder->decode(base64_decode($data['data']));
+		return $this->processSBInvoices($data2, $data['issuer'], $data['taxpayerActivityCode'], 1);
+	}
+
     public function syncSalesOrders(Request $request)
     {
 		$data = $request->validate([
@@ -93,13 +106,20 @@ class SalesBuzzController extends Controller
 		$response = Http::withHeaders($this->salezbuzz_headers)
                     ->get($url);
 		$xmldata = $decoder->decode($response->body());
-		$xmldata = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1$2_', $xmldata);
+		return $this->processSBInvoices($xmldata, $data['issuer']['Id'], $data['taxpayerActivityCode']['code'], $data['value']);
+	}
+	
+	public function processSBInvoices($xmldata2, $issuer2, $taxpayerActivityCode2, $page)
+	{
+		$xmldata = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1$2_', $xmldata2);
+		//$xmldata = str_replace('$lt;', '<', $xmldata);
+		//$xmldata = str_replace('$gt;', '>', $xmldata);
 		
 		$simpleXml = simplexml_load_string($xmldata);
 		$sb_data = $this->xmlToArray($simpleXml);
 		
-		$activity = $data['taxpayerActivityCode']['code'];
-		$issuer = $data['issuer']['Id'];
+		$activity = $taxpayerActivityCode2;
+		$issuer = $issuer2;
 
 		$date1 = Carbon::now();
 		$lastInv = null;
@@ -150,8 +170,8 @@ class SalesBuzzController extends Controller
 					$date1 = $invoice2->dateTimeIssued;
 		}
 
-		return ["totalPages" => min($data['value'] + 1, 100),
-				"currentPage" => $data['value'],
+		return ["totalPages" => min($page + 1, 100),
+				"currentPage" => $page,
 				"lastDate" => $date1,
 				"lastInvoice" => $lastInv
 			];	
@@ -530,6 +550,11 @@ class SalesBuzzController extends Controller
 		return array(
 			$xml->getName() => $propertiesArray
 		);
+	}
+
+	public function indexBranchesMap_json()
+	{
+		return SBBranchMap::all();
 	}
 }
 
