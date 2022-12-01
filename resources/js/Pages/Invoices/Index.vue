@@ -103,7 +103,7 @@
                                         <jet-danger-button
                                             class="me-2 mt-2"
                                             @click="deleteInvoice(item)" 
-                                            v-show="item.status!='Valid' && item.status!='approved'" 
+                                            v-show="item.status!='Valid' && item.status!='approved' && item.status!='Submitted'"
                                             >
                                             {{ __("Delete") }}
                                         </jet-danger-button>
@@ -111,7 +111,7 @@
                                         <jet-button
                                         class="me-2 mt-2"
                                             @click="editInvoice(item)" 
-                                            v-show="item.status!='Valid'"
+                                            v-show="item.status!='In Review'"
                                             >
                                             {{ __("Edit") }}
                                         </jet-button>
@@ -126,7 +126,7 @@
                                         <jet-button
                                             class="me-2 mt-2"
                                             @click="ApproveItem(item)"
-                                            v-show="item.status!='Valid' && item.status!='approved' && item.status!='rejected'"
+                                            v-show="item.status!='In Review'"
                                         >
                                             {{ __("Approve") }}
                                         </jet-button>
