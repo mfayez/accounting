@@ -111,7 +111,7 @@
                                         <jet-button
                                         class="me-2 mt-2"
                                             @click="editInvoice(item)" 
-                                            v-show="item.status!='In Review'"
+                                            v-show="item.status=='In Review'"
                                             >
                                             {{ __("Edit") }}
                                         </jet-button>
@@ -126,7 +126,7 @@
                                         <jet-button
                                             class="me-2 mt-2"
                                             @click="ApproveItem(item)"
-                                            v-show="item.status!='In Review'"
+                                            v-show="item.status=='In Review'"
                                         >
                                             {{ __("Approve") }}
                                         </jet-button>
@@ -134,7 +134,6 @@
                                         <jet-button
                                             class="me-2 mt-2"
                                             @click="downloadPDF(item)" 
-                                            v-show="item.status=='Valid'"
                                         >
                                             {{ __("PDF") }}
                                         </jet-button>
