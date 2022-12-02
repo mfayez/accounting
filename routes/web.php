@@ -158,10 +158,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
         return App\Models\ETAItem::get()
             ->downloadExcel("items.xlsx", $writerType = null, $headings = true);
     })->name('excel.items');
-    Route::get('/excel/customers', function () {
-        return App\Models\Receiver::get()
-            ->downloadExcel("customers.xlsx", $writerType = null, $headings = true);
-    })->name('excel.customers');
+    Route::get('/excel/customers', [CustomerController::class, 'downloadExcel'])->name('excel.customers');
 
 #ETA Archives
     Route::get('/ETA/Archives',        [ETAArchiveController::class, 'getArchiveRequests'])->name("archive.getArchiveRequests");

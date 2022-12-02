@@ -10,7 +10,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 trait ExcelWrapper {
-    private function index($col, $row)
+	//some classes has index function, so we made index two to avoid conflict
+    private function index2($col, $row)
+	{
+		$col1 = Coordinate::stringFromColumnIndex($col);
+		return $col1.$row;
+	}
+
+	private function index($col, $row)
 	{
 		$col1 = Coordinate::stringFromColumnIndex($col);
 		return $col1.$row;
