@@ -144,12 +144,21 @@ class ETAController extends Controller
 		$updated = array();
 		foreach($temp as $key=>$invoice_data)
 		{
+			$invType = "I";
 			if (isset($inserted[$invoice_data['internalID']])) {
 				$temp[$key]["invoice_id"] = $inserted[$invoice_data['internalID']];
 				continue;
 			}
+			if (isset($invoice_data["documentType"]))
+			{
+				$lower = strtolower($invoice_data["documentType"]);
+				if ($lower == "c" || $lower == "credit" || $lower == "مرتجع" || $lower == "خصم")
+					$invType = "C";
+				else if ($lower == "r" || $lower == "debit" || $lower == "أضافة" || $lower == "استكمال")
+					$invType = "D";
+			}
 			$invoice = new Invoice($invoice_data);
-			$invoice->documentType = "I";
+			$invoice->documentType = $invType;
 			$invoice->documentTypeVersion = SETTINGS_VAL('application settings', 'invoiceVersion', '1.0');;
 			$invoice->totalDiscountAmount = 0;
 			$invoice->totalSalesAmount = 0;
