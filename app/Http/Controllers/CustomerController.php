@@ -234,6 +234,8 @@ class CustomerController extends Controller
             $file->getActiveSheet()->setCellValue($this->index2(11,$rowIdx), $row->address->room);
             $file->getActiveSheet()->setCellValue($this->index2(12,$rowIdx), $row->address->landmark);
             $file->getActiveSheet()->setCellValue($this->index2(13,$rowIdx), $row->address->additionalInformation);
+            $file->getActiveSheet()->setCellValue($this->index2(14,$rowIdx), $row->Id);
+            
 			$rowIdx++;
 		}
 		$writer = IOFactory::createWriter($file, 'Xlsx');
