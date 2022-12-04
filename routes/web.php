@@ -86,6 +86,10 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
         'pos' => POSController::class,
     ]);
 
+
+    Route::get('/invoice/search',[InvoiceController::class,'search'])->name("invoices.search");
+    Route::post('/invoice/searchData',[InvoiceController::class,'searchData'])->name("invoices.searchData");
+
     Route::get('/getBranchesImages/{ids}' , [BranchController::class , 'getBranchesimages'])->name('branches.getImages');
 
     Route::get('/json/branches', [BranchController::class, 'index_json'])->name("json.branches");

@@ -1113,19 +1113,24 @@ class ETAController extends Controller
 	
 	public function DeleteInvoice(Request $request)
 	{
-		$inv = Invoice::findOrFail($request->input('Id'));
-		foreach($inv->invoiceLines as $line) {
-			//if ($line->discount) $line->discount->delete();
-			//if ($line->taxableItems) $line->taxableItems->delete();
-			$line->discount()->delete();
-			$line->taxableItems()->delete();
-			$line->delete();
-			$line->unitValue()->delete();
+		$ids = $request->input('Id');
+		if (!is_array($ids))
+			$ids = [$ids];
+		foreach($ids as $id){
+			$inv = Invoice::findOrFail($id);
+			foreach($inv->invoiceLines as $line) {
+				//if ($line->discount) $line->discount->delete();
+				//if ($line->taxableItems) $line->taxableItems->delete();
+				$line->discount()->delete();
+				$line->taxableItems()->delete();
+				$line->delete();
+				$line->unitValue()->delete();
+			}
+			//if ($inv->taxTotals) 
+			$inv->taxTotals()->delete();
+			$inv->delete();
 		}
-		//if ($inv->taxTotals) 
-		$inv->taxTotals()->delete();
-		$inv->delete();
-		return "Invoice Deleted";
+		return "Invoice(s) Deleted";
 	}
 
 	public function saveCopy(Request $request) {
