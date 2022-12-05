@@ -111,7 +111,7 @@
                                         <jet-button
                                         class="me-2 mt-2"
                                             @click="editInvoice(item)" 
-                                            v-show="item.status=='In Review'"
+                                            v-show="['in review', 'invalid', 'approved', 'rejected', 'cancelled'].indexOf(item.status.toLowerCase()) >= 0"
                                             >
                                             {{ __("Edit") }}
                                         </jet-button>
