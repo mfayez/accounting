@@ -143,7 +143,9 @@
                                 >
                                     {{ __("Show My Invoices") }}
                                 </dropdown-link>
-
+                                <dropdown-link :href="route('invoices.search')">
+                                    {{ __("Search Invoices") }}
+                                </dropdown-link>
                                 <dropdown-link
                                     :href="route('eta.invoices.received.index')"
                                 >
