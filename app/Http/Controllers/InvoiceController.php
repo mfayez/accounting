@@ -53,8 +53,8 @@ class InvoiceController extends Controller
                             CAST(t1.dateTimeIssued as date) as Date, t1.totalAmount as Total,
                             sum(t3.amount) as TaxTotal, t2.name as Client
                         from
-                            invoice t1 inner join receiver t2 on t2.Id = t1.receiver_id
-                            left outer join taxtotal t3 on t3.invoice_id = t1.Id
+                            Invoice t1 inner join Receiver t2 on t2.Id = t1.receiver_id
+                            left outer join TaxTotal t3 on t3.invoice_id = t1.Id
                         where
                             (t1.issuer_id = ? or ? = -1)
                             and 
