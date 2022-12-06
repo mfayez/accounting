@@ -188,6 +188,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::get('/sb/branches/map', [SalesBuzzController::class, 'indexBranchesMap'])->name("sb.branches.map.index");
     Route::get('/sb/items/map', [SalesBuzzController::class, 'indexItemsMap'])->name("sb.items.map.index");
     Route::post('/sb/items/map/upload', [SalesBuzzController::class, 'UploadItemsMap'])->name("sb.items.map.upload");
+    Route::get('/sb/items/map/download', [SalesBuzzController::class, 'DownloadItemsMap'])->name("sb.items.map.download");
     Route::post('/sb/items/map/update', [SalesBuzzController::class, 'updateItem'])->name("sb.items.map.update");
     Route::post('/sb/items/map/delete', [SalesBuzzController::class, 'deleteItem'])->name("sb.items.map.delete");
     

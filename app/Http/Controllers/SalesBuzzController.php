@@ -14,6 +14,10 @@ use CasperBiering\Dotnet\BinaryXml\Decoder;
 use CasperBiering\Dotnet\BinaryXml\SoapDecoder;
 use CasperBiering\Dotnet\BinaryXml\Encoder;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -556,6 +560,31 @@ class SalesBuzzController extends Controller
 	{
 		return SBBranchMap::all();
 	}
+
+	public function DownloadItemsMap()
+	{
+		$customers = SBItemMap::all();
+		
+		//render excel file now
+		$reader = IOFactory::createReader('Xlsx');
+		$file = $reader->load('./ExcelTemplates/ItemsMap.xlsx');
+		$rowIdx = 3;
+		foreach($customers as $row){
+			$file->getActiveSheet()->setCellValue($this->index2(1, $rowIdx), $row->SBCode);
+            $file->getActiveSheet()->setCellValue($this->index2(2, $rowIdx), $row->ItemNameA);
+			$file->getActiveSheet()->setCellValue($this->index2(3, $rowIdx), $row->ItemNameE);
+			$file->getActiveSheet()->setCellValue($this->index2(4, $rowIdx), $row->ETACode);
+			
+			$rowIdx++;
+		}
+		$writer = IOFactory::createWriter($file, 'Xlsx');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Map.xlsx"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+	}
+
+
 }
 
 

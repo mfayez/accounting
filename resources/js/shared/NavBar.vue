@@ -383,6 +383,9 @@
                                 >
                                     {{ __("Upload Items Map") }}
                                 </dropdown-link>
+                                <dropdown-link as="a" :href="route('sb.items.map.download')">
+                                    {{ __("Download Items Map") }}
+                                </dropdown-link>
                                 <dropdown-link
                                     as="a"
                                     @click.prevent="openDlg('dlg13')"
