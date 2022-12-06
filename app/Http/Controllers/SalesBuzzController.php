@@ -243,7 +243,7 @@ class SalesBuzzController extends Controller
 				continue;
 
 			$extraUnitValue = 0;	
-			if (is_string($line["c_TaxID"]) && ($line["c_TaxID"] != "Tax14" && $line["c_TaxID"] != "14%")
+			if (is_string($line["c_TaxID"]) && ($line["c_TaxID"] != "Tax14" && $line["c_TaxID"] != "14%"))
 				$extraUnitValue = abs(floatval($line["c_TaxesTotal"])) / $line['c_Qty'];
 			$unitValue = new Value(['currencySold' => "EGP", 
 				#'amountEGP' => round(($line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] + 0.004), 2),
