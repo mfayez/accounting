@@ -59,7 +59,8 @@ class ETAController extends Controller
 
 	public function UploadItem(Request $request)
 	{
-		$url = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/codes";
+		$url1 = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/codes";
+		$url2 = SETTINGS_VAL("ETA Settings", "eta_url", "https://api.invoicing.eta.gov.eg/api/v1.0")."/codetypes/requests/codeusages";
 
 		$temp = [];
 		$extension = $request->file->extension();
@@ -70,7 +71,10 @@ class ETAController extends Controller
 		else
 			return json_encode(["Error" => true, "Message" => __("Unsupported File Type!")]);
 		$this->AuthenticateETA($request);
-		$response = Http::withToken($this->token)->post($url, ["items" => $temp]);
+		if (count($temp[0]) > 5)
+			$response = Http::withToken($this->token)->post($url1, ["items" => $temp]);
+		else
+			$response = Http::withToken($this->token)->post($url2, ["items" => $temp]);
 		return $response;
 	}
 

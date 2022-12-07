@@ -12,7 +12,10 @@
 					</label>
                 </div>
                 <div class="flex justify-end">
-                    <a href="/ExcelTemplates/ItemUpload.xlsx">{{__('Download excel template')}}</a>
+                    <a href="/ExcelTemplates/ItemUpload.xlsx">{{__('Download excel template 1')}}</a>
+                </div>
+                <div class="flex justify-end">
+                    <a href="/ExcelTemplates/ItemReuse.xlsx">{{__('Download excel template 2')}}</a>
                 </div>
             </template>
 
