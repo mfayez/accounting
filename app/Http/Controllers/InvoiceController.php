@@ -9,6 +9,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -63,10 +64,13 @@ class InvoiceController extends Controller
                             (CAST(t1.dateTimeIssued as date) between ? and ?)
                             and
                             (t1.status = ? or ? = 'all')
+                            and
+                            (t1.issuer_id in (?))
                         group by
                             t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t2.name, t1.totalAmount, t1.Id
                             ";
-        $data = DB::select($sqlstatement, [$branchId, $branchId, $receiverId, $receiverId, $startDate, $endDate, $status, $status]);
+        $data = DB::select($sqlstatement, [$branchId, $branchId, $receiverId, $receiverId, $startDate, $endDate, $status, $status, 
+                                            implode(', ', Auth::user()->issuers->pluck("Id")->toArray())]);
         return $data;
     }
 
