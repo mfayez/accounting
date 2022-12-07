@@ -599,8 +599,16 @@ class ReportsController extends Controller
 							    return  $v['InvKey'] == $this->mValue;
 						}, ARRAY_FILTER_USE_BOTH);
 			$data[$key]->lines = array();
-			foreach($invLines as $invLine)
-				$data[$key]->lines[$invLine['Code']] = $invLine;
+			foreach($invLines as $invLine) {
+				if (isset($data[$key]->lines[$invLine['Code']])) {
+					$data[$key]->lines[$invLine['Code']]['Quantity'] += $invLine['Quantity'];
+					$data[$key]->lines[$invLine['Code']]['Total'] += $invLine['Total'];
+					$data[$key]->lines[$invLine['Code']]['UnitValue'] = $data[$key]->lines[$invLine['Code']]['Total'] / $data[$key]->lines[$invLine['Code']]['Quantity'];
+					$data[$key]->lines[$invLine['Code']]['Discount'] += $invLine['Discount'];
+				}
+				else
+					$data[$key]->lines[$invLine['Code']] = $invLine;
+			}
 		}
 		
 		//render excel file now
