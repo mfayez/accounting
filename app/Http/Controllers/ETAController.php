@@ -1113,6 +1113,8 @@ class ETAController extends Controller
 		
         foreach($ids as $id) {
 			$inv = Invoice::findOrFail($id);
+			if ($inv->receiver->receiver_id == 0 && $inv->totalAmount > 50000)
+				continue;
 			if ($inv->status == "In Review")
 			{
 				$inv->status = 'approved';
