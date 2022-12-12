@@ -306,7 +306,7 @@ export default {
             this.item.salesTotal =
                 (this.parse(this.item.quantity) *
                 this.parse(this.item.unitValue.amountEGP)).toFixed(5);
-            this.item.netTotal = this.item.salesTotal;
+            this.item.netTotal = this.item.salesTotal - this.item.itemsDiscount;
             this.calculateTax();
         },
         updateValue(item, val) {

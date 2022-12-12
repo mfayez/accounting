@@ -327,5 +327,7 @@
 	"Delete All": "حذف الكل",
 	"Approve All": "أعتماد الكل",
 	"Upload Customers": "رفع العملاء(ملف اكسل)",
-	"Invoice total is greater than 50,000 and receiver is not registered": "مجموع الفاتورة أكبر من 50,000 والمستلم غير مسجل"
+	"Invoice total is greater than 50,000 and receiver is not registered": "مجموع الفاتورة أكبر من 50,000 والمستلم غير مسجل",
+	"Invoice must be issued in the past": "تاريخ الفاتورة يجب أن يكون فى الماضي",
+	"Invoice must be issued within 3 days": "تاريخ الفاتورة يجب أن يكون فى غضون 3 أيام"
 }
