@@ -67,6 +67,10 @@
             <jet-secondary-button class="ms-2" @click="onDeleteAll()">
               {{ __("Delete All") }}
             </jet-secondary-button>
+
+            <jet-secondary-button class="ms-2" @click="onDelay1Day()">
+              {{ __("Delay Selected 1 Day") }}
+            </jet-secondary-button>
           </div>
         </div>
       </div>
@@ -240,6 +244,44 @@ export default {
         }
       });
     },
+    onDelay1Day() {
+      var temp = this.data.filter((row) => row.selected);
+      if (temp.length == 0) {
+        swal(this.__("Please select at least one invoice!"), {
+          icon: "error",
+        });
+        return;
+      }
+      swal({
+        title: this.__("Are you sure?"),
+        text: this.__("Once clicked ok  the selected invoices will be delayed 1 day"),
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willApprove) => {
+        if (willApprove) {
+          axios
+            .post(route("eta.invoices.delay"), {
+              Id: this.data
+                .filter((row) => row.selected)
+                .map((row) => row.InvID),
+              days: 1,
+            })
+            .then((response) => {
+              swal(this.__("Invoices has been delayed 1 day!"), {
+                icon: "success",
+              }).then(() => {
+                location.reload();
+              });
+            })
+            .catch((error) => {
+              swal(error.response.data, {
+                icon: "error",
+              });
+            });
+        }
+      });
+    },
     onDelete() {
       var temp = this.data.filter((row) => row.selected);
       if (temp.length == 0) {
@@ -263,7 +305,7 @@ export default {
                 .map((row) => row.InvID),
             })
             .then((response) => {
-              swal(this.__("Invoices has been approved!"), {
+              swal(this.__("Invoices has been deleted!"), {
                 icon: "success",
               }).then(() => {
                 location.reload();

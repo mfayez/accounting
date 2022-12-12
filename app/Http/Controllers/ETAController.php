@@ -1139,6 +1139,23 @@ class ETAController extends Controller
 		return __("$counter Invoice(s) approved");
 	}
 	
+	public function DelayInvoice(Request $request)
+	{
+		$ids = $request->input('Id');
+		$days = $request->input('days');
+
+		if (!is_array($ids))
+			$ids = [$ids];
+		foreach($ids as $id){
+			$inv = Invoice::findOrFail($id);
+			if ($inv->status == "In Review" || $inv->status == "Invalid") {
+				$inv->dateTimeIssued = $inv->dateTimeIssued->addDays($days);
+				$inv->save();
+			}
+		}
+		return "Invoice(s) Delayed";
+	}
+
 	public function DeleteInvoice(Request $request)
 	{
 		$ids = $request->input('Id');
