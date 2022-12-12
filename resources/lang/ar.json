@@ -326,5 +326,6 @@
 	"Delete Selected": "حذف الفواتير المختارة",	
 	"Delete All": "حذف الكل",
 	"Approve All": "أعتماد الكل",
-	"Upload Customers": "رفع العملاء(ملف اكسل)"
+	"Upload Customers": "رفع العملاء(ملف اكسل)",
+	"Invoice total is greater than 50,000 and receiver is not registered": "مجموع الفاتورة أكبر من 50,000 والمستلم غير مسجل"
 }
