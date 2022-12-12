@@ -1123,7 +1123,7 @@ class ETAController extends Controller
 				$inv->save();
 				continue;
 			}
-			if ($inv->dateTimeIssued > Carbon::now()->subDays(3)){
+			if ($inv->dateTimeIssued < Carbon::now()->subDays(3)){
 				$inv->statusReason = __("Invoice must be issued within 3 days");
 				$inv->save();
 				continue;
