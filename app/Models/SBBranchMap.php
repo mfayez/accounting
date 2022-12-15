@@ -16,5 +16,6 @@ class SBBranchMap extends Model
     protected $fillable = [
         'branch_id',
         'sb_url',
+        'sb_bu',
     ];
 }

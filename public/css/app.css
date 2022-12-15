@@ -1606,6 +1606,12 @@ select {
 .w-11 {
 	width: 2.75rem;
 }
+.w-2\/6 {
+	width: 33.333333%;
+}
+.w-1\/6 {
+	width: 16.666667%;
+}
 .min-w-0 {
 	min-width: 0px;
 }

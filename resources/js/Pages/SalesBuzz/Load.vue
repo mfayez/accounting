@@ -6,7 +6,7 @@
 
         <template #content>
 			<jet-validation-errors class="mb-4" />
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 gap-4">
                 <div>
                     <div>
                         <jet-label
@@ -38,22 +38,7 @@
                         />
                     </div>
                 </div>
-                <div>
-                    <div>
-                        <jet-label
-                            for="buid"
-                            :value="__('Business Unit')"
-                        />
-                        <jet-input
-                            id="buid"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.buid"
-                            required
-                        />
-                    </div>
-                </div>
-                <div class="lg:col-span-3">
+                <div class="lg:col-span-2">
                     <jet-label :value="__('Branch')" />
                     <multiselect
                         v-model="form.issuer"
@@ -62,7 +47,7 @@
                         placeholder="Select branch"
                     />
                 </div>
-                <div class="lg:col-span-3">
+                <div class="lg:col-span-2">
                     <jet-label :value="__('Branch Activity')" />
                     <multiselect
                         v-model="form.taxpayerActivityCode"
@@ -71,10 +56,10 @@
                         placeholder="Select activity"
                     />
                 </div>
-                <div class="lg:col-span-3 flex justify-center">
+                <div class="lg:col-span-2 flex justify-center">
                     <jet-label :value="lastDate" />
                 </div>
-                <div class="lg:col-span-3 flex justify-center">
+                <div class="lg:col-span-2 flex justify-center">
                     <jet-label :value="lastInv" />
                 </div>
             </div>

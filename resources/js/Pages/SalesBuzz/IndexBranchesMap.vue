@@ -6,9 +6,10 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <table class="w-11/12 mx-auto max-w-4xl lg:max-w-full">
                         <thead class="text-center bg-gray-300">
-                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-2/5">{{__('Branch Name')}}</th>
-                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-2/5">{{__('Sales Buzz URL')}}</th>
-                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-1/5">{{__('Actions')}}</th>
+                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-2/6">{{__('Branch Name')}}</th>
+                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-2/6">{{__('Sales Buzz URL')}}</th>
+                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-1/6">{{__('Business Unit')}}</th>
+                            <th class="bg-[#f8f9fa] p-3 border border-[#eceeef] w-1/6">{{__('Actions')}}</th>
 						</thead>
 						<tbody>
 					  		<tr v-for="item in items" :key="item.BID">
@@ -21,6 +22,14 @@
                                         type="test"
                                         class="mt-1 block w-full"
                                         v-model="item.SBUrl"
+                                    />
+                                </td>
+                                <td>
+                                    <jet-input
+                                        id="SBBU"
+                                        type="test"
+                                        class="mt-1 block w-full"
+                                        v-model="item.SBBU"
                                     />
                                 </td>
                                 <td>

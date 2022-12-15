@@ -66,7 +66,6 @@ class SalesBuzzController extends Controller
 		$data = $request->validate([
 			"username" 				=> "required|string",
 			"password" 				=> "required|string",
-			"buid" 					=> "required|string",
 			"value" 				=> "required|integer",
 			"period"				=> "required|integer",
 			'issuer'				=> 'required',
@@ -82,8 +81,9 @@ class SalesBuzzController extends Controller
 			];
 		}
 		$url = $branchMap->sb_url;
+		$buid = $branchMap->sb_bu;
 		
-		$this->AuthenticateSB($request, $data['username'], $data['password'], $data['buid'], $url);
+		$this->AuthenticateSB($request, $data['username'], $data['password'], $buid, $url);
 		if ($this->salezbuzz_cookies == ""){
 			return [
 				'code'      =>  404,
@@ -411,7 +411,7 @@ class SalesBuzzController extends Controller
 
 	public function indexBranchesMap(Request $request)
 	{
-		$data = DB::select("SELECT t1.Id as BID, t1.Name as BName, t2.sb_url as SBUrl
+		$data = DB::select("SELECT t1.Id as BID, t1.Name as BName, t2.sb_url as SBUrl, t2.sb_bu as SBBU
 			from Issuer t1 left outer join
 				sb_branches_map t2 on t1.Id = t2.branch_id"
 		);
@@ -424,13 +424,15 @@ class SalesBuzzController extends Controller
 	public function updateBranchesMap(Request $request){
 		$data = $request->validate([
 			'BID' => 'required',
-			'SBUrl' => 'required'
+			'SBUrl' => 'required',
+			'SBBU' => 'required',
 		]);
 
 		$branch_map = SBBranchMap::updateOrCreate(
 			['branch_id' => $data['BID']],
 			['branch_id' => $data['BID'],
-			 'sb_url' => $data['SBUrl']
+			 'sb_url' => $data['SBUrl'],
+			 'sb_bu' => $data['SBBU']
 			]
 		);
 
