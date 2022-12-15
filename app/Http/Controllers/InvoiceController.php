@@ -48,6 +48,8 @@ class InvoiceController extends Controller
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
         $status = $request->input('status');
+        $size = 100;
+        $offset = ($request->input('page_no') - 1) * $size;
 
         $sqlstatement = "select 
                             t1.Id as InvID, t1.internalID as Id, month(t1.dateTimeIssued) as Month,
@@ -65,12 +67,12 @@ class InvoiceController extends Controller
                             and
                             (t1.status = ? or ? = 'all')
                             and
-                            (t1.issuer_id in (?))
+                            (t1.issuer_id in (select issuer_id from user_issuer where user_id = ?))
                         group by
                             t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t2.name, t1.totalAmount, t1.Id
-                            ";
+                        limit ? offset ?";
         $data = DB::select($sqlstatement, [$branchId, $branchId, $receiverId, $receiverId, $startDate, $endDate, $status, $status, 
-                                            implode(', ', Auth::user()->issuers->pluck("Id")->toArray())]);
+                                            Auth::user()->id]);
         return $data;
     }
 
