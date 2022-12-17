@@ -48,7 +48,7 @@ class InvoiceController extends Controller
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
         $status = $request->input('status');
-        $size = 100;
+        $size = 1000;
         $offset = ($request->input('page_no') - 1) * $size;
 
         $sqlstatement = "select 
@@ -72,7 +72,7 @@ class InvoiceController extends Controller
                             t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t2.name, t1.totalAmount, t1.Id
                         limit ? offset ?";
         $data = DB::select($sqlstatement, [$branchId, $branchId, $receiverId, $receiverId, $startDate, $endDate, $status, $status, 
-                                            Auth::user()->id, $size, 0]);
+                Auth::user()->id, $size, 0]);
         return $data;
     }
 
