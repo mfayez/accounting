@@ -72,7 +72,7 @@ class InvoiceController extends Controller
                             t1.internalID, month(t1.dateTimeIssued), CAST(t1.dateTimeIssued as date), t2.name, t1.totalAmount, t1.Id
                         limit ? offset ?";
         $data = DB::select($sqlstatement, [$branchId, $branchId, $receiverId, $receiverId, $startDate, $endDate, $status, $status, 
-                                            Auth::user()->id]);
+                                            Auth::user()->id, $size, 0]);
         return $data;
     }
 
