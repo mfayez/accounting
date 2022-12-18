@@ -68,8 +68,14 @@
               {{ __("Delete All") }}
             </jet-secondary-button>
 
-            <jet-secondary-button class="ms-2" @click="onDelay1Day()">
+            <jet-secondary-button class="ms-2" @click="onDelay(1)">
               {{ __("Delay Selected 1 Day") }}
+            </jet-secondary-button>
+            <jet-secondary-button class="ms-2" @click="onDelay(2)">
+              {{ __("Delay Selected 2 Day") }}
+            </jet-secondary-button>
+            <jet-secondary-button class="ms-2" @click="onDelay(3)">
+              {{ __("Delay Selected 3 Day") }}
             </jet-secondary-button>
           </div>
         </div>
@@ -233,7 +239,7 @@ export default {
               swal(this.__("Invoices has been approved!"), {
                 icon: "success",
               }).then(() => {
-                location.reload();
+                this.onSearch();
               });
             })
             .catch((error) => {
@@ -244,7 +250,7 @@ export default {
         }
       });
     },
-    onDelay1Day() {
+    onDelay(p_days) {
       var temp = this.data.filter((row) => row.selected);
       if (temp.length == 0) {
         swal(this.__("Please select at least one invoice!"), {
@@ -254,7 +260,7 @@ export default {
       }
       swal({
         title: this.__("Are you sure?"),
-        text: this.__("Once clicked ok  the selected invoices will be delayed 1 day"),
+        text: this.__("Once clicked ok  the selected invoices will be delayed"),
         icon: "warning",
         buttons: true,
         dangerMode: true,
@@ -265,13 +271,13 @@ export default {
               Id: this.data
                 .filter((row) => row.selected)
                 .map((row) => row.InvID),
-              days: 1,
+              days: p_days,
             })
             .then((response) => {
-              swal(this.__("Invoices has been delayed 1 day!"), {
+              swal(this.__("Invoices has been delayed!"), {
                 icon: "success",
               }).then(() => {
-                location.reload();
+                this.onSearch();
               });
             })
             .catch((error) => {
@@ -308,7 +314,7 @@ export default {
               swal(this.__("Invoices has been deleted!"), {
                 icon: "success",
               }).then(() => {
-                location.reload();
+                this.onSearch();
               });
             })
             .catch((error) => {
@@ -341,7 +347,7 @@ export default {
               swal(this.__("Invoices has been approved!"), {
                 icon: "success",
               }).then(() => {
-                location.reload();
+                this.onSearch();
               });
             })
             .catch((error) => {
@@ -372,7 +378,7 @@ export default {
               swal(this.__("Invoices has been deleted!"), {
                 icon: "success",
               }).then(() => {
-                location.reload();
+                this.onSearch();
               });
             })
             .catch((error) => {

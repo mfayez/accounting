@@ -329,11 +329,13 @@
 	"Upload Customers": "رفع العملاء(ملف اكسل)",
 	"Invoice total is greater than 50,000 and receiver is not registered": "مجموع الفاتورة أكبر من 50,000 والمستلم غير مسجل",
 	"Invoice must be issued in the past": "تاريخ الفاتورة يجب أن يكون فى الماضي",
-	"Invoice must be issued within 3 days": "تاريخ الفاتورة يجب أن يكون فى غضون 3 أيام",
+	"Invoice must be issued within 1 day": "تاريخ الفاتورة يجب أن يكون فى غضون يوم واحد",
 	"Once clicked ok  the selected invoices will be deleted": "بعد الضغط على موافقة سيتم حذف الفواتير المختارة",
 	"Invoices has been deleted!": "تم حذف الفواتير!",
-	"Invoices has been delayed 1 day!": "تم تأجيل الفواتير بيوم واحد!",
-	"Once clicked ok  the selected invoices will be delayed 1 day": "بعد الضغط على موافقة سيتم تأجيل الفواتير المختارة بيوم واحد",
+	"Invoices has been delayed!": "تم تأجيل الفواتير!",
+	"Once clicked ok  the selected invoices will be delayed": "بعد الضغط على موافقة سيتم تأجيل الفواتير المختارة",
 	"Delay Selected 1 Day": "تأجيل الفواتير المختارة بيوم واحد",
+	"Delay Selected 2 Day": "تأجيل الفواتير المختارة بيومين",
+	"Delay Selected 3 Day": "تأجيل الفواتير المختارة بثلاث أيام",
 	"Save Edit": "حفظ التعديلات"
 }

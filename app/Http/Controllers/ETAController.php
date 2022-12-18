@@ -1123,8 +1123,8 @@ class ETAController extends Controller
 				$inv->save();
 				continue;
 			}
-			if ($inv->dateTimeIssued < Carbon::now()->subDays(3)){
-				$inv->statusReason = __("Invoice must be issued within 3 days");
+			if ($inv->dateTimeIssued < Carbon::now()->subDays(1)){
+				$inv->statusReason = __("Invoice must be issued within 1 day");
 				$inv->save();
 				continue;
 			}
@@ -1148,8 +1148,9 @@ class ETAController extends Controller
 			$ids = [$ids];
 		foreach($ids as $id){
 			$inv = Invoice::findOrFail($id);
-			if ($inv->status == "In Review" || $inv->status == "Invalid") {
+			if ($inv->status == "In Review" || $inv->status == "approved" || $inv->status == "Invalid" || $inv->status == "Rejected") {
 				$inv->dateTimeIssued = $inv->dateTimeIssued->addDays($days);
+				$inv->status = "In Review";
 				$inv->save();
 			}
 		}
