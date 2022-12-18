@@ -1148,7 +1148,7 @@ class ETAController extends Controller
 			$ids = [$ids];
 		foreach($ids as $id){
 			$inv = Invoice::findOrFail($id);
-			if ($inv->status == "In Review" || $inv->status == "approved" || $inv->status == "Invalid" || $inv->status == "Rejected") {
+			if ($inv->status == "In Review" || $inv->status == "approved" || $inv->status == "Invalid" || $inv->status == "rejected") {
 				$inv->dateTimeIssued = $inv->dateTimeIssued->addDays($days);
 				$inv->status = "In Review";
 				$inv->save();
