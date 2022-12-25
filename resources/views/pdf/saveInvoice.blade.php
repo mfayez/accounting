@@ -9,7 +9,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>Invoice Master</title>
+    <title>Accounting Master</title>
 
 </head>
 

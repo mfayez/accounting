@@ -6,7 +6,7 @@
                     <div class="text-xl font-semibold text-gray-700">
                         <Link :href="route('dashboard')" class="flex">
                             <jet-application-mark class="w-10" />
-                            <span class="self-center ms-3">Invoice Master</span>
+                            <span class="self-center ms-3">Accounting Master</span>
                         </Link>
                     </div>
 

@@ -1,16 +1,11 @@
 <template>
     <div class="px-3 py-6 w-screen h-screen flex justify-center items-center">
         <div
-            class="flex w-full mx-auto overflow-hidden bg-white rounded-lg shadow-xl lg:w-8/12"
+            class="flex w-full mx-auto overflow-hidden bg-white rounded-lg shadow-xl lg:w-1/3"
         >
-            <div
-                class="hidden bg-cover lg:block lg:w-1/2"
-                style="background-image: url('/images/logo-1.jpg')"
-            ></div>
-
-            <div class="w-full px-6 py-8 md:px-8 lg:w-1/2">
+            <div class="w-full px-6 py-8 md:px-8">
                 <h2 class="text-2xl font-semibold text-center text-gray-700">
-                    Invoice Master
+                    Accounting Master
                 </h2>
 
                 <p class="text-xl text-center text-gray-600">Welcome back!</p>

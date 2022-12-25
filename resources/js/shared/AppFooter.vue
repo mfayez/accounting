@@ -5,7 +5,7 @@
         <a
             href="#"
             class="text-xl font-bold text-gray-800 dark:text-white hover:text-gray-700 dark:hover:text-gray-300"
-            >Invoice Master</a
+            >Accounting Master</a
         >
         <p class="py-2 text-gray-800 dark:text-white sm:py-0">
             All rights reserved &copy; {{ new Date().getFullYear() }}

@@ -3,23 +3,7 @@
     "type": "project",
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
-    "license": "MIT",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/var/www/html/SBSDK/WebAuth",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "path",
-            "url": "/var/www/html/SBSDK/PromotionHeaderDS",
-            "options": {
-                "symlink": true
-            }
-        }
-    ],
+    "license": "MIT",    
     "require": {
         "php": "^7.3|^8.0",
         "alkoumi/laravel-arabic-numbers": "^1.1",
