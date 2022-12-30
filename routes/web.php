@@ -70,14 +70,6 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
-    Route::get('/dashboard2', function () {
-        return Inertia::render('index');
-    })->name('dashboard2');
-
-    Route::get('/dashboard3', function () {
-        return Inertia::render('Main');
-    })->name('dashboard3');
-
     Route::resources([
         'invoices' => InvoiceController::class,
         'customers' => CustomerController::class,
@@ -85,7 +77,6 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
         'users' => UserController::class,
         'pos' => POSController::class,
     ]);
-
 
     Route::get('/invoice/search',[InvoiceController::class,'search'])->name("invoices.search");
     Route::post('/invoice/searchData',[InvoiceController::class,'searchData'])->name("invoices.searchData");
