@@ -2,9 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\ETAItem;
-use App\Models\ETAInvoice;
-use App\Models\Invoice;
+use App\Models\ETA\ETAItem;
+use App\Models\ETA\ETAInvoice;
+use App\Models\ETA\Invoice;
 use App\Http\Controllers\ETAController;
 use App\Http\Controllers\APIController;
 use App\Http\Controllers\BranchController;

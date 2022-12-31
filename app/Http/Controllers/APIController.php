@@ -7,13 +7,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\ETAItem;
-use App\Models\Invoice;
-use App\Models\InvoiceLine;
-use App\Models\TaxableItem;
-use App\Models\TaxTotal;
-use App\Models\Value;
-use App\Models\Discount;
+use App\Models\ETA\ETAItem;
+use App\Models\ETA\Invoice;
+use App\Models\ETA\InvoiceLine;
+use App\Models\ETA\TaxableItem;
+use App\Models\ETA\TaxTotal;
+use App\Models\ETA\Value;
+use App\Models\ETA\Discount;
 use App\Http\Requests\StoreInvoiceRequest;
 
 class APIController extends Controller

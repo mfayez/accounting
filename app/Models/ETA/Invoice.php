@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\ETA;
 
-use App\Models\TaxTotal;
+use App\Models\ETA\TaxTotal;
 use Illuminate\Support\Facades\DB;
 
 /**

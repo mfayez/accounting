@@ -13,8 +13,8 @@ use Illuminate\Support\Str;
 
 use App\Http\Traits\ETAAuthenticator;
 
-use App\Models\ETAInvoice;
-use App\Models\Invoice;
+use App\Models\ETA\ETAInvoice;
+use App\Models\ETA\Invoice;
 
 class ETAInvoiceController extends Controller
 {

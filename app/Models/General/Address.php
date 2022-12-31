@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\General;
 
 /**
  * Eloquent class to describe the Address table.

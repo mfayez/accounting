@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\ETA;
 
 /**
  * Eloquent class to describe the TaxTotal table.

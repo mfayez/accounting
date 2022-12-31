@@ -14,21 +14,21 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-use App\Models\Address;
-use App\Models\Delivery;
-use App\Models\Discount;
-use App\Models\InvoiceLine;
-use App\Models\Invoice;
-use App\Models\Issuer;
+use App\Models\General\Address;
+use App\Models\ETA\Delivery;
+use App\Models\ETA\Discount;
+use App\Models\ETA\InvoiceLine;
+use App\Models\ETA\Invoice;
+use App\Models\ETA\Issuer;
 use App\Models\Membership;
-use App\Models\Payment;
-use App\Models\Receiver;
-use App\Models\TaxableItem;
-use App\Models\TaxTotal;
-use App\Models\TeamInvitation;
+use App\Models\General\Payment;
+use App\Models\ETA\Receiver;
+use App\Models\ETA\TaxableItem;
+use App\Models\ETA\TaxTotal;
+use App\Models\General\TeamInvitation;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\Value;
+use App\Models\ETA\Value;
 
 use App\Http\Traits\ExcelWrapper;
 

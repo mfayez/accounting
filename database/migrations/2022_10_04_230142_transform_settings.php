@@ -4,8 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use App\Models\Settings;
-use App\Models\Issuer;
+use App\Models\General\Settings;
+use App\Models\ETA\Issuer;
 
 class TransformSettings extends Migration
 {
