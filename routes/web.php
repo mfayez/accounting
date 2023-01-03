@@ -18,6 +18,7 @@ use App\Http\Controllers\ETAInvoiceController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SalesBuzzController;
+use App\Http\Controllers\AccountingChartController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -186,6 +187,14 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     
     Route::post('/sb/sync_orders', [SalesBuzzController::class, 'syncSalesOrders'])->name("sb.sync_orders");
     Route::post('/sb/branches/map', [SalesBuzzController::class, 'updateBranchesMap'])->name("sb.branches.map.update");
+
+#Accounting Master Routes
+    Route::get("accounting/chart/index", [AccountingChartController::class, 'index'])->name("accounting.chart.index");    
+    Route::get("accounting/chart/json", [AccountingChartController::class, 'index_json'])->name("accounting.chart.json");
+    Route::get("accounting/chart/download", [AccountingChartController::class, 'download'])->name("accounting.chart.download");
+    Route::post("/accounting/chart/upload", [AccountingChartController::class, 'upload'])->name("accounting.chart.upload");
+    Route::post("/accounting/chart/store", [AccountingChartController::class, 'store'])->name("accounting.chart.store");
+    Route::post("/accounting/chart/delete", [AccountingChartController::class, 'delete'])->name("accounting.chart.delete");
     
 });
 

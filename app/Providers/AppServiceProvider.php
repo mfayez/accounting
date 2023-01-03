@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
           'e_receipt_enabled' => SETTINGS_VAL('application settings', 'e_receipt', '0') == '1' ? true : false,
           'e_invoice_enabled' => SETTINGS_VAL('application settings', 'e_invoice', '0') == '1' ? true : false,
           'sales_buzz_enabled' => SETTINGS_VAL('application settings', 'sales_buzz', '0') == '1' ? true : false,
+          'accounting_chart_enabled' => SETTINGS_VAL('application settings', 'accounting_chart', '0') == '1' ? true : false,
           'locale' => function () {
             return Session()->get('locale', app()->getLocale());
           },

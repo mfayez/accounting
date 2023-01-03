@@ -337,5 +337,13 @@
 	"Delay Selected 1 Day": "تأجيل الفواتير المختارة بيوم واحد",
 	"Delay Selected 2 Day": "تأجيل الفواتير المختارة بيومين",
 	"Delay Selected 3 Day": "تأجيل الفواتير المختارة بثلاث أيام",
-	"Save Edit": "حفظ التعديلات"
+	"Save Edit": "حفظ التعديلات",
+	"Code": "الكود",
+	"Name": "الأسم",
+	"Parent": "الأصل",
+	"Show Accounting Chart": "عرض الدليل المحاسبي",
+	"Upload Accounting Chart": "رفع الدليل المحاسبي",
+	"Download Accounting Chart": "تحميل الدليل المحاسبي",
+	"Activate": "تفعيل",
+	"Deactivate": "إلغاء التفعيل"
 }

@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Models\Accouting
-;
+namespace App\Models\Accounting;
 
 use AccountingBookDataDetails;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

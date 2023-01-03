@@ -10,6 +10,10 @@
 			<form @submit.prevent="submit">
 				<div class="grid grid-cols-2 gap-4">
 					<div class="col-span-2">
+                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.accounting_chart" />
+						<jet-label for="automatic" :value="__('Activate Accounting Module')" class="ms-2"/>
+					</div>
+					<div class="col-span-2">
                         <jet-checkbox name="automatic" id="automatic" v-model:checked="form.e_invoice" />
 						<jet-label for="automatic" :value="__('Activate E-Invoice')" class="ms-2"/>
 					</div>
@@ -104,6 +108,7 @@
 					e_invoice: true,
 					e_receipt: false,
 					sales_buzz: false,
+					accounting_chart: false,
 					invoiceTemplate: '',
 					invoiceVersion: '1.0'
                 }),
@@ -125,6 +130,7 @@
 						this.form.e_invoice = this.settings.e_invoice == '1' ? true : false;
 						this.form.e_receipt = this.settings.e_receipt == '1' ? true : false;
 						this.form.sales_buzz = this.settings.sales_buzz == '1' ? true : false;
+						this.form.accounting_chart = this.settings.accounting_chart == '1' ? true : false;
         		    }).catch(error => {
             		});
 			},

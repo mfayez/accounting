@@ -45,6 +45,41 @@
                         >
                         <dropdown
                             :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.accounting_chart_enabled"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': salesBuzzConditions,
+                                    }"
+                                >
+                                    <i class="fa fa-file"></i>
+                                    {{ __("Accounting") }}
+                                </span>
+                            </template>
+
+                            <template #content>
+                                <dropdown-link :href="route('accounting.chart.index')">
+                                    {{ __("Show Accounting Chart") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('dlg16')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Accounting Chart") }}
+                                </dropdown-link>
+                                <dropdown-link as="a" :href="route('accounting.chart.download')">
+                                    {{ __("Download Accounting Chart") }}
+                                </dropdown-link>
+                            </template>
+                        </dropdown>
+
+                        <dropdown
+                            :align="alignDropDown()"
                             class="ms-3 mb-3 lg:mb-0"
                         >
                             <template #trigger>
@@ -544,12 +579,6 @@ export default {
         },
         openDlg($dlg) {
             this.$emit("open_dlg", $dlg);
-        },
-        openDlg12() {
-            this.$emit("open:dlg12");
-        },
-        openDlg12() {
-            this.$emit("open:dlg12");
         },
     },
     computed: {

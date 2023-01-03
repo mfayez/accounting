@@ -14,7 +14,7 @@ class AccountingChart extends Migration
     public function up()
     {
         Schema::create('accounting_chart', function (Blueprint $table) {
-            $table->id();
+            $table->biginteger('id')->primary();
             $table->string('name');
             $table->string('parent_id')->nullable();
             $table->string('description');

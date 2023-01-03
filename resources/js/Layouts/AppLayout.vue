@@ -20,6 +20,7 @@
         <sb-load-invoices-dialog ref="dlg13" />
         <sb-items-map-dialog ref="dlg14" />
         <upload-customers-dialog ref="dlg15"/>
+        <upload-accounting-chart ref="dlg16"/>
 
         <div class="min-h-screen bg-gray-100 pb-5">
             <main>
@@ -52,6 +53,7 @@ import LoadReceipts from "@/Pages/Receipts/Load";
 import UploadReceipts from "@/Pages/Receipts/Upload";
 import SbLoadInvoicesDialog from "@/Pages/SalesBuzz/Load"
 import SbItemsMapDialog from "@/Pages/SalesBuzz/ItemsMap"
+import UploadAccountingChart from "@/Pages/Accounting/Chart/Upload"
 import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
@@ -80,6 +82,7 @@ export default {
         NavBar,
         AppFooter,
         FlashMessage,
+        UploadAccountingChart,
     },
 
     data() {
