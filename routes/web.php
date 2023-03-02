@@ -18,6 +18,7 @@ use App\Http\Controllers\ETAInvoiceController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SalesBuzzController;
+use App\Http\Controllers\MobisController;
 use App\Http\Controllers\AccountingChartController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -108,6 +109,7 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::post('/ETA/Invoices/Cancel', [ETAController::class, 'CancelInvoice'])->name("eta.invoices.cancel");
     Route::post('/ETA/Invoices/Delete', [ETAController::class, 'DeleteInvoice'])->name("eta.invoices.delete");
     Route::post('/ETA/Invoices/Delay', [ETAController::class, 'DelayInvoice'])->name("eta.invoices.delay");
+    Route::post('/ETA/Invoices/FixDate', [ETAController::class, 'FixInvoiceDate'])->name("eta.invoices.fixDate");
     Route::post('/ETA/Invoices/Approve', [ETAController::class, 'ApproveInvoice'])->name("eta.invoices.approve");
     Route::post('/ETA/Invoices/Upload', [ETAController::class, 'UploadInvoice'])->name("eta.invoices.upload");
     Route::post('/ETA/Invoices/Upload/Cancel', [ETAController::class, 'CancelUpload'])->name("eta.invoices.upload.cancel");
@@ -188,10 +190,25 @@ Route::middleware(['auth:sanctum', 'verified', 'ETASettings'])->group(function (
     Route::post('/sb/sync_orders', [SalesBuzzController::class, 'syncSalesOrders'])->name("sb.sync_orders");
     Route::post('/sb/branches/map', [SalesBuzzController::class, 'updateBranchesMap'])->name("sb.branches.map.update");
 
+#mobis(Ulker) stuff
+    //Branches Map
+    //Route::get('/ms/branches/map', [MobisController::class, 'indexBranchesMap'])->name("ms.branches.map.index");
+    //Route::post('/ms/branches/map', [MobisController::class, 'updateBranchesMap'])->name("ms.branches.map.update");
+    
+    //Items Map
+    Route::get('/ms/items/map', [MobisController::class, 'indexItemsMap'])->name("ms.items.map.index");
+    Route::post('/ms/items/map/upload', [MobisController::class, 'UploadItemsMap'])->name("ms.items.map.upload");
+    Route::get('/ms/items/map/download', [MobisController::class, 'DownloadItemsMap'])->name("ms.items.map.download");
+    Route::post('/ms/items/map/update', [MobisController::class, 'updateItem'])->name("ms.items.map.update");
+    Route::post('/ms/items/map/delete', [MobisController::class, 'deleteItem'])->name("ms.items.map.delete");
+
+    //Invoices Upload
+    Route::post('/ms/upload', [MobisController::class, 'uploadInvoices'])->name("ms.invoices.upload");
+ 
 #Accounting Master Routes
-    Route::get("accounting/chart/index", [AccountingChartController::class, 'index'])->name("accounting.chart.index");    
-    Route::get("accounting/chart/json", [AccountingChartController::class, 'index_json'])->name("accounting.chart.json");
-    Route::get("accounting/chart/download", [AccountingChartController::class, 'download'])->name("accounting.chart.download");
+    Route::get("/accounting/chart/index", [AccountingChartController::class, 'index'])->name("accounting.chart.index");    
+    Route::get("/accounting/chart/json", [AccountingChartController::class, 'index_json'])->name("accounting.chart.json");
+    Route::get("/accounting/chart/download", [AccountingChartController::class, 'download'])->name("accounting.chart.download");
     Route::post("/accounting/chart/upload", [AccountingChartController::class, 'upload'])->name("accounting.chart.upload");
     Route::post("/accounting/chart/store", [AccountingChartController::class, 'store'])->name("accounting.chart.store");
     Route::post("/accounting/chart/delete", [AccountingChartController::class, 'delete'])->name("accounting.chart.delete");
