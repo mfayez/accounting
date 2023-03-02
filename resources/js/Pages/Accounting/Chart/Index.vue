@@ -6,7 +6,7 @@
 			<jet-label for="type"  :value="__('Are you sure you want to delete this item?')" />
 		</confirm>
 		<div class="py-4">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mx-auto sm:px-6 lg:px-8">
                 <button class="btn btn-primary" @click="newItemMap()">
                     {{ __("New") }}
                 </button>
