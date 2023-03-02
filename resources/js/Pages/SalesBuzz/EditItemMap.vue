@@ -9,7 +9,7 @@
 
             <form @submit.prevent="submit">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
+                    <div class="col-span-1">
                         <jet-label :value="__('SBCode')" />
                         <jet-input
                             id="SBCode"
@@ -17,6 +17,15 @@
                             class="mt-1 block w-full"
                             v-model="form.SBCode"
                             :disabled="true"
+                        />
+                    </div>
+                    <div class="col-span-1">
+                        <jet-label :value="__('Value Difference')" />
+                        <jet-input
+                            id="ValDiff"
+                            type="number"
+                            class="mt-1 block w-full"
+                            v-model="form.Val_Diff"
                         />
                     </div>
 					<div class="col-span-2">
@@ -31,7 +40,7 @@
                             :placeholder="__('Select item')"
                         />
                     </div>
-                    <div class="col-span-2">
+                    <div class="col-span-1">
                         <jet-label :value="__('Name Arabic')" />
                         <jet-input
                             id="SBCode"
@@ -40,7 +49,7 @@
                             v-model="form.ItemNameA"
                         />
                     </div>
-                    <div class="col-span-2">
+                    <div class="col-span-1">
                         <jet-label :value="__('Name English')" />
                         <jet-input
                             id="SBCode"
@@ -49,6 +58,73 @@
                             v-model="form.ItemNameE"
                         />
                     </div>
+                </div>
+                <div
+                    class="grid grid-cols-7 gap-2 mt-2 border-t border-b border-gray-20"
+                >
+                    <multiselect
+                        class="col-span-3"
+                        v-model="taxType"
+                        label="label"
+                        :placeholder="__('Select Tax Type')"
+                        :options="taxTypes"
+                        @update:model-value="updateTaxSubtypes"
+                    />
+                    <multiselect
+                        class="col-span-3"
+                        v-model="taxSubtype"
+                        :placeholder="__('Select Tax Subtype')"
+                        :options="taxSubtypes1"
+                        label="label"
+                    />
+                    <!--<pre> {{item}} </pre>-->
+                    <div class="flex items-center justify-center col-span-1">
+                        <jet-secondary-button @click="AddTaxItem()">
+                            {{ __("Add Tax") }}
+                        </jet-secondary-button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-6 gap-0 mt-2">
+                    <div class="bg-gray-200 col-span-2">{{ __("Tax Code") }}</div>
+                    <div class="bg-gray-200 col-span-2">
+                        {{ __("Tax Subcode") }}
+                    </div>
+                    <div class="bg-gray-200 col-span-1">
+                        {{ __("Tax Percentage") }}
+                    </div>
+                    <div class="bg-gray-200 col-span-1"></div>
+                    <template
+                        v-for="(taxitem, idx1) in form.taxTypes"
+                        :key="taxitem.key"
+                    >
+                        <jet-label class="mt-2 col-span-2">{{
+                            taxitem.taxType.label
+                        }}</jet-label>
+                        <jet-label class="mt-2 col-span-2">{{
+                            taxitem.taxSubtype.label
+                        }}</jet-label>
+                        <jet-input
+                            :id="taxitem.taxType.label"
+                            type="number"
+                            class="mt-1 block w-full mt-2 col-span-1"
+                            :isRounded="false"
+                            v-model="taxitem.percentage"
+                            required
+                            autofocus
+                        />
+                        <jet-danger-button
+                            @click="deleteItem(idx1)"
+                            class="mt-2 ms-2"
+                        >
+                            {{ __("Delete") }}
+                        </jet-danger-button>
+                    </template>
+                    <jet-label
+                        class="col-span-8"
+                        v-if="!form.taxTypes || form.taxTypes.length == 0"
+                    >
+                        {{ __("Please Add tax items if applicable") }}
+                    </jet-label>
                 </div>
             </form>
         </template>
@@ -122,10 +198,17 @@ export default {
                 ETACode: "",
                 ItemNameA: "",
 				ItemNameE: "",
+                taxTypes: [],
+                Val_Diff: 0,
             }),
             eta_item: null,
             items: [],
             showDialog: false,
+            taxTypes: [],
+            taxSubTypes: [],
+            taxSubtypes1: [],
+            taxType: null,
+            taxSubtype: null,
         };
     },
 
@@ -136,6 +219,9 @@ export default {
                 this.form.ETACode = this.item_map.ETACode;
                 this.form.ItemNameA = this.item_map.ItemNameA;
                 this.form.ItemNameE = this.item_map.ItemNameE;
+                this.form.Val_Diff = this.item_map.Val_Diff;
+                this.form.taxTypes = [];
+                this.updateTaxList();
             }
             this.showDialog = true;
             this.$nextTick(() => {
@@ -185,6 +271,33 @@ export default {
                 this.form.ETACode = this.eta_item.itemCode;
             }
         },
+        updateTaxSubtypes() {
+            this.taxSubtypes1 = this.taxSubtypes.filter((obj) => {
+                if (obj.TaxtypeReference == this.taxType.Code) return obj;
+            });
+            this.taxSubType = {};
+        },
+        AddTaxItem (rate=0) {
+            this.form.taxTypes.push({
+                taxType: this.taxType,
+                taxSubtype: this.taxSubtype,
+                percentage: rate,
+            });
+        },
+        deleteItem(idx1) {
+            this.form.taxTypes.splice(idx1, 1);
+        },
+        updateTaxList() {
+            this.item_map.item_tax.forEach((obj) => {
+                this.taxType = this.taxTypes.find(
+                    (option) => option.Code === obj.taxType
+                );
+                this.taxSubtype = this.taxSubtypes.find(
+                    (option) => option.Code === obj.taxSubtype
+                );
+                this.AddTaxItem(obj.rate);
+            });
+        }
     },
     created() {
         axios
@@ -197,6 +310,27 @@ export default {
                     );
                     this.updateETAItem();
                 }
+            })
+            .catch((error) => {});
+        axios
+            .get("/json/TaxTypes.json")
+            .then((response) => {
+                this.taxTypes = response.data;
+                this.taxTypes = this.taxTypes.map((obj) => {
+                    obj.label = obj.Code.concat("(", obj.Desc_ar, ")");
+                    return obj;
+                });
+                axios
+                    .get("/json/TaxSubtypes.json")
+                    .then((response) => {
+                        this.taxSubtypes = response.data;
+                        this.taxSubtypes = this.taxSubtypes.map((obj) => {
+                            obj.label = obj.Code.concat("(", obj.Desc_ar, ")");
+                            return obj;
+                        });
+                        this.updateTaxList();
+                    })
+                    .catch((error) => {});
             })
             .catch((error) => {});
     },

@@ -17,8 +17,9 @@
     	                        v-model="form.type"
         	                    class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
             	            >
-                  	          <option value="P">{{ __("Person") }}</option>
+                  	            <option value="P">{{ __("Person") }}</option>
                     	        <option value="B">{{ __("Business") }}</option>
+                                <option value="F">{{ __("Foreign Customer") }}</option>
                         	</select>
                         </div>
 
@@ -87,15 +88,22 @@
                     </div>
                     <div>
                         <div>
-                            <jet-label for="country" :value="__('Country')" />
-                            <jet-input
+                            <jet-label :value="__('Country')" />
+                            <select
                                 id="country"
-                                type="text"
-                                class="mt-1 block w-full"
                                 v-model="form.address.country"
-								disabled required
-                            />
+                                class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
+                                @change="onCountryChange($event)"
+                            >
+                                <option
+                                    v-for="country in countries"
+                                    :value="country.code"
+                                >
+                                    {{ __(country.name) }}
+                                </option>
+                            </select>
                         </div>
+                        
                         <div class="mt-4">
                             <jet-label
                                 for="governate"
@@ -106,35 +114,12 @@
     	                        v-model="form.address.governate"
         	                    class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
             	            >
-                               <option value="Cairo">{{ __("Cairo") }}</option>
-                               <option value="Giza">{{ __("Giza") }}</option>
-                               <option value="Alexandria">{{ __("Alexandria") }}</option>
-                               <option value="Gharbiya">{{ __("Gharbiya") }}</option>
-                               <option value="Qalioubiya">{{ __("Qalioubiya") }}</option>
-                               <option value="Assiut">{{ __("Assiut") }}</option>
-                               <option value="Aswan">{{ __("Aswan") }}</option>
-                               <option value="Beheira">{{ __("Beheira") }}</option>
-                               <option value="Bani Suef">{{ __("Bani Suef") }}</option>
-                               <option value="Daqahliya">{{ __("Daqahliya") }}</option>
-                               <option value="Damietta">{{ __("Damietta") }}</option>
-                               <option value="Fayyoum">{{ __("Fayyoum") }}</option>
-                               <option value="Helwan">{{ __("Helwan") }}</option>
-                               <option value="Ismailia">{{ __("Ismailia") }}</option>
-                               <option value="Kafr El Sheikh">{{ __("Kafr El Sheikh") }}</option>
-                               <option value="Luxor">{{ __("Luxor") }}</option>
-                               <option value="Marsa Matrouh">{{ __("Marsa Matrouh") }}</option>
-                               <option value="Minya">{{ __("Minya") }}</option>
-                               <option value="Monofiya">{{ __("Monofiya") }}</option>
-                               <option value="New Valley">{{ __("New Valley") }}</option>
-                               <option value="North Sinai">{{ __("North Sinai") }}</option>
-                               <option value="Port Said">{{ __("Port Said") }}</option>
-                               <option value="Qena">{{ __("Qena") }}</option>
-                               <option value="Red Sea">{{ __("Red Sea") }}</option>
-                               <option value="Sharqiya">{{ __("Sharqiya") }}</option>
-                               <option value="Sohag">{{ __("Sohag") }}</option>
-                               <option value="South Sinai">{{ __("South Sinai") }}</option>
-                               <option value="Suez">{{ __("Suez") }}</option>
-                               <option value="Tanta">{{ __("Tanta") }}</option>
+                               <option
+                                    v-for="governate in states"
+                                    :value="governate.name"
+                                >
+                                    {{ __(governate.name) }}
+                                </option>
                         	</select>
                         </div>
                         <div class="mt-4">
@@ -167,7 +152,7 @@
                             />
                             <jet-input
                                 id="buildingNumber"
-                                type="number"
+                                type="text"
                                 class="mt-1 block w-full"
                                 v-model="form.address.buildingNumber"
                                 required
@@ -240,6 +225,13 @@ export default {
     data() {
         return {
             errors: [],
+            countries: [
+                { name: "Egypt", code: "EG" },
+                { name: "United States", code: "US" },
+                { name: "United Kingdom", code: "UK" },
+            ],
+            states: [],
+            allStates: [],
             form: this.$inertia.form({
                 name: "",
                 receiver_id: "",
@@ -269,6 +261,11 @@ export default {
                 this.form.code = this.customer.code;
                 this.form.address.customerID = this.customer.address.customerID;
                 this.form.address.country = this.customer.address.country;
+                this.allStates.find((state) => {
+                    if (state.countryShortCode == this.form.address.country) {
+                        this.states = state.regions;
+                    }
+                });
                 this.form.address.governate = this.customer.address.governate;
                 this.form.address.regionCity = this.customer.address.regionCity;
                 this.form.address.street = this.customer.address.street;
@@ -329,6 +326,34 @@ export default {
             if (this.customer == null) this.SaveNewCustomer();
             else this.SaveCustomer();
         },
+        onCountryChange(event){
+            alert(event.target.value);
+            this.allStates.find((state) => {
+                if (state.countryShortCode == event.target.value) {
+                    this.states = state.regions;
+                }
+            });
+            console.log(this.states);
+        }
+    },
+    created: function created() {
+        axios
+            .get("/json/Countries.json")
+            .then((response) => {
+                this.countries = response.data.map((country) => {
+                    return {
+                        name: country.countryName,
+                        code: country.countryShortCode,
+                    };
+                });
+                this.allStates = response.data;
+                this.allStates.find((state) => {
+                    if (state.countryShortCode == this.form.address.country) {
+                        this.states = state.regions;
+                    }
+                });
+            })
+            .catch((error) => {});
     },
 };
 </script>

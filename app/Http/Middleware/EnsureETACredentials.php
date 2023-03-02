@@ -16,10 +16,10 @@ class EnsureETACredentials
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
         if ($request->route()->getName() === 'setup.step1' || 
             $request->route()->getName() === 'setup.step2' ||
             $request->route()->getName() === 'setup.step3') {
+            return $next($request);
         }
         
         $eta_client_id = SETTINGS_VAL('ETA Settings', 'client_id', '');

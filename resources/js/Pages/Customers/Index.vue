@@ -70,7 +70,9 @@
                                     {{
                                         customer.type == "B"
                                             ? __("Business")
-                                            : __("Person")
+                                            : customer.type == "P"
+                                            ? __("Person")
+                                            : __("Foreign Customer")
                                     }}
                                 </td>
                                 <td v-show="showColumn('code')">

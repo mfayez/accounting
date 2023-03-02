@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ETA\Invoice;
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Inertia\Inertia;
 

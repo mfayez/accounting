@@ -21,7 +21,9 @@
         <sb-items-map-dialog ref="dlg14" />
         <upload-customers-dialog ref="dlg15"/>
         <upload-accounting-chart ref="dlg16"/>
-
+        <ms-items-map-dialog ref="msItemsMapUploadDlg" />
+        <ms-Upload-invoices-dialog ref="msLoadInvoicesDlg" />
+        
         <div class="min-h-screen bg-gray-100 pb-5">
             <main>
                 <div class="pt-6">
@@ -51,9 +53,11 @@ import ArchiveRequestDialog from "@/Pages/Archives/Request";
 import AddPos from "@/Pages/POS/Add.vue";
 import LoadReceipts from "@/Pages/Receipts/Load";
 import UploadReceipts from "@/Pages/Receipts/Upload";
-import SbLoadInvoicesDialog from "@/Pages/SalesBuzz/Load"
-import SbItemsMapDialog from "@/Pages/SalesBuzz/ItemsMap"
-import UploadAccountingChart from "@/Pages/Accounting/Chart/Upload"
+import SbLoadInvoicesDialog from "@/Pages/SalesBuzz/Load";
+import SbItemsMapDialog from "@/Pages/SalesBuzz/ItemsMap";
+import UploadAccountingChart from "@/Pages/Accounting/Chart/Upload";
+import MsUploadInvoicesDialog from "@/Pages/Mobis/Upload";
+import MsItemsMapDialog from "@/Pages/Mobis/ItemsMap";
 import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
 import NavBar from "@/shared/NavBar";
 import AppFooter from "@/shared/AppFooter";
@@ -75,10 +79,9 @@ export default {
         NewBranchDialog,
         LoadItemsDialog,
         LoadInvoicesDialog,
-		SettingsDialog1,
-		SettingsDialog2,
-        SbLoadInvoicesDialog,
-        SbItemsMapDialog,
+		SettingsDialog1, SettingsDialog2,
+        SbItemsMapDialog, SbLoadInvoicesDialog,
+        MsItemsMapDialog, MsUploadInvoicesDialog,
         NavBar,
         AppFooter,
         FlashMessage,

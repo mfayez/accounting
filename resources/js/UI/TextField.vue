@@ -44,8 +44,12 @@
 			itemLabel: String, 
 			itemId: String,
 			itemType: String,
-			modelValue: String,
-			active: {
+            //define modelValue to have string or number type
+            modelValue: {
+                type: [String, Number],
+                default: ''
+            },
+            active: {
 				Type: Boolean,
 				default: true
 			}

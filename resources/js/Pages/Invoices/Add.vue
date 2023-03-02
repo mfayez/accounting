@@ -112,7 +112,7 @@
                             v-model="form.extraDiscountAmount"
                             itemType="number"
                             :itemLabel="__('Extra Discount Amount')"
-                            :active="false"
+                            @update:model-value="updateValues()"
                         />
                         <TextField
                             v-model="form.totalItemsDiscountAmount"
@@ -337,7 +337,6 @@ export default {
             this.form.totalDiscountAmount = 0;
             this.form.netAmount = 0;
             this.form.totalAmount = 0;
-            this.form.extraDiscountAmount = 0;
             this.form.totalItemsDiscountAmount = 0;
             var taxTotals = {};
             this.form.taxTotals = [];
@@ -345,13 +344,11 @@ export default {
                 var item = this.form.invoiceLines[i];
 
                 this.form.totalSalesAmount += parseFloat(item.salesTotal);
-                //this.form.totalDiscountAmount += parseFloat(item.itemsDiscount);
+                if (item.discount)
+                    this.form.totalDiscountAmount += parseFloat(item.discount.amount);
                 this.form.netAmount += parseFloat(item.netTotal);
                 this.form.totalAmount += parseFloat(item.total);
-                this.form.extraDiscountAmount += 0;
-                this.form.totalItemsDiscountAmount += parseFloat(
-                    item.itemsDiscount
-                );
+                this.form.totalItemsDiscountAmount += parseFloat(item.itemsDiscount);
 
                 for (var j = 0; j < item.taxItems.length; j++) {
                     var taxitem = item.taxItems[j];
@@ -364,12 +361,15 @@ export default {
                             taxitem.value
                         );
                 }
-                this.form.netAmount = Math.round(this.form.netAmount * 100000) / 100000;
-                this.form.totalAmount = Math.round(this.form.totalAmount * 100000) / 100000;
-                this.form.extraDiscountAmount = Math.round(this.form.extraDiscountAmount * 100000) / 100000;
-                this.form.totalItemsDiscountAmount = Math.round(this.form.totalItemsDiscountAmount * 100000) / 100000;
-                this.form.totalSalesAmount = Math.round(this.form.totalSalesAmount * 100000) / 100000;
             }
+            this.form.extraDiscountAmount = Math.round(this.form.extraDiscountAmount * 100000) / 100000;
+            this.form.netAmount = Math.round(this.form.netAmount * 100000) / 100000;
+            this.form.totalAmount = this.form.totalAmount - this.form.extraDiscountAmount;
+            this.form.totalAmount = Math.round(this.form.totalAmount * 100000) / 100000;                
+            this.form.totalDiscountAmount = Math.round(this.form.totalDiscountAmount * 100000) / 100000;
+            this.form.totalItemsDiscountAmount = Math.round(this.form.totalItemsDiscountAmount * 100000) / 100000;
+            this.form.totalSalesAmount = Math.round(this.form.totalSalesAmount * 100000) / 100000;
+            
             for (let item of Object.keys(taxTotals))
                 this.form.taxTotals.push({
                     taxType: item,
@@ -381,9 +381,10 @@ export default {
             this.currentItem = {
                 quantity: 1,
                 totalTaxableFees: 0,
+                discount: { amount: 0, rate: 0},
                 itemsDiscount: 0,
                 valueDifference: 0,
-                unitValue: { amountEGP: 0 },
+                unitValue: { amountEGP: 0, amountSold: 0, currencySold: "EGP", currencyExchangeRate: 1 },
             };
             this.$nextTick(() => {
                 this.$refs.dlg1.ShowDialog();
@@ -396,6 +397,8 @@ export default {
         },
         EditItem: function (item, idx) {
             this.addingNewLine = false;
+            if (!item.discount)
+                item.discount = { amount: 0, rate: 0};
             this.currentItem = item;
             this.currentItemIdx = idx;
             this.$nextTick(() => {
@@ -414,10 +417,12 @@ export default {
             this.currentItem.itemCode = this.currentItem.item.itemCode;
             this.currentItem.unitType = this.currentItem.unit.code;
             this.currentItem.internalCode = this.currentItem.item.Id.toString();
-            var temp = this.currentItem.unitValue.amountEGP;
+            var temp = this.currentItem.unitValue;
             this.currentItem.unitValue = {};
-            this.currentItem.unitValue.currencySold = "EGP";
-            this.currentItem.unitValue.amountEGP = temp;
+            this.currentItem.unitValue.currencySold = temp.currencySold;
+            this.currentItem.unitValue.currencyExchangeRate = temp.currencyExchangeRate;
+            this.currentItem.unitValue.amountEGP = temp.amountEGP;
+            this.currentItem.unitValue.amountSold = temp.amountSold;
             this.currentItem.taxableItems = this.currentItem.taxItems.map(
                 function (taxitem) {
                     var obj = {};
@@ -473,6 +478,9 @@ export default {
         nameWithId ({ name, receiver_id, Id}) {
             return Id + ' - ' + receiver_id + ' - ' + name;
         },
+        updateValues() {
+            this.RecalculateTax();
+        },
     },
     created: function created() {
         axios
@@ -518,14 +526,11 @@ export default {
                     this.invoice.taxpayerActivityCode;
                 this.form.internalID = this.invoice.internalID;
                 this.form.totalSalesAmount = this.invoice.totalSalesAmount;
-                this.form.totalDiscountAmount =
-                    this.invoice.totalDiscountAmount;
+                this.form.totalDiscountAmount = this.invoice.totalDiscountAmount;
                 this.form.netAmount = this.invoice.netAmount;
                 this.form.totalAmount = this.invoice.totalAmount;
-                this.form.extraDiscountAmount =
-                    this.invoice.extraDiscountAmount;
-                this.form.totalItemsDiscountAmount =
-                    this.invoice.totalItemsDiscountAmount;
+                this.form.extraDiscountAmount = this.invoice.extraDiscountAmount;
+                this.form.totalItemsDiscountAmount = this.invoice.totalItemsDiscountAmount;
                 this.form.invoiceLines = this.invoice.invoicelines;
                 this.form.documentType = this.invoice.documentType;
                 this.form.dateTimeIssued = this.invoice.dateTimeIssued.slice(

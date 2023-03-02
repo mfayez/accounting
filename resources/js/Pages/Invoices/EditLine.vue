@@ -26,7 +26,7 @@
                         :active="$page.props.custom_desc_enabled"
                     />
                 </div>
-                <div class="col-span-4">
+                <div class="col-span-2">
                     <jet-label :value="__('Units')" />
                     <multiselect
                         v-model="item.unit"
@@ -35,6 +35,27 @@
                         :placeholder="__('Select measurement unit')"
                     />
                 </div>
+                <div>
+                    <jet-label :value="__('Currency')" />
+                    <select
+                        id="currencySold"
+                        v-model="item.unitValue.currencySold"
+                        class="mt-1 block w-full rounded border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm"
+                    >
+                        <option
+                            v-for="currency in $page.props.currencies"
+                            :value="currency"
+                        >
+                            {{ __(currency) }}
+                        </option>
+                    </select>
+                </div>
+                <TextField
+                    v-model="item.unitValue.amountSold"
+                    itemType="number"
+                    :itemLabel="__('Unit Price')"
+                    @update:model-value="updateValues()"
+                />
                 <TextField
                     v-model="item.quantity"
                     itemType="number"
@@ -44,7 +65,7 @@
                 <TextField
                     v-model="item.unitValue.amountEGP"
                     itemType="number"
-                    :itemLabel="__('Unit Price')"
+                    :itemLabel="__('Unit Price (EGP)')"
                     @update:model-value="updateValues()"
                 />
                 <TextField
@@ -63,6 +84,7 @@
                     v-model="item.valueDifference"
                     itemType="number"
                     :itemLabel="__('Value Difference')"
+                    @update:model-value="updateValues()"
                 />
                 <TextField
                     v-model="item.totalTaxableFees"
@@ -76,9 +98,15 @@
                     :active="false"
                 />
                 <TextField
+                    v-model="item.discount.amount"
+                    itemType="number"
+                    :itemLabel="__('Items Discount (Before Tax)')"
+                    @update:model-value="updateValues()"
+                />
+                <TextField
                     v-model="item.itemsDiscount"
                     itemType="number"
-                    :itemLabel="__('Items Discount')"
+                    :itemLabel="__('Items Discount (After Tax)')"
                     @update:model-value="updateValues()"
                 />
             </div>
@@ -284,12 +312,12 @@ export default {
         },
         calculateTax() {
 			this.item.total = 
-                (this.item.salesTotal - this.parse(this.item.itemsDiscount));
+                (this.item.salesTotal - this.parse(this.item.discount.amount) - this.parse(this.item.itemsDiscount));
             if (this.item.taxItems) {
                 for (var j = 0; j < this.item.taxItems.length; j++) {
                     var taxitem = this.item.taxItems[j];
                     taxitem.value =
-                        ((taxitem.percentage * this.item.netTotal) / 100.0);
+                        ((taxitem.percentage * (this.item.netTotal + this.parse(this.item.valueDifference))) / 100.0);
                     if (taxitem.taxType.Code == "T4")
                         this.item.total -= taxitem.value;
                     else this.item.total += taxitem.value;
@@ -306,17 +334,17 @@ export default {
             this.item.salesTotal =
                 (this.parse(this.item.quantity) *
                 this.parse(this.item.unitValue.amountEGP)).toFixed(5);
-            this.item.netTotal = this.item.salesTotal - this.item.itemsDiscount;
+            this.item.netTotal = this.item.salesTotal - this.item.discount.amount;
             this.calculateTax();
         },
         updateValue(item, val) {
-            item.value = ((this.item.netTotal * val) / 100.0).toFixed(5);
+            item.value = (((this.item.netTotal + this.parse(this.item.valueDifference) )* val) / 100.0).toFixed(5);
             this.$nextTick(() => {
                 this.calculateTax();
             });
         },
         updatePercentage(item, val) {
-            item.percentage = (val * 100.0) / this.item.netTotal;
+            item.percentage = (val * 100.0) / (this.item.netTotal + this.parse(this.item.valueDifference));
             this.$nextTick(() => {
                 this.calculateTax();
             });

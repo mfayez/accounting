@@ -167,7 +167,7 @@
                             />
                             <jet-input
                                 id="buildingNumber"
-                                type="number"
+                                type="text"
                                 class="mt-1 block w-full"
                                 v-model="form.address.buildingNumber"
                                 required

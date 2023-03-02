@@ -14,7 +14,7 @@ trait SalesBuzzAuthenticator {
 	protected $salezbuzz_cookies = "";
 	protected $salezbuzz_headers = [];
 
-    private function AuthenticateSB(Request $request, $username, $password, $buid, $url)
+    private function AuthenticateSB($request, $username, $password, $buid, $url)
 	{
 		//check if $request session has salesbuzz token
 		if ($request && $request->session()->has("salesbuzz_token") && $request->session()->get("salesbuzz_token") != ""){

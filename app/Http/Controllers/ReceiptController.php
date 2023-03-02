@@ -16,14 +16,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\General\Address;
-use App\Models\ETA\ETAItem;
+use App\Models\Address;
+use App\Models\ETAItem;
 use App\Models\Receipt;
 use App\Models\ReceiptItem;
 use App\Models\ReceiptTaxTotal;
 use App\Models\ReceiptTaxableItem;
-use App\Models\ETA\Issuer;
-use App\Models\General\Settings;
+use App\Models\Issuer;
+use App\Models\Settings;
 
 use App\Http\Traits\ETAAuthenticator;
 use App\Http\Traits\ExcelWrapper;

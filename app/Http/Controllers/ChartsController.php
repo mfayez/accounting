@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ETA\InvoiceLine;
-use App\Models\ETA\Receiver;
+use App\Models\InvoiceLine;
+use App\Models\Receiver;
 use Illuminate\Http\Request;
 
 class ChartsController extends Controller

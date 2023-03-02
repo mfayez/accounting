@@ -14,21 +14,21 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-use App\Models\General\Address;
-use App\Models\ETA\Delivery;
-use App\Models\ETA\Discount;
-use App\Models\ETA\InvoiceLine;
-use App\Models\ETA\Invoice;
-use App\Models\ETA\Issuer;
+use App\Models\Address;
+use App\Models\Delivery;
+use App\Models\Discount;
+use App\Models\InvoiceLine;
+use App\Models\Invoice;
+use App\Models\Issuer;
 use App\Models\Membership;
-use App\Models\General\Payment;
-use App\Models\ETA\Receiver;
-use App\Models\ETA\TaxableItem;
-use App\Models\ETA\TaxTotal;
-use App\Models\General\TeamInvitation;
+use App\Models\Payment;
+use App\Models\Receiver;
+use App\Models\TaxableItem;
+use App\Models\TaxTotal;
+use App\Models\TeamInvitation;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\ETA\Value;
+use App\Models\Value;
 
 use App\Http\Traits\ExcelWrapper;
 
@@ -103,23 +103,18 @@ class CustomerController extends Controller
 		$request->validate([
             'name' 							=> ['required', 'string', 'max:255'],
             'receiver_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'P', 'F'])],
             'code'				 			=> ['nullable', 'string', 'max:255'],
-			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
-			'address.governate' 			=> ['required', 'string', Rule::in(['Alexandria', 'Assiut', 'Aswan',
-												'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum', 
-												'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor', 
-												'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
-												'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
-												'South Sinai', 'Suez', 'Tanta'])],
+            'address.country' 				=> ['required', 'string'],
+			'address.governate' 			=> ['required', 'string'],
 			'address.regionCity' 			=> ['required', 'string'],
 			'address.street' 				=> ['required', 'string'],
 			'address.buildingNumber' 		=> ['required', 'integer'],
 			'address.postalCode' 			=> ['nullable', 'integer'],
 			'address.additionalInformation' => ['nullable', 'string'],
         ]);
-
-		
+        #TODO validate address.country based on country list in json file
+        
         $item2 = new Address();
 		$item2->branchID = 0;
         $item2->country = $request->input('address.country');
@@ -174,21 +169,17 @@ class CustomerController extends Controller
 		$data = $request->validate([
             'name' 							=> ['required', 'string', 'max:255'],
             'receiver_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'P'])],
+            'type' 							=> ['required',  'string', Rule::in(['B', 'P', 'F'])],
             'code'				 			=> ['nullable', 'string', 'max:255'],
-			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
-			'address.governate' 			=> ['required', 'string', Rule::in(['Alexandria', 'Assiut', 'Aswan',
-												'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum', 
-												'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor', 
-												'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
-												'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
-												'South Sinai', 'Suez', 'Tanta'])],
+			'address.country' 				=> ['required', 'string'],
+			'address.governate' 			=> ['required', 'string'],
 			'address.regionCity' 			=> ['required', 'string'],
 			'address.street' 				=> ['required', 'string'],
 			'address.buildingNumber' 		=> ['required', 'integer'],
 			'address.postalCode' 			=> ['nullable', 'integer'],
 			'address.additionalInformation' => ['nullable', 'string'],
         ]);
+        #TODO validate address.country based on country list in json file
 
 		$item = Receiver::findOrFail($id);
 		$item->update($data);

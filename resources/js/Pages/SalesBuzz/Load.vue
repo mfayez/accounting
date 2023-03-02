@@ -8,35 +8,39 @@
 			<jet-validation-errors class="mb-4" />
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <div>
-                        <jet-label
-                            for="username"
-                            :value="__('Username')"
-                        />
-                        <jet-input
-                            id="username"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.username"
-                            required
-                            autofocus
-                        />
-                    </div>
+                    <jet-label
+                        for="username"
+                        :value="__('Username')"
+                    />
+                    <jet-input
+                        id="username"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.username"
+                        required
+                        autofocus
+                    />
                 </div>
                 <div>
-                    <div>
-                        <jet-label
-                            for="password"
-                            :value="__('Password')"
-                        />
-                        <jet-input
-                            id="password"
-                            type="password"
-                            class="mt-1 block w-full"
-                            v-model="form.password"
-                            required
-                        />
-                    </div>
+                    <jet-label
+                        for="password"
+                        :value="__('Password')"
+                    />
+                    <jet-input
+                        id="password"
+                        type="password"
+                        class="mt-1 block w-full"
+                        v-model="form.password"
+                        required
+                    />
+                </div>
+                <div>
+                    <jet-checkbox name="settled_transactions" id="settled_transactions" v-model:checked="form.settled_transactions" />
+					<jet-label for="settled_transactions" :value="__('Setteled Transactions')" class="ms-2"/>
+                </div>
+                <div>
+                    <jet-checkbox name="tax_inverse" id="tax_inverse" v-model:checked="form.tax_inverse" />
+					<jet-label for="tax_inverse" :value="__('Calcualte price based on tax')" class="ms-2"/>
                 </div>
                 <div class="lg:col-span-2">
                     <jet-label :value="__('Branch')" />
@@ -147,6 +151,8 @@
                     taxpayerActivityCode: "",
                     period: 7,
                     issuer: "",
+                    settled_transactions: false,
+                    tax_inverse: false,
 				},
 				showDlg: false,
             }

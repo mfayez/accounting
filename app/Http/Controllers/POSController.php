@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ETA\POS;
+use App\Models\POS;
 
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\General\TeamInvitation;
+use App\Models\TeamInvitation;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;

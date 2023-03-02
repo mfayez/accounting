@@ -300,6 +300,52 @@
                                 </dropdown-link>
                             </template>
                         </dropdown>
+                        
+                        <dropdown
+                            :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.inventory_enabled"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': inventoryConditions,
+                                    }"
+                                >
+                                    <i class="fa fa-warehouse"></i>
+                                    {{ __("Inventories") }}
+                                </span>
+                            </template>
+                            <template #content>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('AddInventoryDlg')"
+                                    href="#"
+                                >
+                                    {{ __("Add New Inventory") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('UploadInventoryBalanceDlg')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Items Balance") }}
+                                </dropdown-link>
+
+                                <dropdown-link
+                                    :href="
+                                        route('eta.items.index') +
+                                        '?page=1&columns%5B0%5D=itemCode&columns%5B1%5D=codeNamePrimaryLang&columns%5B2%5D=parentCodeNameSecondaryLang&columns%5B3%5D=activeTo&columns%5B4%5D=active&columns%5B5%5D=status'
+                                    "
+                                >
+                                    {{ __("Show Inventories Balance") }}
+                                </dropdown-link>
+                                
+                            </template>
+                        </dropdown>
+
                         <dropdown
                             :align="alignDropDown()"
                             width="48"
@@ -378,6 +424,50 @@
                                     href="#"
                                 >
                                     {{ __("Add POS") }}
+                                </dropdown-link>
+                            </template>
+                        </dropdown>
+
+                        <dropdown
+                            :align="alignDropDown()"
+                            width="48"
+                            class="ms-3 mb-3 lg:mb-0"
+                            v-show="$page.props.mobis_enabled"
+                        >
+                            <template #trigger>
+                                <span
+                                    class="grid justify-items-center cursor-pointer hover:text-[#4099de]"
+                                    :class="{
+                                        'text-[#4099de]': mobisConditions,
+                                    }"
+                                >
+                                    <i class="fa fa-file"></i>
+                                    {{ __("MOBIS") }}
+                                </span>
+                            </template>
+
+                            <template #content>
+                                <dropdown-link
+                                    :href="route('ms.items.map.index')"
+                                >
+                                    {{ __("Show Items Map") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('msItemsMapUploadDlg')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Items Map") }}
+                                </dropdown-link>
+                                <dropdown-link as="a" :href="route('ms.items.map.download')">
+                                    {{ __("Download Items Map") }}
+                                </dropdown-link>
+                                <dropdown-link
+                                    as="a"
+                                    @click.prevent="openDlg('msLoadInvoicesDlg')"
+                                    href="#"
+                                >
+                                    {{ __("Upload Invoices") }}
                                 </dropdown-link>
                             </template>
                         </dropdown>
@@ -580,6 +670,12 @@ export default {
         openDlg($dlg) {
             this.$emit("open_dlg", $dlg);
         },
+        openDlg12() {
+            this.$emit("open:dlg12");
+        },
+        openDlg12() {
+            this.$emit("open:dlg12");
+        },
     },
     computed: {
         invoiceConditions() {
@@ -590,6 +686,12 @@ export default {
         },
         itemConditions() {
             return this.$page.url.startsWith("/ETA/Items");
+        },
+        inventoryConditions() {
+            return this.$page.url.startsWith("/inventory/");
+        },
+        mobisConditions() {
+            return this.$page.url.startsWith("/ms/");
         },
         salesBuzzConditions() {
             return this.$page.url.startsWith("/sb/");

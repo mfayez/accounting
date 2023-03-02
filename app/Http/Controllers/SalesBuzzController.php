@@ -24,29 +24,32 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\General\Address;
-use App\Models\ETA\ETAItem;
-use App\Models\ETA\ETAInvoice;
-use App\Models\ETA\Invoice;
-use App\Models\ETA\InvoiceLine;
-use App\Models\ETA\TaxableItem;
-use App\Models\ETA\TaxTotal;
-use App\Models\ETA\Value;
-use App\Models\ETA\Discount;
-use App\Models\ETA\Receiver;
-use App\Models\ETA\Issuer;
-use App\Models\General\Upload;
-use App\Models\General\Settings;
+use App\Models\Address;
+use App\Models\ETAItem;
+use App\Models\ETAInvoice;
+use App\Models\Invoice;
+use App\Models\InvoiceLine;
+use App\Models\TaxableItem;
+use App\Models\TaxTotal;
+use App\Models\Value;
+use App\Models\Discount;
+use App\Models\Receiver;
+use App\Models\Issuer;
+use App\Models\Upload;
+use App\Models\Settings;
 use App\Models\SBItemMap;
 use App\Models\SBBranchMap;
+use App\Models\SBItemTax;
 
 use App\Http\Traits\SalesBuzzAuthenticator;
 use App\Http\Traits\ExcelWrapper;
+use App\Http\Traits\XMLWrapper;
 
 class SalesBuzzController extends Controller
 {
     use SalesBuzzAuthenticator;
 	use ExcelWrapper;
+	use XMLWrapper;
     
 	public function UploadInvoice(Request $request)
 	{
@@ -61,6 +64,19 @@ class SalesBuzzController extends Controller
 		return $this->processSBInvoices($data2, $data['issuer'], $data['taxpayerActivityCode'], 1);
 	}
 
+	public function UploadSettelment(Request $request)
+	{
+		$data = $request->validate([
+			'invoice_id'	=> 'required',
+			'data'			=> 'required',
+		]);
+		//convert data from base64 to binary->then xml
+		$decoder = new Decoder();
+		$data2 = $decoder->decode(base64_decode($data['data']));
+		$this->processSBSettelment($data2, $data['invoice_id']);
+		return ["Message" => "Success"];
+	}
+
     public function syncSalesOrders(Request $request)
     {
 		$data = $request->validate([
@@ -70,6 +86,8 @@ class SalesBuzzController extends Controller
 			"period"				=> "required|integer",
 			'issuer'				=> 'required',
 			'taxpayerActivityCode'	=> 'required',
+			'tax_inverse'			=> 'boolean',
+			'settled_transactions'	=> 'boolean',
 						
 		]);
 
@@ -80,10 +98,10 @@ class SalesBuzzController extends Controller
 				'message'   =>  "SalesBuzz Configuration is incomplete! Please contact system support."
 			];
 		}
-		$url = $branchMap->sb_url;
+		$url_base = $branchMap->sb_url;
 		$buid = $branchMap->sb_bu;
 		
-		$this->AuthenticateSB($request, $data['username'], $data['password'], $buid, $url);
+		$this->AuthenticateSB($request, $data['username'], $data['password'], $buid, $url_base);
 		if ($this->salezbuzz_cookies == ""){
 			return [
 				'code'      =>  404,
@@ -96,9 +114,9 @@ class SalesBuzzController extends Controller
 		$skip = ($data['value'] - 1) * $pageSize;
         //get orders now
 		
-        $url = "$url/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/binary/GetAR_Order?StopLoading=false&\$skip=$skip&\$take=$pageSize&\$includeTotalCount=True";
+        $url = "$url_base/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/binary/GetAR_Order?StopLoading=false&\$skip=$skip&\$take=$pageSize&\$includeTotalCount=True";
 		if ($skip == 0)
-			$url = "$url/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/binary/GetAR_Order?StopLoading=false&\$take=$pageSize&\$includeTotalCount=True";	
+			$url = "$url_base/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/binary/GetAR_Order?StopLoading=false&\$take=$pageSize&\$includeTotalCount=True";	
 		/*$timestamp = Carbon::now()
 						->add(1969, 'year')
 						->sub($data['period'], 'day')
@@ -110,15 +128,74 @@ class SalesBuzzController extends Controller
 		$response = Http::withHeaders($this->salezbuzz_headers)
                     ->get($url);
 		$xmldata = $decoder->decode($response->body());
-		return $this->processSBInvoices($xmldata, $data['issuer']['Id'], $data['taxpayerActivityCode']['code'], $data['value']);
+		$retVal = $this->processSBInvoices($xmldata, $data['issuer']['Id'],
+			$data['taxpayerActivityCode']['code'],
+			$data['value']
+			//$data['tax_inverse']
+		);
+
+		if ($data['settled_transactions'])
+		{
+			foreach (json_decode($retVal['lstInvoices']) as $invID){
+				$url = "$url_base/ClientBin/BI-SalesBuzz-BackOffice-Web-Services-PromotionHeaderDS.svc/binary/GetSettledTransactions?TransRefID=$invID&TransType=85&\$take=100";
+				$decoder = new Decoder();
+				$response = Http::withHeaders($this->salezbuzz_headers)
+							->get($url);
+				$xmldata11 = $decoder->decode($response->body());
+				$this->processSBSettelment($xmldata11, $invID);
+			}
+		}
+
+		return $retVal;
 	}
 	
-	public function processSBInvoices($xmldata2, $issuer2, $taxpayerActivityCode2, $page)
+	public function processSBSettelment($xmldata2, $invID)
 	{
-		$xmldata = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1$2_', $xmldata2);
-		//$xmldata = str_replace('$lt;', '<', $xmldata);
-		//$xmldata = str_replace('$gt;', '>', $xmldata);
-		
+		$xmldata = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1', $xmldata2);
+		$simpleXml = simplexml_load_string($xmldata);
+		$sb_data2 = $this->xmlToArray($simpleXml);
+		$totalDiscount = 0;
+		if (array_key_exists("GetSettledTransactionsResponse", $sb_data2) && 
+			array_key_exists("GetSettledTransactionsResult", $sb_data2["GetSettledTransactionsResponse"]) && 
+			array_key_exists("IncludedResults", $sb_data2["GetSettledTransactionsResponse"]["GetSettledTransactionsResult"]) && 
+			array_key_exists("anyType", $sb_data2["GetSettledTransactionsResponse"]["GetSettledTransactionsResult"]["IncludedResults"]))
+		{
+			$array = $sb_data2["GetSettledTransactionsResponse"]["GetSettledTransactionsResult"]["IncludedResults"]["anyType"];
+			#it has only one element so just process it as single element not an array.
+            if (count(array_filter(array_keys($array), 'is_string')) > 0)
+            {
+				$setteldTrans = $array;
+				if (is_array($setteldTrans) && array_key_exists("@type", $setteldTrans))
+				{
+					if ($setteldTrans["@type"] == "c:AR_CustTrans" && $setteldTrans["TransRefLineID"] > 0)
+						$totalDiscount += $setteldTrans["SettledAmount"];
+				}
+            }
+            else
+			{
+				foreach($array as $setteldTrans)
+				{
+					if (is_array($setteldTrans) && array_key_exists("@type", $setteldTrans))
+					{
+						if ($setteldTrans["@type"] == "c:AR_CustTrans" && $setteldTrans["TransRefLineID"] > 0)
+							$totalDiscount += $setteldTrans["SettledAmount"];
+					}
+				}
+			}
+		}
+		$totalDiscount = abs($totalDiscount);
+		if ($totalDiscount > 0){
+			$invoice = Invoice::where('internalID', $invID)->first();
+			if (isset($invoice)){
+				$invoice->extraDiscountAmount = $totalDiscount;
+				$invoice->totalAmount = $invoice->totalAmount - $totalDiscount;
+				$invoice->save();
+			}
+		}
+	}
+	public function processSBInvoices($xmldata2, $issuer2, $taxpayerActivityCode2, $page, $tax_inverse = false)
+	{
+		$xmldata = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1', $xmldata2);
 		$simpleXml = simplexml_load_string($xmldata);
 		$sb_data = $this->xmlToArray($simpleXml);
 		
@@ -126,22 +203,23 @@ class SalesBuzzController extends Controller
 		$issuer = $issuer2;
 
 		$date1 = Carbon::now();
+		$lstOfInvoices = [];
 		$lastInv = null;
-		foreach($sb_data["GetAR_OrderResponse"]["GetAR_OrderResult"]["a_RootResults"]["b_AR_Order"] as $invoice) {
-			if ($invoice['b_OrderStatus'] != 4)
+		foreach($sb_data["GetAR_OrderResponse"]["GetAR_OrderResult"]["RootResults"]["AR_Order"] as $invoice) {
+			if ($invoice['OrderStatus'] != 4)
 				continue;
 				
-			$invoice_lines = collect($sb_data["GetAR_OrderResponse"]["GetAR_OrderResult"]["a_IncludedResults"]["b_anyType"])
-							->where("c_OrderID", $invoice["b_OrderID"])
-							->where("@i_type", "c:AR_OrderLines");
-			$invoice2 = Invoice::firstWhere(['internalID' => $invoice['b_OrderID']]);
+			$invoice_lines = collect($sb_data["GetAR_OrderResponse"]["GetAR_OrderResult"]["IncludedResults"]["anyType"])
+							->where("OrderID", $invoice["OrderID"])
+							->where("@type", "c:AR_OrderLines");
+			$invoice2 = Invoice::firstWhere(['internalID' => $invoice['OrderID']]);
 			if ($invoice2 && $invoice2->status == 'In Review')
 			{
 				foreach($invoice2->invoiceLines as $line) {
-					$line->discount()->delete();
 					$line->taxableItems()->delete();
 					$line->delete();
 					$line->unitValue()->delete();
+					$line->discount()->delete();
 				}
 				$invoice2->taxTotals()->delete();
 				$invoice2->delete();
@@ -159,7 +237,9 @@ class SalesBuzzController extends Controller
 					}
 					$invoice2->taxTotals()->delete();
 					$invoice2->delete();*/
-					$invoice2 = $this->AddMissingInvoice($invoice, $invoice_lines, $issuer, $activity);
+					$invoice2 = $this->AddMissingInvoice($invoice, $invoice_lines, $issuer, $activity, $tax_inverse);
+					#add $invoice2 to $lstOfInvoices
+					array_push($lstOfInvoices, $invoice2->internalID);
 				//}
 				//else
 				//{
@@ -168,7 +248,7 @@ class SalesBuzzController extends Controller
 					//	$invoice2 = $this->ReverseInvoice($old_inv, $invoice);
 				//}
 			}
-			$lastInv = $invoice["b_OrderID"];
+			$lastInv = $invoice["OrderID"];
 			if ($invoice2)
 				if ($invoice2->dateTimeIssued < $date1)
 					$date1 = $invoice2->dateTimeIssued;
@@ -177,27 +257,28 @@ class SalesBuzzController extends Controller
 		return ["totalPages" => min($page + 1, 100),
 				"currentPage" => $page,
 				"lastDate" => $date1,
+				"lstInvoices" => json_encode($lstOfInvoices),
 				"lastInvoice" => $lastInv
 			];	
 	}
 	
-	private function AddMissingInvoice($sb_invoice, $sb_invoice_lines, $issuer, $activity)
+	private function AddMissingInvoice($sb_invoice, $sb_invoice_lines, $issuer, $activity, $tax_inverse)
 	{
 		$invoice = new Invoice();
-		$receiver = Receiver::firstWhere(['code' => $sb_invoice['b_CustomerNo']]);
+		$receiver = Receiver::firstWhere(['code' => $sb_invoice['CustomerNo']]);
 		
 		if (!$receiver) {
 			$item2 = new Address();
 			$item2->country = "EG";
 			$item2->governate = "Cairo";
-			$item2->regionCity = is_array($sb_invoice['b_DeliveryAddress']) ? "N/A" : $sb_invoice['b_DeliveryAddress'];
-			$item2->street = is_array($sb_invoice['b_DeliveryAddress']) ? "N/A" : $sb_invoice['b_DeliveryAddress'];
+			$item2->regionCity = is_array($sb_invoice['DeliveryAddress']) ? "N/A" : $sb_invoice['DeliveryAddress'];
+			$item2->street = is_array($sb_invoice['DeliveryAddress']) ? "N/A" : $sb_invoice['DeliveryAddress'];
 			$item2->buildingNumber = "1";
 			$item2->postalCode = "12345";
 			$item2->save();
 			$item = new Receiver();
-			$item->code = $sb_invoice['b_CustomerNo'];
-			$item->name = $sb_invoice['b_CustomerNameA'];
+			$item->code = $sb_invoice['CustomerNo'];
+			$item->name = $sb_invoice['CustomerNameA'];
 			$item->receiver_id = "0";
 			$item->type = "P";
 			$item2->receiver()->save($item);
@@ -207,85 +288,128 @@ class SalesBuzzController extends Controller
 		$invoice->issuer_id = $issuer;
 		$invoice->receiver_id = $receiver->Id;
 		$invoice->statusreason = "تحميل الفاتورة من SalesBuzz";
-		$invoice->documentType = is_array($sb_invoice['b_ReturnReason']) ? "I" : "C";
+		//TODO document type may be 'C' if document kind is 'مردودات'
+		$invoice->documentType = is_array($sb_invoice['ReturnReason']) ? "I" : "C";
 		$invoice->documentTypeVersion = SETTINGS_VAL('application settings', 'invoiceVersion', '1.0');;
-		$invoice->totalDiscountAmount = 0;
+		$invoice->totalDiscountAmount = 0; //before tax calculations ($line->discount())
 		$invoice->totalSalesAmount = 0;
 		$invoice->netAmount = 0;
 		$invoice->totalAmount = 0;
 		$invoice->extraDiscountAmount = 0;
-		$invoice->totalItemsDiscountAmount = 0;
+		$invoice->totalItemsDiscountAmount = 0; //after tax is calculated ($line->itemsDiscount)
 		$invoice->status = "In Review";	
-		$invoice->internalID = $sb_invoice['b_OrderID'];
-		if (is_string($sb_invoice['b_ConfirmDate']) && strlen($sb_invoice['b_ConfirmDate']) > 15)
-			$invoice->dateTimeIssued = Carbon::createFromDate($sb_invoice['b_InvoiceDate']);
+		$invoice->internalID = $sb_invoice['OrderID'];
+		if (is_string($sb_invoice['ConfirmDate']) && strlen($sb_invoice['ConfirmDate']) > 15)
+			$invoice->dateTimeIssued = Carbon::createFromDate($sb_invoice['InvoiceDate']);
 		else
 			$invoice->dateTimeIssued = Carbon::now()->toDateString();
 		$invoice->taxpayerActivityCode = $activity;
 		$invoice->save();
 
 		foreach($sb_invoice_lines as $line) {
-			if (!isset($line['c_ItemID']))
+			if (!isset($line['ItemID']))
 				continue;
-			$mapItem = SBItemMap::find($line['c_ItemID']);
+			$mapItem = SBItemMap::find($line['ItemID']);
 			if (!$mapItem) {
 				$mapItem = new SBItemMap();
-				$mapItem->SBCode = $line['c_ItemID'];
-				$mapItem->ItemNameA = $line['c_ItemNameA'];
-				$mapItem->ItemNameE = $line['c_ItemNameE'];
+				$mapItem->SBCode = $line['ItemID'];
+				$mapItem->ItemNameA = $line['ItemNameA'];
+				$mapItem->ItemNameE = $line['ItemNameE'];
 				$mapItem->save();
 				continue;
 			}
 			//if there is not map for this item ignore it
 			if (is_null($mapItem->ETACode))
 				continue;
-			if ($line['c_Qty'] == 0)
+			if ($line['Qty'] == 0)
 				continue;
 
+			//if the tax amount is not related to tax type add it to the unit price
 			$extraUnitValue = 0;	
-			if (is_string($line["c_TaxID"]) && ($line["c_TaxID"] != "Tax14" && $line["c_TaxID"] != "14%"))
-				$extraUnitValue = abs(floatval($line["c_TaxesTotal"])) / $line['c_Qty'];
+			if (is_string($line["TaxID"]) && ($line["TaxID"] != "Tax14" && 
+											  $line["TaxID"] != "14%" && 
+											  $line["TaxID"] != "14N" && 
+											  $line["TaxID"] != "14"))
+				$extraUnitValue = abs(floatval($line["TaxesTotal"])) / $line['Qty'];
 			$unitValue = new Value(['currencySold' => "EGP", 
-				#'amountEGP' => round(($line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] + 0.004), 2),
-				'amountEGP' => $extraUnitValue + ( $line['c_UnitPrice'] < 0 ? -$line['c_UnitPrice'] : $line['c_UnitPrice'] )
+				#'amountEGP' => round(($line['UnitPrice'] < 0 ? -$line['UnitPrice'] : $line['UnitPrice'] + 0.004), 2),
+				'amountEGP' => $extraUnitValue + ( $line['UnitPrice'] < 0 ? -$line['UnitPrice'] : $line['UnitPrice'] )
 			]);
 			$unitValue->save();
+			
 			$invoiceline = new InvoiceLine((array)$line);
-			$invoiceline->description = $line['c_ItemNameA'];
+			$invoiceline->description = $line['ItemNameA'];
 			$invoiceline->itemType = "GS1";
 			$invoiceline->itemCode = $mapItem->ETACode;
-			if ($line["c_UOM"] == "CTN")
+			if ($line["UOM"] == "CTN")
 				$invoiceline->unitType = "CT";
 			else
 				$invoiceline->unitType = "EA";
-			$invoiceline->quantity = $line['c_Qty'] < 0 ? -$line['c_Qty'] : $line['c_Qty'];
-			$invoiceline->internalCode = $line['c_ItemID'];
-			#$invoiceline->salesTotal = round(($line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost'])+0.004, 2);	//done
-			#$invoiceline->netTotal = round(($line['c_LineCost'] < 0 ? -$line['c_LineCost'] : $line['c_LineCost']) + 0.004, 2);	//done
+			$invoiceline->quantity = $line['Qty'] < 0 ? -$line['Qty'] : $line['Qty'];
+			$invoiceline->internalCode = $line['ItemID'];
+			#$invoiceline->salesTotal = round(($line['LineCost'] < 0 ? -$line['LineCost'] : $line['LineCost'])+0.004, 2);	//done
+			#$invoiceline->netTotal = round(($line['LineCost'] < 0 ? -$line['LineCost'] : $line['LineCost']) + 0.004, 2);	//done
 			$invoiceline->salesTotal = $unitValue->amountEGP * $invoiceline->quantity;
-			$invoiceline->netTotal = $unitValue->amountEGP * $invoiceline->quantity;
-			$invoiceline->itemsDiscount = $line["c_PromotionsTotal"] < 0 ? -$line["c_PromotionsTotal"] : $line["c_PromotionsTotal"]; //done
+			//$invoiceline->netTotal = $unitValue->amountEGP * $invoiceline->quantity;
+			$discountBeforeTax = $line["PromotionsTotal"] < 0 ? -$line["PromotionsTotal"] : $line["PromotionsTotal"]; //done
+			$discountAfterTax = 0;
 			//sometimes c_PromotionsTotal is zero despite there is a discount
 			//we can use c_LineTotal to populate $invoiceline->netTotal and recalcualte the discount
-			$invoiceline->total = $invoiceline->netTotal - $invoiceline->itemsDiscount;	//done
+			$invoiceline->total = $invoiceline->netTotal = $invoiceline->salesTotal - $discountBeforeTax;	//done
 			if ($invoiceline->total < 0)
 			{
 				$invoiceline->total = 0;
-				$invoiceline->itemsDiscount = $invoiceline->netTotal;
+				$discountBeforeTax = $invoiceline->netTotal;
 			}
-			$invoiceline->valueDifference = 0;
+			$invoiceline->valueDifference = 0;//$mapItem->Val_Diff * $invoiceline->quantity;
 			$invoiceline->totalTaxableFees = 0;
 			$invoiceline->invoice_id = $invoice->Id;
 			$invoiceline->unitValue_id = $unitValue->Id;
+			$invoiceline->itemsDiscount = $discountAfterTax;
+			if ($discountBeforeTax > 0){
+				$discountObj = new Discount();
+				$discountObj->amount = round($discountBeforeTax, 5);
+				$discountObj->rate = 0;
+				$discountObj->save();
+				$invoiceline->discount_id = $discountObj->Id;
+			}
 			$invoiceline->save();
 
-			if (is_string($line["c_TaxesTotal"]) && ($line["c_TaxID"] == "Tax14" || $line["c_TaxID"] == "14%")) {
-				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => abs(floatval($line["c_TaxesTotal"]))]);
-				$item1->rate = round($item1->amount * 100 / ($invoiceline->salesTotal - $invoiceline->itemsDiscount), 2);
+			if (is_string($line["TaxesTotal"]) && ($line["TaxID"] == "Tax14" || 
+												   $line["TaxID"] == "14%" || 
+												   $line["TaxID"] == "14N" || 
+												   $line["TaxID"] == "14")) {
+				$item1 = new TaxableItem(["taxType" => "T1", "subType" => "V009", "amount" => abs(floatval($line["TaxesTotal"]))]);
+				$amount1 = ($invoiceline->salesTotal + $invoiceline->valueDifference - $discountBeforeTax);
+				$amount2 = $item1->amount * 100.0 / 14.0;
+				$invoiceline->valueDifference += ($amount2 - $amount1);
+				$item1->rate = round($item1->amount * 100 / ($invoiceline->salesTotal + $invoiceline->valueDifference - $discountBeforeTax), 5);
 				$item1->invoiceline_id = $invoiceline->Id;
 				$item1->save();
 				$invoiceline->total += $item1->amount;
 			}
+			//calculate tax reverse and update it
+			/*$totalRevPercentage = 0;
+			foreach($mapItem->itemTax as $reverseTax) {
+				$totalRevPercentage += $reverseTax->rate;
+			}
+			if ($totalRevPercentage > 0)
+			{
+				$salesTotal = ($invoiceline->salesTotal + $invoiceline->valueDifference - $discountBeforeTax) / (1.0 + $totalRevPercentage / 100.0);
+				$unitValue->amountEGP = $salesTotal / $invoiceline->quantity;
+				$unitValue->save();
+				$invoiceline->salesTotal = $salesTotal;
+				$invoiceline->netTotal = $salesTotal;
+				$invoiceline->total = $invoiceline->netTotal - $discountBeforeTax;
+				foreach($mapItem->itemTax as $reverseTax) {
+					$item1 = new TaxableItem(["taxType" => $reverseTax->taxType, "subType" => $reverseTax->taxSubtype, "rate" => $reverseTax->rate]);
+					$item1->amount = round(($invoiceline->salesTotal + $invoiceline->valueDifference - $discountBeforeTax) * $item1->rate / 100.0, 5);
+					$item1->invoiceline_id = $invoiceline->Id;
+					$item1->save();
+					$invoiceline->total += $item1->amount;
+				}
+			}*/
+			//$invoiceline->valueddifference = $invoiceline->valueDifference / $invoiceline->quantity;
 			$invoiceline->save();
 
             /*foreach($line->taxableItems as $taxitem) {
@@ -346,7 +470,8 @@ class SalesBuzzController extends Controller
 				['SBCode' => $map['SBCode'],
 				 'ETACode' => $map['ETACode'], 
 				 'ItemNameA' => $map['ItemNameA'],
-				 'ItemNameE' => $map['ItemNameE']
+				 'ItemNameE' => $map['ItemNameE'],
+				 'Val_Diff' => $map['Val_Diff'],
 				]
 			);
 			
@@ -368,6 +493,7 @@ class SalesBuzzController extends Controller
 			->defaultSort('SBCode')
             ->allowedSorts(['SBCode', 'ETACode', 'ItemNameA', 'ItemNameE'])
             ->allowedFilters(['SBCode', 'ETACode', 'ItemNameA', 'ItemNameE', $globalSearch])
+			->with('itemTax')
             ->paginate(10)
             ->withQueryString();
 
@@ -390,15 +516,31 @@ class SalesBuzzController extends Controller
 			'ETACode' => 'required',
 			'ItemNameA' => 'required',
 			'ItemNameE' => 'required',
+			'taxTypes' => 'array',
+			'taxTypes.*.taxType.Code' => 'required',
+			'taxTypes.*.taxSubtype.Code' => 'required',
+			'taxTypes.*.percentage' => 'required',
+			'Val_Diff' => 'required|numeric',
+			
 		]);
 		SBItemMap::updateOrCreate(
 			['SBCode' => $map['SBCode']],
 			['SBCode' => $map['SBCode'],
 			 'ETACode' => $map['ETACode'], 
 			 'ItemNameA' => $map['ItemNameA'],
-			 'ItemNameE' => $map['ItemNameE']
+			 'ItemNameE' => $map['ItemNameE'],
+			 'Val_Diff' => $map['Val_Diff'],
 			]
 		);
+		SBItemTax::where('SBCode', $map['SBCode'])->delete();
+		foreach($map['taxTypes'] as $taxType){
+			SBItemTax::create([
+				'SBCode' => $map['SBCode'],
+				 'taxType' => $taxType['taxType']['Code'],
+				 'taxSubtype' => $taxType['taxSubtype']['Code'],
+				 'rate' => $taxType['percentage']
+			]);
+		}
 	}
 
 	public function deleteItem(Request $request)
@@ -438,6 +580,7 @@ class SalesBuzzController extends Controller
 
 	}
 
+	#this function is not used
 	public function XML2JSON($xml) {
 		function normalizeSimpleXML($obj, &$result) {
 			$data = $obj;
@@ -462,102 +605,6 @@ class SalesBuzzController extends Controller
 		return json_encode($result);
 	}
 
-	public function xmlToArray($xml, $options = array()) {
-		$defaults = array(
-			'namespaceRecursive' => false,  //setting to true will get xml doc namespaces recursively
-			'removeNamespace' => false,     //set to true if you want to remove the namespace from resulting keys (recommend setting namespaceSeparator = '' when this is set to true)
-			'namespaceSeparator' => ':',    //you may want this to be something other than a colon
-			'attributePrefix' => '@',       //to distinguish between attributes and nodes with the same name
-			'alwaysArray' => array(),       //array of xml tag names which should always become arrays
-			'autoArray' => true,            //only create arrays for tags which appear more than once
-			'textContent' => '$',           //key used for the text content of elements
-			'autoText' => true,             //skip textContent key if node has no attributes or child nodes
-			'keySearch' => false,           //optional search and replace on tag and attribute names
-			'keyReplace' => false           //replace values for above search values (as passed to str_replace())
-		);
-		$options = array_merge($defaults, $options);
-		$namespaces = $xml->getDocNamespaces($options['namespaceRecursive']);
-		$namespaces[''] = null; //add base (empty) namespace
-	 
-		//get attributes from all namespaces
-		$attributesArray = array();
-		foreach ($namespaces as $prefix => $namespace) {
-			if ($options['removeNamespace']) {
-				$prefix = '';
-			}
-			foreach ($xml->attributes($namespace) as $attributeName => $attribute) {
-				//replace characters in attribute name
-				if ($options['keySearch']) {
-					$attributeName =
-						str_replace($options['keySearch'], $options['keyReplace'], $attributeName);
-				}
-				$attributeKey = $options['attributePrefix']
-					. ($prefix ? $prefix . $options['namespaceSeparator'] : '')
-					. $attributeName;
-				$attributesArray[$attributeKey] = (string)$attribute;
-			}
-		}
-	 
-		//get child nodes from all namespaces
-		$tagsArray = array();
-		foreach ($namespaces as $prefix => $namespace) {
-			if ($options['removeNamespace']) {
-				$prefix = '';
-			}
-	
-			foreach ($xml->children($namespace) as $childXml) {
-				//recurse into child nodes
-				$childArray = $this->xmlToArray($childXml, $options);
-				$childTagName = key($childArray);
-				$childProperties = current($childArray);
-	 
-				//replace characters in tag name
-				if ($options['keySearch']) {
-					$childTagName =
-						str_replace($options['keySearch'], $options['keyReplace'], $childTagName);
-				}
-	
-				//add namespace prefix, if any
-				if ($prefix) {
-					$childTagName = $prefix . $options['namespaceSeparator'] . $childTagName;
-				}
-	 
-				if (!isset($tagsArray[$childTagName])) {
-					//only entry with this key
-					//test if tags of this type should always be arrays, no matter the element count
-					$tagsArray[$childTagName] =
-							in_array($childTagName, $options['alwaysArray'], true) || !$options['autoArray']
-							? array($childProperties) : $childProperties;
-				} elseif (
-					is_array($tagsArray[$childTagName]) && array_keys($tagsArray[$childTagName])
-					=== range(0, count($tagsArray[$childTagName]) - 1)
-				) {
-					//key already exists and is integer indexed array
-					$tagsArray[$childTagName][] = $childProperties;
-				} else {
-					//key exists so convert to integer indexed array with previous value in position 0
-					$tagsArray[$childTagName] = array($tagsArray[$childTagName], $childProperties);
-				}
-			}
-		}
-	 
-		//get text content of node
-		$textContentArray = array();
-		$plainText = trim((string)$xml);
-		if ($plainText !== '') {
-			$textContentArray[$options['textContent']] = $plainText;
-		}
-	 
-		//stick it all together
-		$propertiesArray = !$options['autoText'] || $attributesArray || $tagsArray || ($plainText === '')
-			? array_merge($attributesArray, $tagsArray, $textContentArray) : $plainText;
-	 
-		//return node as array
-		return array(
-			$xml->getName() => $propertiesArray
-		);
-	}
-
 	public function indexBranchesMap_json()
 	{
 		return SBBranchMap::all();
@@ -576,6 +623,7 @@ class SalesBuzzController extends Controller
             $file->getActiveSheet()->setCellValue($this->index2(2, $rowIdx), $row->ItemNameA);
 			$file->getActiveSheet()->setCellValue($this->index2(3, $rowIdx), $row->ItemNameE);
 			$file->getActiveSheet()->setCellValue($this->index2(4, $rowIdx), $row->ETACode);
+			$file->getActiveSheet()->setCellValue($this->index2(5, $rowIdx), $row->Val_Diff);
 			
 			$rowIdx++;
 		}

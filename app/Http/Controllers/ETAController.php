@@ -15,19 +15,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\General\Address;
-use App\Models\ETA\ETAItem;
-use App\Models\ETA\ETAInvoice;
-use App\Models\ETA\Invoice;
-use App\Models\ETA\InvoiceLine;
-use App\Models\ETA\TaxableItem;
-use App\Models\ETA\TaxTotal;
-use App\Models\ETA\Value;
-use App\Models\ETA\Discount;
-use App\Models\ETA\Receiver;
-use App\Models\ETA\Issuer;
-use App\Models\General\Upload;
-use App\Models\General\Settings;
+use App\Models\Address;
+use App\Models\ETAItem;
+use App\Models\ETAInvoice;
+use App\Models\Invoice;
+use App\Models\InvoiceLine;
+use App\Models\TaxableItem;
+use App\Models\TaxTotal;
+use App\Models\Value;
+use App\Models\Discount;
+use App\Models\Receiver;
+use App\Models\Issuer;
+use App\Models\Upload;
+use App\Models\Settings;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\StoreCreditRequest;
 use App\Http\Requests\StoreDebitRequest;
@@ -275,6 +275,10 @@ class ETAController extends Controller
 			$data['invoiceLines'][$key]['netTotal'] = floatval($line['netTotal']);
 			$data['invoiceLines'][$key]['itemsDiscount'] = floatval($line['itemsDiscount']);
 			$data['invoiceLines'][$key]['unitValue']['amountEGP'] = floatval($line['unitValue']['amountEGP']);
+			if (isset($data['invoiceLines'][$key]['discount'])) {
+				$data['invoiceLines'][$key]['discount']['amount'] = floatval($line['discount']['amount']);
+				$data['invoiceLines'][$key]['discount']['rate'] = floatval($line['discount']['rate']);
+			}
 		}
 		//return ["documents" => array($data)];
 		$data['status'] = "In Review";
@@ -289,12 +293,13 @@ class ETAController extends Controller
 		foreach($invoice->invoiceLines as $line)
 		{
 			//if($line->discount)
-			$line->discount()->delete();
+			$delme2 = $line->discount;
 			$delme = $line->unitValue;
 			//if($line->taxableItems)
 			$line->taxableItems()->delete();
 			$line->delete();
 			if($delme) $delme->delete();
+			if($delme2) $delme2->delete();
 		}
 		//if($invoice->taxTotals)
 		$invoice->taxTotals()->delete();
@@ -306,14 +311,22 @@ class ETAController extends Controller
 		//$invoice->save();	
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
-			if (!isset($line['amountSold']))
-				$unitValue->amountSold = null;
-			if (!isset($line['currencyExchangeRate']))
+			if ($unitValue->currencySold == "EGP")
+			{
 				$unitValue->currencyExchangeRate = null;
+				$unitValue->amountSold = null;
+			} else {
+				$unitValue->currencyExchangeRate = round($unitValue->amountEGP / $unitValue->amountSold, 5);
+			}
 			$unitValue->save();
 			$invoiceline = new InvoiceLine($line);
 			$invoiceline->invoice_id = $invoice->Id;
 			$invoiceline->unitValue_id = $unitValue->Id;
+			if (isset($line['discount']) && $line['discount']['amount'] > 0){ 
+				$discount = new Discount($line['discount']);
+				$discount->save();
+				$invoiceline->discount_id = $discount->Id;
+			}
 			$invoiceline->save();
 			foreach($line['taxableItems'] as $taxitem) {
 				$item = new TaxableItem($taxitem);
@@ -362,10 +375,13 @@ class ETAController extends Controller
 		$invoice->save();
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
-			if (!isset($line['amountSold']))
-				$unitValue->amountSold = null;
-			if (!isset($line['currencyExchangeRate']))
+			if ($unitValue->currencySold == "EGP")
+			{
 				$unitValue->currencyExchangeRate = null;
+				$unitValue->amountSold = null;
+			} else {
+				$unitValue->currencyExchangeRate = round($unitValue->amountEGP / $unitValue->amountSold, 5);
+			}
 			$unitValue->save();
 			$invoiceline = new InvoiceLine($line);
 			$invoiceline->invoice_id = $invoice->Id;
@@ -418,10 +434,13 @@ class ETAController extends Controller
 		$invoice->save();
 		foreach($data['invoiceLines'] as $line) {
 			$unitValue = new Value($line['unitValue']);
-			if (!isset($line['amountSold']))
-				$unitValue->amountSold = null;
-			if (!isset($line['currencyExchangeRate']))
+			if ($unitValue->currencySold == "EGP")
+			{
 				$unitValue->currencyExchangeRate = null;
+				$unitValue->amountSold = null;
+			} else {
+				$unitValue->currencyExchangeRate = round($unitValue->amountEGP / $unitValue->amountSold, 5);
+			}
 			$unitValue->save();
 			$invoiceline = new InvoiceLine($line);
 			$invoiceline->invoice_id = $invoice->Id;
@@ -1138,7 +1157,29 @@ class ETAController extends Controller
 		}
 		return __("$counter Invoice(s) approved");
 	}
-	
+    
+	public function FixInvoiceDate(Request $request)
+	{
+		$ids = $request->input('Id');
+		$days = $request->input('days');
+
+		if (!is_array($ids))
+			$ids = [$ids];
+		foreach($ids as $id){
+			$inv = Invoice::findOrFail($id);
+			if ($inv->status == "In Review" || $inv->status == "approved" || $inv->status == "Invalid" || $inv->status == "rejected") {
+				#set dateTime1Issued to today and keep time component
+				$inv->dateTimeIssued = Carbon::now()->setTimeFromTimeString($inv->dateTimeIssued->toTimeString());
+				#if dateTimeIssued is in the future, subtract 6 hours
+				while ($inv->dateTimeIssued > Carbon::now()->subHours(2))
+					$inv->dateTimeIssued = $inv->dateTimeIssued->subHours(2);
+				$inv->status = "In Review";
+				$inv->save();
+			}
+		}
+		return "Invoice(s) Delayed";
+	}
+
 	public function DelayInvoice(Request $request)
 	{
 		$ids = $request->input('Id');
@@ -1167,10 +1208,10 @@ class ETAController extends Controller
 			foreach($inv->invoiceLines as $line) {
 				//if ($line->discount) $line->discount->delete();
 				//if ($line->taxableItems) $line->taxableItems->delete();
-				$line->discount()->delete();
 				$line->taxableItems()->delete();
 				$line->delete();
 				$line->unitValue()->delete();
+				$line->discount()->delete();
 			}
 			//if ($inv->taxTotals) 
 			$inv->taxTotals()->delete();

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General\Settings;
+use App\Models\Settings;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 

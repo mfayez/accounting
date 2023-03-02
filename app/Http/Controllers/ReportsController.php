@@ -20,18 +20,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\General\Address;
-use App\Models\ETA\ETAItem;
-use App\Models\ETA\ETAInvoice;
-use App\Models\ETA\Invoice;
-use App\Models\ETA\InvoiceLine;
-use App\Models\ETA\TaxableItem;
-use App\Models\ETA\TaxTotal;
-use App\Models\ETA\Value;
-use App\Models\ETA\Discount;
-use App\Models\ETA\Receiver;
-use App\Models\ETA\Issuer;
-use App\Models\General\Upload;
+use App\Models\Address;
+use App\Models\ETAItem;
+use App\Models\ETAInvoice;
+use App\Models\Invoice;
+use App\Models\InvoiceLine;
+use App\Models\TaxableItem;
+use App\Models\TaxTotal;
+use App\Models\Value;
+use App\Models\Discount;
+use App\Models\Receiver;
+use App\Models\Issuer;
+use App\Models\Upload;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Http\Traits\ExcelWrapper;
@@ -194,7 +194,8 @@ class ReportsController extends Controller
 			foreach($items as $col){
 				if (array_key_exists($col["Code"], $row->lines)){
 					if ($col["Desc"] ==  $row->lines[$col["Code"]]->Desc){
-						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]->UnitValue);
+						//$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]->UnitValue);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), round($row->lines[$col["Code"]]->Total / $row->lines[$col["Code"]]->Quantity, 5));
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col["Code"]]->Quantity);
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col["Code"]]->Discount);
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+3,$rowIdx), 0);
@@ -348,7 +349,8 @@ class ReportsController extends Controller
 			foreach($items as $col){
 				if (array_key_exists($col["Code"], $row->lines)){
 					if ($col["Desc"] ==  $row->lines[$col["Code"]]->Desc){
-						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]->UnitValue);
+						//$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), $row->lines[$col["Code"]]->UnitValue);
+						$file->getActiveSheet()->setCellValue($this->index($colIdx+0,$rowIdx), round($row->lines[$col["Code"]]->Total / $row->lines[$col["Code"]]->Quantity, 5));
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+1,$rowIdx), $row->lines[$col["Code"]]->Quantity);
 						$file->getActiveSheet()->setCellValue($this->index($colIdx+2,$rowIdx), $row->lines[$col["Code"]]->Total);
 					}
@@ -562,8 +564,13 @@ class ReportsController extends Controller
 			}
 			
 			$original_doc = json_decode($row->Document);
-			if (!$original_doc)
+			if (!$original_doc || !property_exists($original_doc, 'invoiceLines')){
+				//try parse xml
+				$original_doc = simplexml_load_string($row->Document);
+				if (!$original_doc){
 				continue;
+				}
+			}
 			
 			//find tax types and add it to the array
 			if(property_exists($original_doc, 'taxTotals')) {
@@ -578,14 +585,17 @@ class ReportsController extends Controller
 
 			//explode invoice lines and add them to data2
 			if(property_exists($original_doc, 'invoiceLines')) {
-				$invoice_lines = $original_doc->invoiceLines;
+				if (is_array($original_doc->invoiceLines))
+					$invoice_lines = $original_doc->invoiceLines;
+				else
+					$invoice_lines = $original_doc->invoiceLines->invoiceLine;
 				foreach($invoice_lines as $line){
 					array_push($data2, array("InvKey" => $row->InvKey,
-								"Desc" => $line->description,
-								"Code" => $line->itemCode,
-								"Quantity" => $line->quantity,
-								"Total" => $line->salesTotal,
-								"UnitValue" => $line->unitValue->amountEGP,
+								"Desc" => (string) $line->description,
+								"Code" => (string) $line->itemCode,
+								"Quantity" => floatval($line->quantity),
+								"Total" => floatval($line->salesTotal),
+								"UnitValue" => floatval($line->unitValue->amountEGP),
 								"Discount" => 0));//$line->discount ? $line->discount->amount : 0));
 								//todo mfayez fix discount
 				}

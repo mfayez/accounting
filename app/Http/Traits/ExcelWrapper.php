@@ -23,6 +23,7 @@ trait ExcelWrapper {
 		return $col1.$row;
 	}
 
+	//MFayez, stop using xlsxToArray and use xlsxToArrayEx instead
 	private function xlsxToArray($filename = '', $extension = 'xlsx')
 	{
 		$extension = $extension == 'xlsx' ? 'Xlsx' : 'Xls';
@@ -36,12 +37,44 @@ trait ExcelWrapper {
     	$data = array();
 	    
 		$rows = $worksheet->toArray();
-
+		
 		foreach($rows as $key => $row) {
 			if (!$header_en){
 				$header_en = array_map('trim', $row); //trim trilling spaces
 			}
 			else if (!$header_ar)
+				$header_ar = $row;
+			else
+				$data[] = array_combine($header_en, $row);
+		};
+		
+    	return $data;
+	}
+
+	private function xlsxToArrayEx($filename = '', $extension = 'xlsx', $skip_rows = 0, $arabic_header = true)
+	{
+		$extension = $extension == 'xlsx' ? 'Xlsx' : 'Xls';
+		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($extension);
+		$reader->setReadDataOnly(TRUE);
+		$spreadsheet = $reader->load($filename);
+
+		$worksheet = $spreadsheet->getActiveSheet();
+    	$header_en = null;
+	    $header_ar = null;
+    	$data = array();
+	    
+		$rows = $worksheet->toArray();
+		$row_idx = 0;
+
+		foreach($rows as $key => $row) {
+			$row_idx = $row_idx + 1;
+			if ($row_idx < $skip_rows)
+				continue;
+			
+			if (!$header_en){
+				$header_en = array_map('trim', $row); //trim trilling spaces
+			}
+			else if (!$header_ar && $arabic_header)
 				$header_ar = $row;
 			else
 				$data[] = array_combine($header_en, $row);
@@ -81,5 +114,11 @@ trait ExcelWrapper {
     	}
 
     	return $data;
+	}
+
+	private function excelDateToDatetime($date)
+	{
+		$unix_date = ($date - 25569) * 86400;
+		return Carbon::createFromTimestamp($unix_date);
 	}
 }

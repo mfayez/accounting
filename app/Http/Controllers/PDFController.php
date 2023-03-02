@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ETA\Invoice;
+use App\Models\Invoice;
 use Meneses\LaravelMpdf\Facades\LaravelMpdf as PDF;
 
 class PDFController extends Controller

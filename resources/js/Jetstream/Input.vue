@@ -23,7 +23,7 @@
                 default: 'submit',
             },
 			modelValue: {
-				type: String
+				type: [String, Number]
 			}
         },
 

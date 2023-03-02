@@ -67,7 +67,10 @@
             <jet-secondary-button class="ms-2" @click="onDeleteAll()">
               {{ __("Delete All") }}
             </jet-secondary-button>
-
+            <jet-secondary-button class="ms-2" @click="onFixDate()">
+              {{ __("Fix Date") }}
+            </jet-secondary-button>
+            <!--
             <jet-secondary-button class="ms-2" @click="onDelay(1)">
               {{ __("Delay Selected 1 Day") }}
             </jet-secondary-button>
@@ -77,6 +80,7 @@
             <jet-secondary-button class="ms-2" @click="onDelay(3)">
               {{ __("Delay Selected 3 Day") }}
             </jet-secondary-button>
+            -->
           </div>
         </div>
       </div>
@@ -345,6 +349,43 @@ export default {
             })
             .then((response) => {
               swal(this.__("Invoices has been approved!"), {
+                icon: "success",
+              }).then(() => {
+                this.onSearch();
+              });
+            })
+            .catch((error) => {
+              swal(error.response.data, {
+                icon: "error",
+              });
+            });
+        }
+      });
+    },
+    onFixDate() {
+      var temp = this.data.filter((row) => row.selected);
+      if (temp.length == 0) {
+        swal(this.__("Please select at least one invoice!"), {
+          icon: "error",
+        });
+        return;
+      }
+      swal({
+        title: this.__("Are you sure?"),
+        text: this.__("Once clicked ok  the selected invoices' date will be set to current day"),
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willApprove) => {
+        if (willApprove) {
+          axios
+            .post(route("eta.invoices.fixDate"), {
+              Id: this.data
+                .filter((row) => row.selected)
+                .map((row) => row.InvID),
+            })
+            .then((response) => {
+              swal(this.__("Invoices' date has been fixed!"), {
                 icon: "success",
               }).then(() => {
                 this.onSearch();

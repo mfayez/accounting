@@ -10,33 +10,61 @@
 			<form @submit.prevent="submit">
 				<div class="grid grid-cols-2 gap-4">
 					<div class="col-span-2">
-                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.accounting_chart" />
-						<jet-label for="automatic" :value="__('Activate Accounting Module')" class="ms-2"/>
+						<jet-label for="serial_number" :value="__('Serial Number')" class="ms-2"/>
+						<jet-input id="serial_number" type="text" 
+							class="mt-1 block w-full" v-model="form.serial_number" 
+							required autofocus
+						/>
 					</div>
-					<div class="col-span-2">
-                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.e_invoice" />
-						<jet-label for="automatic" :value="__('Activate E-Invoice')" class="ms-2"/>
+					<div class="col-span-1">
+                        <jet-checkbox name="e_invoice" id="e_invoice" v-model:checked="form.e_invoice" />
+						<jet-label for="e_invoice" :value="__('E-Invoice')" class="ms-2"/>
 					</div>
-					<div class="col-span-2">
-                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.e_receipt" />
-						<jet-label for="automatic" :value="__('Activate E-Receipt')" class="ms-2"/>
+					<div class="col-span-1">
+                        <jet-checkbox name="e_receipt" id="e_receipt" v-model:checked="form.e_receipt" />
+						<jet-label for="e_receipt" :value="__('E-Receipt')" class="ms-2"/>
 					</div>
-					<div class="col-span-2">
-                        <jet-checkbox name="automatic" id="automatic" v-model:checked="form.sales_buzz" />
-						<jet-label for="automatic" :value="__('Activate Sales Buz Integration')" class="ms-2"/>
+					<div class="col-span-1">
+                        <jet-checkbox name="inventory" id="inventory" v-model:checked="form.inventory" />
+						<jet-label for="inventory" :value="__('Activate Inventories')" class="ms-2"/>
 					</div>
-					<div class="col-span-2">
+					<div class="col-span-1">
+                        <jet-checkbox name="accounting" id="accounting" v-model:checked="form.accounting" />
+						<jet-label for="accounting" :value="__('Activate Accounting')" class="ms-2"/>
+					</div>
+					<div class="col-span-1">
+                        <jet-checkbox name="sales_buzz" id="sales_buzz" v-model:checked="form.sales_buzz" />
+						<jet-label for="sales_buzz" :value="__('Sales Buz Integration')" class="ms-2"/>
+					</div>
+					<div class="col-span-1">
+                        <jet-checkbox name="mobis_integration" id="mobis_integration" v-model:checked="form.mobis_integration" />
+						<jet-label for="mobis_integration" :value="__('Mobis Integration')" class="ms-2"/>
+					</div>
+					<div class="col-span-1">
                         <jet-checkbox name="custom_desc" id="custom_desc" v-model:checked="form.custom_desc" />
-						<jet-label for="custom_desc" :value="__('Allow Custom Items Description')" class="ms-2"/>
+						<jet-label for="custom_desc" :value="__('Custom Items Description')" class="ms-2"/>
 					</div>
+					
+					<div class="col-span-1">
+						<jet-label :value="__('Currencies')" />
+						<multiselect
+							v-model="form.currencies"
+							:options="currencies"
+							:placeholder="__('Select Company Currencies')"
+							:multiple="true"
+						/>
+					</div>
+
+					<div></div>
+					
 					<div class="col-span-2">
                         <jet-checkbox name="automatic" id="automatic" v-model:checked="form.automatic" />
 						<jet-label for="automatic" :value="__('Automatic Invoice Number')" class="ms-2"/>
 					</div>
-					
+
 					<div class="col-span-1">
-						<jet-label for="invoice_version" :value="__('Invoice Version')" />
-						<jet-input id="invoice_version" type="text" 
+						<jet-label for="invoiceVersion" :value="__('Invoice Version')" />
+						<jet-input id="invoiceVersion" type="text" 
 							class="mt-1 block w-full" v-model="form.invoiceVersion" 
 							v-model:active="form.automatic" v-model:required="form.automatic" autofocus />
 					</div>
@@ -99,6 +127,7 @@
 
         data() {
             return {
+				currencies: ["EGP", "USD", "EUR", "GBP"],
 				settings: [],
 				errors: [],
                 form: this.$inertia.form({
@@ -108,9 +137,13 @@
 					e_invoice: true,
 					e_receipt: false,
 					sales_buzz: false,
-					accounting_chart: false,
+					mobis_integration: false,
+					accounting: false,
+					inventory: false,
+					serial_number: "00000000-00000000-00000000",
 					invoiceTemplate: '',
-					invoiceVersion: '1.0'
+					invoiceVersion: '1.0',
+					currencies: ['EGP'],
                 }),
 				showDialog: false,
             }
@@ -125,12 +158,16 @@
 						this.settings = response.data;
 						this.form.invoiceTemplate = this.settings.invoiceTemplate;
 						this.form.invoiceVersion = this.settings.invoiceVersion;
+						this.form.currencies = JSON.parse(this.settings.currencies);
 						this.form.automatic = this.settings.automatic == '1' ? true : false;
 						this.form.custom_desc = this.settings.custom_desc == '1' ? true : false;
 						this.form.e_invoice = this.settings.e_invoice == '1' ? true : false;
 						this.form.e_receipt = this.settings.e_receipt == '1' ? true : false;
 						this.form.sales_buzz = this.settings.sales_buzz == '1' ? true : false;
-						this.form.accounting_chart = this.settings.accounting_chart == '1' ? true : false;
+						this.form.mobis_integration = this.settings.mobis_integration == '1' ? true : false;
+						this.form.accounting = this.settings.accounting == '1' ? true : false;
+						this.form.inventory = this.settings.inventory == '1' ? true : false;
+						this.form.serial_number = this.settings.serial_number;
         		    }).catch(error => {
             		});
 			},

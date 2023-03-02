@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\ETA\Invoice;
+use App\Models\Invoice;
 
 class InvoiceController extends Controller
 {
@@ -110,6 +110,7 @@ class InvoiceController extends Controller
             ->with("invoicelines.taxableItems")
             ->with('invoicelines.item')
             ->with('invoicelines.unitValue')
+            ->with('invoicelines.discount')
             ->findOrFail($id);
         return Inertia::render('Invoices/Add', [
             'invoice' => $invoice
