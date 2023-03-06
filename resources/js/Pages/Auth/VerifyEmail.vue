@@ -25,12 +25,14 @@
 </template>
 
 <script>
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
-    import JetButton from '@/Jetstream/Button'
+    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
+    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
+    import JetButton from '@/Jetstream/Button.vue'
+    import { Link } from '@inertiajs/vue3';
 
     export default {
         components: {
+            'inertia-link': Link,
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
             JetButton,

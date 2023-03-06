@@ -42,36 +42,36 @@ class CustomerController extends Controller
      */
     public function index()
     {
-		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
-            $query->where(function ($query) use ($value) {
-                $query->where('name', 'LIKE', "%{$value}%")
-					->orWhere('receiver_id', 'LIKE', "%{$value}%")
-					->orWhere('code', 'LIKE', "%{$value}%");
-            });
-        });
-
-        $customers = QueryBuilder::for(Receiver::class)
+		$customers = QueryBuilder::for(Receiver::class)
 			->with('address')
         	->defaultSort('name')
-            ->allowedSorts(['Id', 'name', 'receiver_id', 'type'])
-            ->allowedFilters(['name', 'receiver_id', 'type', 'code', $globalSearch])
+            ->allowedSorts(['Id', 'name', 'receiver_id', 'type', ])
+            ->allowedFilters(['name', 'receiver_id', 'type', 'code'])
             ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('Customers/Index', [
             'customers' => $customers,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
-                'name' => __('Name'),
-                'receiver_id' => __('Tax Registration Number'),// ID/National ID',
-				'code' => __('Internal Code'),
-            ])->addColumns([
-				'Id' => __('ID'),
-                'name' => __('Name'),
-                'code' => __('Internal Code'),
-                'receiver_id' => __('Tax Registration Number'),
-				'type' => __('Customer Type')
-            ]);
+            $table->column(
+                key: 'Id',          label: __('ID'),                        canBeHidden: true, hidden: false, sortable: true
+            )->column(
+                key: 'name',        label: __('Name'),                      canBeHidden: true, hidden: false, sortable: true
+            )->column(
+                key: 'code',        label: __('Internal Code'),            canBeHidden: true, hidden: false, sortable: false
+            )->column(
+                key: 'receiver_id', label: __('Tax Registration Number'),   canBeHidden: true, hidden: false, sortable: true
+            )->column(
+                key: 'type',        label: __('Customer Type'),             canBeHidden: true, hidden: false, sortable: true
+            )->column(
+                key: 'actions',     label: __('Actions')
+            )->searchInput(
+                key: 'name',        label: __('Name')
+            )->searchInput(
+                key: 'receiver_id', label: __('Tax Registration Number')
+            )->searchInput(
+                key: 'code',        label: __('Internal Code')
+            );
         });
     }
 	

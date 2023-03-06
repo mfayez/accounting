@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-c27b6911.js";import{r as t,o as n,b as c,w as r,d as s}from"./app-a7c937a1.js";const a={},i=["src"];function _(l,f){const o=t("inertia-link");return n(),c(o,{href:"/"},{default:r(()=>[s("img",{class:"object-contain h-48 w-full",src:"/images/logo-1.jpg"},null,8,i)]),_:1})}const d=e(a,[["render",_]]);export{d as J};

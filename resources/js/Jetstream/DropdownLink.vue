@@ -27,7 +27,11 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
 export default {
-    props: ["href", "as"],
+  components: {
+    'inertia-link': Link
+  },
+  props: ["href", "as"],
 };
 </script>

@@ -11,7 +11,7 @@
         <template #content>
             <jet-validation-errors class="mb-4" />
 
-            <form v-if="$page.props.user.is_admin" @submit.prevent="submit">
+            <form v-if="$page.props.auth.user.is_admin" @submit.prevent="submit">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <jet-label for="name" :value="__('Name')" />
@@ -85,7 +85,7 @@
                     @click="submit"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
-                    v-if="$page.props.user.is_admin"
+                    v-if="$page.props.auth.user.is_admin"
                 >
                     {{ __("Save") }}
                 </jet-button>
@@ -97,21 +97,22 @@
 <style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
 
 <script>
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import JetActionSection from "@/Jetstream/ActionSection";
-import JetButton from "@/Jetstream/Button";
-import JetConfirmationModal from "@/Jetstream/ConfirmationModal";
-import JetDangerButton from "@/Jetstream/DangerButton";
-import JetDialogModal from "@/Jetstream/DialogModal";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInput from "@/Jetstream/Input";
-import JetCheckbox from "@/Jetstream/Checkbox";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetActionSection from "@/Jetstream/ActionSection.vue";
+import JetButton from "@/Jetstream/Button.vue";
+import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
+import JetDangerButton from "@/Jetstream/DangerButton.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInput from "@/Jetstream/Input.vue";
+import JetCheckbox from "@/Jetstream/Checkbox.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 import Multiselect from "@suadelabs/vue3-multiselect";
+import axios from 'axios';
 
 export default {
     components: {

@@ -85,8 +85,8 @@
 <style src="@suadelabs/vue3-multiselect/dist/vue3-multiselect.css"></style>
 
 <script>
-import InputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import InputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import Multiselect from "@suadelabs/vue3-multiselect";
 import swal from "sweetalert";
 

@@ -13,8 +13,8 @@
     </div>
 </template>
 <script>
-import TopItemsByStatus from "@/Charts/TopItemsByStatus";
-import TopReceiversByStatus from "@/Charts/TopReceiversByStatus";
+import TopItemsByStatus from "@/Charts/TopItemsByStatus.vue";
+import TopReceiversByStatus from "@/Charts/TopReceiversByStatus.vue";
 export default {
     components: {
         TopReceiversByStatus,

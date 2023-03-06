@@ -68,11 +68,11 @@ class ReceivedInvoiceController extends Controller
         return Inertia::render('Invoices/IndexReceived', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
 				'internalId'	=>	__('Internal ID'),
 				'status'		=>	__('Status'),
 				'receiver_id'	=>	__('Receiving Branch')
-			])->addColumns([
+			])->column([
                 'internalId'	=> __('Internal ID'),
 				'issuerName' => __('Issuer'),
 				'receiverId' => __('Receiver Registration Number'),

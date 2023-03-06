@@ -268,7 +268,7 @@ class MobisController extends Controller
         return Inertia::render('Mobis/IndexItemsMap', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addColumns([
+            $table->column([
                 'MSCode' 	=> __('MOBIS Code'),
                 'ETACode' 	=> __('ETA Code'),
                 'ItemNameA' => __('Arabic Name'),

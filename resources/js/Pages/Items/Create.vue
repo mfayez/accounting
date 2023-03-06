@@ -33,13 +33,13 @@
 </template>
 
 <script>
-    import AppLayout from '@/Layouts/AppLayout'
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
-    import JetButton from '@/Jetstream/Button'
-    import JetInput from '@/Jetstream/Input'
-    import JetCheckbox from "@/Jetstream/Checkbox";
-    import JetLabel from '@/Jetstream/Label'
-    import JetValidationErrors from '@/Jetstream/ValidationErrors'
+    import AppLayout from '@/Layouts/AppLayout.vue'
+    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
+    import JetButton from '@/Jetstream/Button.vue'
+    import JetInput from '@/Jetstream/Input.vue'
+    import JetCheckbox from "@/Jetstream/Checkbox.vue";
+    import JetLabel from '@/Jetstream/Label.vue'
+    import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
 
     export default {
         components: {

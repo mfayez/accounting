@@ -87,11 +87,11 @@
 </template>
 
 <script>
-    import JetActionSection from '@/Jetstream/ActionSection'
-    import JetButton from '@/Jetstream/Button'
-    import JetConfirmsPassword from '@/Jetstream/ConfirmsPassword'
-    import JetDangerButton from '@/Jetstream/DangerButton'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+    import JetActionSection from '@/Jetstream/ActionSection.vue'
+    import JetButton from '@/Jetstream/Button.vue'
+    import JetConfirmsPassword from '@/Jetstream/ConfirmsPassword.vue'
+    import JetDangerButton from '@/Jetstream/DangerButton.vue'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 
     export default {
         components: {
@@ -159,7 +159,7 @@
 
         computed: {
             twoFactorEnabled() {
-                return ! this.enabling && this.$page.props.user.two_factor_enabled
+                return ! this.enabling && this.$page.props.auth.user.two_factor_enabled
             }
         }
     }

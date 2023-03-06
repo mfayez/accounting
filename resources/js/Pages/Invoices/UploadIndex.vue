@@ -25,7 +25,7 @@
                                         col, key
                                     ) in queryBuilderProps.columns"
                                     :key="key"
-                                    v-show="showColumn(key)"
+                                    v-show="show(key)"
                                 >
                                     {{ col.label }}
                                 </th>
@@ -40,7 +40,7 @@
                                         col, key
                                     ) in queryBuilderProps.columns"
                                     :key="key"
-                                    v-show="showColumn(key)"
+                                    v-show="show(key)"
                                 >
                                     <div
                                         v-for="rowVals in nestedIndex(
@@ -83,24 +83,22 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import {
-    InteractsWithQueryBuilder,
-    Tailwind2,
+    Table,
 } from "@protonemedia/inertiajs-tables-laravel-query-builder";
-import JetButton from "@/Jetstream/Button";
-import AddEditItem from "@/Pages/Items/AddEdit";
-import Confirm from "@/UI/Confirm";
-import JetLabel from "@/Jetstream/Label";
-import SecondaryButton from "@/Jetstream/SecondaryButton";
+import JetButton from "@/Jetstream/Button.vue";
+import AddEditItem from "@/Pages/Items/AddEdit.vue";
+import Confirm from "@/UI/Confirm.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 
 export default {
-    mixins: [InteractsWithQueryBuilder],
     components: {
         AppLayout,
         Confirm,
         JetLabel,
-        Table: Tailwind2.Table,
+        Table,
         JetButton,
         AddEditItem,
         SecondaryButton,

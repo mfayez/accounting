@@ -48,7 +48,7 @@ ul li {
 }
 .invoice .items table thead {
   text-align: center;
-  background-color: #d2d6dc;
+  background-color: rgb(210, 214, 220);
 }
 .invoice .items table thead tr th {
   background-color: #f8f9fa;

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import ArchivesTable from "@/Pages/Archives/ArchivesTable.vue";

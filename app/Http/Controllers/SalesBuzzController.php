@@ -500,7 +500,7 @@ class SalesBuzzController extends Controller
         return Inertia::render('SalesBuzz/IndexItemsMap', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addColumns([
+            $table->column([
                 'SBCode' 	=> __('SalesBuzz Code'),
                 'ETACode' 	=> __('ETA Code'),
                 'ItemNameA' => __('Arabic Name'),

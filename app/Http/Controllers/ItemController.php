@@ -43,12 +43,12 @@ class ItemController extends Controller
         return Inertia::render('Items/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
                 'description' => 'Item Description',
                 'internal_code' => 'Internal Code',
                 'gs1_code' => 'Global Standard Code',
                 'egs_code' => 'Egyptian Standard Code',
-            ])->addColumns([
+            ])->column([
                 'description' => 'Item Description',
 				'internal_code' => 'Internal Code',
 				'gs1_code' => 'Global Standard Code',

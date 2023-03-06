@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import InputError from "@/Jetstream/InputError";
+import InputError from "@/Jetstream/InputError.vue";
 export default {
     components: {
         InputError,

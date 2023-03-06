@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import charts from "./charts";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import charts from "./charts.vue";
 import StatisticsTable from "./StatisticsTable.vue";
 export default {
     components: {

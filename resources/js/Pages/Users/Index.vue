@@ -5,7 +5,7 @@
             {{ __("Are you sure you want to delete this user?") }}
         </confirm>
         <div class="py-4">
-            <div v-if="$page.props.user.is_admin" class="mx-auto sm:px-6 lg:px-8">
+            <div v-if="$page.props.auth.user.is_admin" class="mx-auto sm:px-6 lg:px-8">
                 <div
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4"
                 >
@@ -19,19 +19,19 @@
                         <template #head>
                             <tr>
                                 <th
-                                    v-show="showColumn('Id')"
+                                    v-show="show('Id')"
                                     @click.prevent="sortBy('Id')"
                                 >
                                     {{ __("ID") }}
                                 </th>
                                 <th
-                                    v-show="showColumn('name')"
+                                    v-show="show('name')"
                                     @click.prevent="sortBy('name')"
                                 >
                                     {{ __("Name") }}
                                 </th>
                                 <th
-                                    v-show="showColumn('email')"
+                                    v-show="show('email')"
                                     @click.prevent="sortBy('email')"
                                 >
                                     {{ __("Email") }}
@@ -42,11 +42,11 @@
 
                         <template #body>
                             <tr v-for="user in users.data" :key="user.id">
-                                <td v-show="showColumn('Id')">{{ user.id }}</td>
-                                <td v-show="showColumn('name')">
+                                <td v-show="show('Id')">{{ user.id }}</td>
+                                <td v-show="show('name')">
                                     {{ user.name }}
                                 </td>
-                                <td v-show="showColumn('email')">
+                                <td v-show="show('email')">
                                     {{ user.email }}
                                 </td>
                                 <td>
@@ -107,21 +107,20 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/UI/Confirm";
-import EditUser from "@/Pages/Users/Edit";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import Confirm from "@/UI/Confirm.vue";
+import EditUser from "@/Pages/Users/Edit.vue";
 import {
-    InteractsWithQueryBuilder,
-    Tailwind2,
+    Table,
 } from "@protonemedia/inertiajs-tables-laravel-query-builder";
+import axios from 'axios';
 
 export default {
-    mixins: [InteractsWithQueryBuilder],
     components: {
         AppLayout,
         Confirm,
         EditUser,
-        Table: Tailwind2.Table,
+        Table,
     },
     props: {
         users: Object,

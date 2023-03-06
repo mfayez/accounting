@@ -13,7 +13,12 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
+
 export default {
+    components: {
+        'inertia-link': Link
+    },
     methods: {
         changeDocumentDirection() {
             const html = document.querySelector("html");

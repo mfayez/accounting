@@ -14,9 +14,9 @@
 						<template #head>
 						  	<tr>
                                   <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
-                                      <th v-show="showColumn(key)" 
+                                      <th v-show="show(key)" 
                                       v-if="notSortableCols.includes(key)">{{ col.label }}</th>
-                                      <th class="cursor-pointer" v-show="showColumn(key)" @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
+                                      <th class="cursor-pointer" v-show="show(key)" @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
                                   </template>
 								<th @click.prevent="">{{__('Actions')}}</th>
 							</tr>
@@ -24,7 +24,7 @@
 
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
-									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
 										<div v-for="rowVals in nestedIndex(item, key).split(',')">
 											{{ 
                                                 key == 'status' || key == 'statusReason' ? __(rowVals) :
@@ -57,29 +57,28 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import {
-    InteractsWithQueryBuilder,
-    Tailwind2,
+    Table,
 } from "@protonemedia/inertiajs-tables-laravel-query-builder";
-import AddEditItem from "@/Pages/Items/AddEdit";
-import Confirm from "@/UI/Confirm";
-import JetLabel from "@/Jetstream/Label";
-import PreviewInvoice from "@/Pages/Invoices/Preview";
+import AddEditItem from "@/Pages/Items/AddEdit.vue";
+import Confirm from "@/UI/Confirm.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import PreviewInvoice from "@/Pages/Invoices/Preview.vue";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
-import JetDangerButton from '@/Jetstream/DangerButton';
-import Dropdown from "@/Jetstream/Dropdown";
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
+import Dropdown from "@/Jetstream/Dropdown.vue";
+import axios from 'axios';
 
 export default {
-    mixins: [InteractsWithQueryBuilder],
     components: {
         Dropdown,
         AppLayout,
         Confirm,
         PreviewInvoice,
         JetLabel,
-        Table: Tailwind2.Table,
+        Table,
         JetButton,
         JetDangerButton,
         AddEditItem,

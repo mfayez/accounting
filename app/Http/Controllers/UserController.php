@@ -53,10 +53,10 @@ class UserController extends Controller
         return Inertia::render('Users/Index', [
             'users' => $branches,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
                 'name' => __('Name'),
                 'email' => __('email'),
-            ])->addColumns([
+            ])->column([
                 'Id' => __('ID'),
                 'name' => __('Name'),
                 'email' => __('email')

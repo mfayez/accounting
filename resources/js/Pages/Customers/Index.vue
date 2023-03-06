@@ -9,91 +9,23 @@
                 <div
                     class="wrapper Gbg-white overflow-hidden shadow-xl sm:rounded-lg p-4"
                 >
-                    <Table
-                        :filters="queryBuilderProps.filters"
-                        :search="queryBuilderProps.search"
-                        :columns="queryBuilderProps.columns"
-                        :on-update="setQueryBuilder"
-                        :meta="customers"
-                    >
-                        <template #head>
-                            <tr>
-                                <th
-                                    v-show="showColumn('Id')"
-                                    @click.prevent="sortBy('Id')"
-                                >
-                                    {{ __("ID") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('name')"
-                                    @click.prevent="sortBy('name')"
-                                >
-                                    {{ __("Name") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('receiver_id')"
-                                    @click.prevent="sortBy('receiver_id')"
-                                >
-                                    {{ __("Registration Number") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('type')"
-                                    @click.prevent="sortBy('type')"
-                                >
-                                    {{ __("Type(B|I)") }}
-                                </th>
-                                <th
-                                    v-show="showColumn('code')"
-                                    @click.prevent="sortBy('code')"
-                                >
-                                    {{ __("Internal Code") }}
-                                </th>
-                                <th @click.prevent="">{{ __("Actions") }}</th>
-                            </tr>
+                    <Table :resource="customers" >
+                        <template #cell(type)="{ item: customer }">
+                            {{
+                                customer.type == "B"
+                                    ? __("Business")
+                                    : customer.type == "P"
+                                    ? __("Person")
+                                    : __("Foreign Customer")
+                            }}
                         </template>
-
-                        <template #body>
-                            <tr
-                                v-for="customer in customers.data"
-                                :key="customer.Id"
-                            >
-                                <td v-show="showColumn('Id')">
-                                    {{ customer.Id }}
-                                </td>
-                                <td v-show="showColumn('name')">
-                                    {{ customer.name }}
-                                </td>
-                                <td v-show="showColumn('receiver_id')">
-                                    {{ customer.receiver_id }}
-                                </td>
-                                <td v-show="showColumn('type')">
-                                    {{
-                                        customer.type == "B"
-                                            ? __("Business")
-                                            : customer.type == "P"
-                                            ? __("Person")
-                                            : __("Foreign Customer")
-                                    }}
-                                </td>
-                                <td v-show="showColumn('code')">
-                                    {{ customer.code }}
-                                </td>
-                                <td>
-                                    <secondary-button
-                                        @click="editCustomer(customer)"
-                                    >
-                                        <i class="fa fa-edit"></i>
-                                        {{ __("Edit") }}
-                                    </secondary-button>
-                                    <jet-button
-                                        class="ms-2"
-                                        @click="removeCustomer(customer)"
-                                    >
-                                        <i class="fa fa-trash"></i>
-                                        {{ __("Delete") }}
-                                    </jet-button>
-                                </td>
-                            </tr>
+                        <template #cell(actions)="{ item: customer }">
+                            <secondary-button @click="editCustomer(customer)">
+                                <i class="fa fa-edit"></i> {{ __("Edit") }}
+                            </secondary-button>
+                            <jet-button class="ms-2" @click="removeCustomer(customer)">
+                                <i class="fa fa-trash"></i> {{ __("Delete") }}
+                            </jet-button>
                         </template>
                     </Table>
                 </div>
@@ -103,22 +35,20 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/UI/Confirm";
-import EditCustomer from "@/Pages/Customers/Edit";
-import {
-    InteractsWithQueryBuilder,
-    Tailwind2,
-} from "@protonemedia/inertiajs-tables-laravel-query-builder";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import Confirm from "@/UI/Confirm.vue";
+import EditCustomer from "@/Pages/Customers/Edit.vue";
+import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
+import axios from 'axios';
+
 export default {
-    mixins: [InteractsWithQueryBuilder],
     components: {
         EditCustomer,
         Confirm,
         AppLayout,
-        Table: Tailwind2.Table,
+        Table,
         SecondaryButton,
         JetButton,
     },
@@ -154,11 +84,21 @@ export default {
                 .catch((error) => {
                 });
         },
+        showColumn(columnKey) {
+          if (!this.$inertia.page.props.queryBuilderProps.default.columns) {
+            return false;
+          }
+          const column = this.$inertia.page.props.queryBuilderProps.default.columns.find(
+            item => item.key === columnKey
+          );
+          return column ? !column.hidden : false;
+        },
     },
 };
 </script>
 <style scoped>
 :deep(table th) {
     text-align: start;
+    margin-block-start: 4px;
 }
 </style>

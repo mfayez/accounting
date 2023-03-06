@@ -778,10 +778,10 @@ class ETAController extends Controller
         return Inertia::render('Invoices/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
 				'internalID'	=>	__('Internal ID'),
 				'status'	=>	__('Status')
-			])->addColumns([
+			])->column([
                 'internalID'	=> __('Internal ID'),
 				'receiver.name' => __('Receiver'),
 				'receiver.receiver_id'	=> __('Customer Registration Number'),
@@ -822,9 +822,9 @@ class ETAController extends Controller
         return Inertia::render('ETA/Items/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
 				'codeID'	=>	'Code ID'
-			])->addColumns([
+			])->column([
                 'codeTypeName'	=>	__('Type')	,
 				'codeID'	=>	__('ETA Code')	,
 				'itemCode'	=>	__('Standard Code')	,
@@ -1092,10 +1092,10 @@ class ETAController extends Controller
         return Inertia::render('Invoices/UploadIndex', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
                 'fileName' => 'Name',
                 'user.name' => 'Uploader',
-            ])->addColumns([
+            ])->column([
                 'fileName' => 'File Name',
                 'created_at' => 'Upload Time',
 				'recordsCount' => 'Number of Items',

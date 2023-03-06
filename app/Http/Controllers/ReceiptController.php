@@ -72,10 +72,10 @@ class ReceiptController extends Controller
         return Inertia::render('Receipts/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
 				'internalId'	=>	__('Internal ID'),
 				'status'	=>	__('Status')
-			])->addColumns([
+			])->column([
                 'receiptNumber'	=> __('Receipt Number'),
 				'buyer_id' => __('Buyer ID'),
 				'buyer_name' => __('Buyer Name'),

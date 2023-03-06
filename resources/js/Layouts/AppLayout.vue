@@ -38,30 +38,30 @@
 
 <script>
 // modals
-import NewCustomerDialog from "@/Pages/Customers/Edit";
-import NewBranchDialog from "@/Pages/Branches/Edit";
-import NewUserDialog from "@/Pages/Users/Edit";
-import LoadItemsDialog from "@/Pages/Items/Load";
-import LoadInvoicesDialog from "@/Pages/Invoices/Load";
-import NewItemDialog from "@/Pages/Items/Edit";
-import UploadInvoicesDialog from "@/Pages/Invoices/Upload";
-import UploadCustomersDialog from "@/Pages/Customers/Upload";
-import SettingsDialog1 from "@/Pages/Reports/Settings";
-import SettingsDialog2 from "@/Pages/Application/Settings";
-import UploadItemsDialog from "@/Pages/Items/Upload";
-import ArchiveRequestDialog from "@/Pages/Archives/Request";
+import NewCustomerDialog from "@/Pages/Customers/Edit.vue";
+import NewBranchDialog from "@/Pages/Branches/Edit.vue";
+import NewUserDialog from "@/Pages/Users/Edit.vue";
+import LoadItemsDialog from "@/Pages/Items/Load.vue";
+import LoadInvoicesDialog from "@/Pages/Invoices/Load.vue";
+import NewItemDialog from "@/Pages/Items/Edit.vue";
+import UploadInvoicesDialog from "@/Pages/Invoices/Upload.vue";
+import UploadCustomersDialog from "@/Pages/Customers/Upload.vue";
+import SettingsDialog1 from "@/Pages/Reports/Settings.vue";
+import SettingsDialog2 from "@/Pages/Application/Settings.vue";
+import UploadItemsDialog from "@/Pages/Items/Upload.vue";
+import ArchiveRequestDialog from "@/Pages/Archives/Request.vue";
 import AddPos from "@/Pages/POS/Add.vue";
-import LoadReceipts from "@/Pages/Receipts/Load";
-import UploadReceipts from "@/Pages/Receipts/Upload";
-import SbLoadInvoicesDialog from "@/Pages/SalesBuzz/Load";
-import SbItemsMapDialog from "@/Pages/SalesBuzz/ItemsMap";
-import UploadAccountingChart from "@/Pages/Accounting/Chart/Upload";
-import MsUploadInvoicesDialog from "@/Pages/Mobis/Upload";
-import MsItemsMapDialog from "@/Pages/Mobis/ItemsMap";
-import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx";
-import NavBar from "@/shared/NavBar";
-import AppFooter from "@/shared/AppFooter";
-import FlashMessage from "@/shared/FlashMessage";
+import LoadReceipts from "@/Pages/Receipts/Load.vue";
+import UploadReceipts from "@/Pages/Receipts/Upload.vue";
+import SbLoadInvoicesDialog from "@/Pages/SalesBuzz/Load.vue";
+import SbItemsMapDialog from "@/Pages/SalesBuzz/ItemsMap.vue";
+import UploadAccountingChart from "@/Pages/Accounting/Chart/Upload.vue";
+import MsUploadInvoicesDialog from "@/Pages/Mobis/Upload.vue";
+import MsItemsMapDialog from "@/Pages/Mobis/ItemsMap.vue";
+import ArchiveRequestDialog2 from "@/Pages/Archives/RequestEx.vue";
+import NavBar from "@/shared/NavBar.vue";
+import AppFooter from "@/shared/AppFooter.vue";
+import FlashMessage from "@/shared/FlashMessage.vue";
 import { mapGetters } from "vuex";
 export default {
     components: {

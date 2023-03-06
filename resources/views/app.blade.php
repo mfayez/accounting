@@ -17,12 +17,10 @@
         crossorigin="anonymous" 
         referrerpolicy="no-referrer" />
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
-    <!-- Scripts -->
+    <!-- Styles/Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @routes
-    <script src="{{ mix('js/app.js') }}" defer></script>
+    
 </head>
 
 <body class="font-sans antialiased">

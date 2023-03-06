@@ -11,9 +11,12 @@
 </template>
 
 <script>
+    import { Link } from '@inertiajs/vue3';
     export default {
         props: ['active', 'href', 'as'],
-
+        components: {
+            'inertia-link': Link
+        },
         computed: {
             classes() {
                 return this.active

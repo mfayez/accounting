@@ -12,24 +12,24 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th v-show="showColumn('description')" @click.prevent="sortBy('description')">Description</th>
-								<th v-show="showColumn('internal_code')" @click.prevent="sortBy('internal_code')">Internal Code</th>
-								<th v-show="showColumn('gs1_code')" @click.prevent="sortBy('gs1_code')">Global Standard Code</th>
-								<th v-show="showColumn('egs_code')" @click.prevent="sortyBy('egs_code')">Egyptian Standard Code</th>
-								<th v-show="showColumn('unit_type')" @click.prevent="">Unit Type</th>
-								<th v-show="showColumn('unit_value')" @click.prevent="">Unit Price</th>
+								<th v-show="show('description')" @click.prevent="sortBy('description')">Description</th>
+								<th v-show="show('internal_code')" @click.prevent="sortBy('internal_code')">Internal Code</th>
+								<th v-show="show('gs1_code')" @click.prevent="sortBy('gs1_code')">Global Standard Code</th>
+								<th v-show="show('egs_code')" @click.prevent="sortyBy('egs_code')">Egyptian Standard Code</th>
+								<th v-show="show('unit_type')" @click.prevent="">Unit Type</th>
+								<th v-show="show('unit_value')" @click.prevent="">Unit Price</th>
 								<th @click.prevent="">Actions</th>
 							</tr>
 						</template>
 
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
-									<td v-show="showColumn('description')">{{ item.description }}</td>
-									<td v-show="showColumn('internal_code')">{{ item.internal_code }}</td>
-									<td v-show="showColumn('gs1_code')">{{ item.gs1_code }}</td>
-									<td v-show="showColumn('egs_code')">{{ item.egs_code }}</td>
-									<td v-show="showColumn('unit_type')">{{ item.unit_type }}</td>
-									<td v-show="showColumn('unit_value')">{{ item.unit_value }}</td>
+									<td v-show="show('description')">{{ item.description }}</td>
+									<td v-show="show('internal_code')">{{ item.internal_code }}</td>
+									<td v-show="show('gs1_code')">{{ item.gs1_code }}</td>
+									<td v-show="show('egs_code')">{{ item.egs_code }}</td>
+									<td v-show="show('unit_type')">{{ item.unit_type }}</td>
+									<td v-show="show('unit_value')">{{ item.unit_value }}</td>
 									<td>
 										<div class="grid justify-items-center">
                     						<add-edit-item :item="item">
@@ -51,16 +51,16 @@
 </template>
 
 <script>
-    import AppLayout from '@/Layouts/AppLayout'
-	import { InteractsWithQueryBuilder, Tailwind2 } from '@protonemedia/inertiajs-tables-laravel-query-builder';
-    import JetButton from '@/Jetstream/Button';
-	import AddEditItem from '@/Pages/Items/AddEdit';
-
+    import AppLayout from '@/Layouts/AppLayout.vue'
+	import { Table } from '@protonemedia/inertiajs-tables-laravel-query-builder';
+    import JetButton from '@/Jetstream/Button.vue';
+	import AddEditItem from '@/Pages/Items/AddEdit.vue';
+	import axios from 'axios';
+	
     export default {
-		mixins: [InteractsWithQueryBuilder],
         components: {
             AppLayout,
-			Table: Tailwind2.Table,
+			Table,
 			JetButton,
 			AddEditItem,
         },

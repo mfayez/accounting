@@ -41,14 +41,14 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/UI/Confirm";
-import JetLabel from "@/Jetstream/Label";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import Confirm from "@/UI/Confirm.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
-import JetDangerButton from '@/Jetstream/DangerButton';
-import Dropdown from "@/Jetstream/Dropdown";
-import JetInput from "@/Jetstream/Input";
+import JetDangerButton from '@/Jetstream/DangerButton.vue';
+import Dropdown from "@/Jetstream/Dropdown.vue";
+import JetInput from "@/Jetstream/Input.vue";
 import swal from "sweetalert";
 
 export default {

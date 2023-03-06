@@ -37,10 +37,10 @@ class POSController extends Controller
         return Inertia::render('POS/Index', [
             'poses' => $POSes,
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
+            $table->searchInput([
                 'name' => __('Name'),
                 'serial' => __('Serial'),
-            ])->addColumns([
+            ])->column([
                 'id' => __('ID'),
                 'name' => __('Name'),
                 'serial' => __('Serial'),

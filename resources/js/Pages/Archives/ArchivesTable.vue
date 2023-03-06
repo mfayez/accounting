@@ -100,7 +100,7 @@ export default {
             return "Unknow";
         },
         LoadInvoices(rid){
-            window.open(route('archive.import', {rid: rid}), '_blank');
+            window.open(route('archive.import', {rid: rid}), '_blank.vue');
         }
     },
     mounted() {

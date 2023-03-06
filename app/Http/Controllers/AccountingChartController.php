@@ -37,7 +37,7 @@ class AccountingChartController extends Controller
         return Inertia::render('Accounting/Chart/Index', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addColumns([
+            $table->column([
                 'id' 	        => __('Code'),
                 'name' 	        => __('name'),
                 'parent_id'     => __('Parent'),

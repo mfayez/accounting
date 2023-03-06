@@ -19,9 +19,9 @@
                         <template #head>
                             <tr>
                                 <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
-                                    <th v-show="showColumn(key)" 
+                                    <th v-show="show(key)" 
                                         v-if="notSortableCols.includes(key)">{{ col.label }}</th>
-                                    <th class="cursor-pointer" v-show="showColumn(key)"
+                                    <th class="cursor-pointer" v-show="show(key)"
                                         @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
                                   </template>
 								<th @click.prevent="">{{__('Actions')}}</th>
@@ -30,7 +30,7 @@
 
                         <template #body>
                             <tr v-for="item in poses.data" :key="item.id">
-                                <td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+                                <td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
                                     <div v-for="rowVals in nestedIndex(item, key).split(',')">
                                         {{rowVals}}
                                     </div>
@@ -61,24 +61,22 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/UI/Confirm";
-import EditPos from "@/Pages/POS/Add";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import Confirm from "@/UI/Confirm.vue";
+import EditPos from "@/Pages/POS/Add.vue";
 import {
-    InteractsWithQueryBuilder,
-    Tailwind2,
+    Table,
 } from "@protonemedia/inertiajs-tables-laravel-query-builder";
 import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import axios from "axios";
 
 export default {
-    mixins: [InteractsWithQueryBuilder],
     components: {
         AppLayout,
         Confirm,
         EditPos,
-        Table: Tailwind2.Table,
+        Table,
         SecondaryButton,
         JetButton,
     },

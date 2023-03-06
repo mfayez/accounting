@@ -122,12 +122,12 @@
 
 <script>
 import { computed, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import JetLabel from "@/Jetstream/Label";
-import JetButton from "@/Jetstream/Button";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
-import JetDangerButton from "@/Jetstream/DangerButton";
-import TextField from "@/UI/TextField";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetButton from "@/Jetstream/Button.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import JetDangerButton from "@/Jetstream/DangerButton.vue";
+import TextField from "@/UI/TextField.vue";
 import Multiselect from "@suadelabs/vue3-multiselect";
 import axios from "axios";
 import swal from "sweetalert";

@@ -19,26 +19,26 @@
                         <template #head>
                             <tr>
                                 <th
-                                    v-show="showColumn('Id')"
+                                    v-show="show('Id')"
                                     @click.prevent="sortBy('Id')"
                                 >
                                     {{ __("ID") }}
                                 </th>
                                 <th
-                                    v-show="showColumn('name')"
+                                    v-show="show('name')"
                                     @click.prevent="sortBy('name')"
                                 >
                                     {{ __("Name") }}
                                 </th>
                                 <th
-                                    v-show="showColumn('receiver_id')"
+                                    v-show="show('receiver_id')"
                                     @click.prevent="sortBy('receiver_id')"
                                 >
                                     {{ __("Registration Number") }}
                                 </th>
 
                                 <th
-                                    v-show="showColumn('type')"
+                                    v-show="show('type')"
                                     @click.prevent="sortBy('type')"
                                 >
                                     {{ __("Type(B|P)") }}
@@ -55,16 +55,16 @@
                                 v-for="branch in branches.data"
                                 :key="branch.id"
                             >
-                                <td v-show="showColumn('Id')">
+                                <td v-show="show('Id')">
                                     {{ branch.Id }}
                                 </td>
-                                <td v-show="showColumn('name')">
+                                <td v-show="show('name')">
                                     {{ branch.name }}
                                 </td>
-                                <td v-show="showColumn('receiver_id')">
+                                <td v-show="show('receiver_id')">
                                     {{ branch.receiver_id }}
                                 </td>
-                                <td v-show="showColumn('type')">
+                                <td v-show="show('type')">
                                     {{
                                         branch.type == "B"
                                             ? __("Business")
@@ -109,24 +109,22 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/UI/Confirm";
-import EditBranch from "@/Pages/Branches/Edit";
-import {
-    InteractsWithQueryBuilder,
-    Tailwind2,
-} from "@protonemedia/inertiajs-tables-laravel-query-builder";
-import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
-import JetButton from "@/Jetstream/Button.vue";
-import axios from "axios";
+    import AppLayout from "@/Layouts/AppLayout.vue";
+    import Confirm from "@/UI/Confirm.vue";
+    import EditBranch from "@/Pages/Branches/Edit.vue";
+    import {
+        Table
+    } from "@protonemedia/inertiajs-tables-laravel-query-builder";
+    import SecondaryButton from "@/Jetstream/SecondaryButton.vue";
+    import JetButton from "@/Jetstream/Button.vue";
+    import axios from "axios";
 
 export default {
-    mixins: [InteractsWithQueryBuilder],
     components: {
         AppLayout,
         Confirm,
         EditBranch,
-        Table: Tailwind2.Table,
+        Table,
         SecondaryButton,
         JetButton,
     },

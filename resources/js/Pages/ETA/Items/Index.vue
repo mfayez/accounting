@@ -12,7 +12,7 @@
 				  	>
 						<template #head>
 						  	<tr>
-								<th v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+								<th v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
 									{{ col.label }}
 								</th>
 								<th @click.prevent="">Actions</th>
@@ -21,7 +21,7 @@
 
 						<template #body>
 					  		<tr v-for="item in items.data" :key="item.id">
-									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="showColumn(key)">
+									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
 										{{ nestedIndex(item, key) }}
 									</td>
 									<td>
@@ -45,16 +45,15 @@
 </template>
 
 <script>
-    import AppLayout from '@/Layouts/AppLayout'
-	import { InteractsWithQueryBuilder, Tailwind2 } from '@protonemedia/inertiajs-tables-laravel-query-builder';
-    import JetButton from '@/Jetstream/Button';
-	import AddEditItem from '@/Pages/Items/AddEdit';
+    import AppLayout from '@/Layouts/AppLayout.vue'
+	import { Table } from '@protonemedia/inertiajs-tables-laravel-query-builder';
+    import JetButton from '@/Jetstream/Button.vue';
+	import AddEditItem from '@/Pages/Items/AddEdit.vue';
 
     export default {
-		mixins: [InteractsWithQueryBuilder],
         components: {
             AppLayout,
-			Table: Tailwind2.Table,
+			Table,
 			JetButton,
 			AddEditItem,
         },

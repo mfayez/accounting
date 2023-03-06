@@ -582,7 +582,7 @@
                                     class="cursor-pointer hover:text-blue-600"
                                 >
                                     <i class="fa fa-user"></i>
-                                    {{ $page.props.user.name }}
+                                    {{ $page.props.auth.user.name }}
                                 </span>
                             </template>
                             <template #content>
@@ -592,21 +592,21 @@
 
                                 <dropdown-link
                                     :href="route('api-tokens.index')"
-                                    v-if="$page.props.user.id == 1"
+                                    v-if="$page.props.auth.user.id == 1"
                                 >
                                     {{ __("API Tokens") }}
                                 </dropdown-link>
 
                                 <dropdown-link
                                     :href="route('users.index')"
-                                    v-if="$page.props.user.id == 1"
+                                    v-if="$page.props.auth.user.id == 1"
                                 >
                                     {{ __("Users") }}
                                 </dropdown-link>
                                  <dropdown-link
                                     as="a"
                                     @click.prevent="openDlg('dlg10')"
-                                    v-if="$page.props.user.id == 1"
+                                    v-if="$page.props.auth.user.id == 1"
                                     href="#"
                                 >
                                     {{ __("Settings") }}
@@ -636,11 +636,11 @@
 </template>
 
 <script>
-import { Link } from "@inertiajs/inertia-vue3";
-import LanguageSelector from "@/Language/LanguageSelector";
-import Dropdown from "@/Jetstream/Dropdown";
-import DropdownLink from "@/Jetstream/DropdownLink";
-import JetApplicationMark from "@/Jetstream/ApplicationMark";
+import { Link } from "@inertiajs/vue3";
+import LanguageSelector from "@/Language/LanguageSelector.vue";
+import Dropdown from "@/Jetstream/Dropdown.vue";
+import DropdownLink from "@/Jetstream/DropdownLink.vue";
+import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
 
 export default {
     emits: [

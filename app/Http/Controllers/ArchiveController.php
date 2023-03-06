@@ -49,7 +49,7 @@ class ArchiveController extends Controller
         return Inertia::render('Archives/IndexEx', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->addColumns([
+            $table->column([
 				'id' => __('ID'),
                 'issuer.name' => __('Issuer'),
                 'receiver.name' => __('Receiver'),

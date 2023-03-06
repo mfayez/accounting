@@ -1,4 +1,4 @@
-import components from "./Components";
+import components from "./Components.vue";
 
 export default class ComponentsFilter {
     constructor() {

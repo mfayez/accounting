@@ -104,8 +104,8 @@
 </template>
 
 <script>
-import InputError from "@/Jetstream/InputError";
-import JetDialogModal from '@/Jetstream/DialogModal'
+import InputError from "@/Jetstream/InputError.vue";
+import JetDialogModal from '@/Jetstream/DialogModal.vue'
 import swal from "sweetalert";
 
 export default {
