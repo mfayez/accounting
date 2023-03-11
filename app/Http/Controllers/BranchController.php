@@ -39,15 +39,15 @@ class BranchController extends Controller
      */
     public function index()
     {
-		$globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 $query->where('name', 'LIKE', "%{$value}%")->orWhere('issuer_id', 'LIKE', "%{$value}%");
             });
         });
 
         $branches = QueryBuilder::for(Issuer::class)
-			->with('address')
-        	->defaultSort('name')
+            ->with('address')
+            ->defaultSort('name')
             ->allowedSorts(['Id', 'name', 'issuer_id', 'type'])
             ->allowedFilters(['name', 'issuer_id', 'type', $globalSearch])
             ->paginate(10)
@@ -56,27 +56,49 @@ class BranchController extends Controller
         return Inertia::render('Branches/Index', [
             'branches' => $branches,
         ])->table(function (InertiaTable $table) {
-            $table->searchInput(
+            $table->column(
+                key: 'Id',
+                label: __('ID'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'name',
+                label: __('Name'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'issuer_id',
+                label: __('Registration Number'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'type',
+                label: __('Type(B|P)'),
+                canBeHidden: true,
+                hidden: true,
+                sortable: true
+            )->column(
+                key: 'logo',
+                label: __('Branch Logo')
+            )->column(
+                key: 'actions',
+                label: __('Actions')
+            )->searchInput(
                 key: 'name',
                 label: __('Name')
-            )->searchInput(
-                key: 'issuer_id',
-                label: __('Tax Registration ID/National ID')
-            )->column([
-                'Id' => __('ID'),
-                'name' => __('Name'),
-                'issuer_id' => __('Branch Identifier'),
-				'type' => __('Branch Type')
-            ]);
+            );
         });
     }
 
-	public function index_json()
-	{
-		if (Auth::user()->isAdmin)
-			return Issuer::with('address')->get();
-		return Auth::user()->issuers()->with('address')->get()->toArray();
-	}
+    public function index_json()
+    {
+        if (Auth::user()->isAdmin)
+            return Issuer::with('address')->get();
+        return Auth::user()->issuers()->with('address')->get()->toArray();
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -85,7 +107,7 @@ class BranchController extends Controller
      */
     public function create()
     {
-		//return Inertia::render('Items/Create');;        
+        //return Inertia::render('Items/Create');;        
     }
 
     /**
@@ -96,52 +118,54 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
-		$request->validate([
-            'name' 							=> ['required', 'string', 'max:255'],
-            'issuer_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
-            'address.branchID' 				=> ['required', 'integer'],
-			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
-			'address.governate' 			=> ['required', 'string', Rule::in(['Alexandria', 'Assiut', 'Aswan',
-												'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum', 
-												'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor', 
-												'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
-												'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
-												'South Sinai', 'Suez', 'Tanta'])],
-			'address.regionCity' 			=> ['required', 'string'],
-			'address.street' 				=> ['required', 'string'],
-			'address.buildingNumber' 		=> ['required', 'integer'],
-			'address.postalCode' 			=> ['required', 'integer'],
-			'address.additionalInformation' => ['nullable', 'string'],
-            'branchLogo'                    => ['required' , 'image' , 'max:1000']
+        $request->validate([
+            'name'                             => ['required', 'string', 'max:255'],
+            'issuer_id'                     => ['required', 'integer'],
+            'type'                             => ['required',  'string', Rule::in(['B', 'I'])],
+            'address.branchID'                 => ['required', 'integer'],
+            'address.country'                 => ['required', 'string', Rule::in(['EG'])],
+            'address.governate'             => ['required', 'string', Rule::in([
+                'Alexandria', 'Assiut', 'Aswan',
+                'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum',
+                'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor',
+                'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
+                'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
+                'South Sinai', 'Suez', 'Tanta'
+            ])],
+            'address.regionCity'             => ['required', 'string'],
+            'address.street'                 => ['required', 'string'],
+            'address.buildingNumber'         => ['required', 'integer'],
+            'address.postalCode'             => ['required', 'integer'],
+            'address.additionalInformation' => ['nullable', 'string'],
+            'branchLogo'                    => ['required', 'image', 'max:1000']
         ]);
 
-        
+
         $item2 = new Address();
-		$item2->branchID = $request->input('address.branchID');
+        $item2->branchID = $request->input('address.branchID');
         $item2->country = $request->input('address.country');
         $item2->governate = $request->input('address.governate');
         $item2->regionCity = $request->input('address.regionCity');
         $item2->street = $request->input('address.street');
         $item2->buildingNumber = $request->input('address.buildingNumber');
-		$item2->postalCode = $request->input('address.postalCode');
-		$item2->additionalInformation = $request->input('address.additionalInformation');
+        $item2->postalCode = $request->input('address.postalCode');
+        $item2->additionalInformation = $request->input('address.additionalInformation');
         $item2->save();
         $item = new Issuer();
         $item->type = $request->input('type');
         $item->name = $request->input('name');
-		$item->issuer_id = $request->input('issuer_id');
+        $item->issuer_id = $request->input('issuer_id');
         $item2->issuer()->save($item);
 
         // store branch logo in the file system
-        
+
         $logo = $request->file('branchLogo');
 
         $extension = $logo->getClientOriginalExtension();
 
-        $name = $item->Id . '.' . $extension; 
+        $name = $item->Id . '.' . $extension;
 
-        $logo->storeAs('public/uploads/branchesImages/' . $item->Id , $name);
+        $logo->storeAs('public/uploads/branchesImages/' . $item->Id, $name);
 
         return $item;
     }
@@ -177,52 +201,53 @@ class BranchController extends Controller
      */
     public function update(Request $request, $id)
     {
-		$data = $request->validate([
-            'name' 							=> ['required', 'string', 'max:255'],
-            'issuer_id' 					=> ['required', 'integer'],
-            'type' 							=> ['required',  'string', Rule::in(['B', 'I'])],
-            'address.branchID' 				=> ['required', 'integer'],
-			'address.country' 				=> ['required', 'string', Rule::in(['EG'])],
-			'address.governate' 			=> ['required', 'string', Rule::in(['Alexandria', 'Assiut', 'Aswan',
-												'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum', 
-												'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor', 
-												'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
-												'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
-												'South Sinai', 'Suez', 'Tanta'])],
-			'address.regionCity' 			=> ['required', 'string'],
-			'address.street' 				=> ['required', 'string'],
-			'address.buildingNumber' 		=> ['required', 'integer'],
-			'address.postalCode' 			=> ['required', 'integer'],
-			'address.additionalInformation' => ['nullable', 'string'],
-            'branchLogo'                    => ['nullable' , 'image' , 'max:1000']
+        $data = $request->validate([
+            'name'                             => ['required', 'string', 'max:255'],
+            'issuer_id'                     => ['required', 'integer'],
+            'type'                             => ['required',  'string', Rule::in(['B', 'I'])],
+            'address.branchID'                 => ['required', 'integer'],
+            'address.country'                 => ['required', 'string', Rule::in(['EG'])],
+            'address.governate'             => ['required', 'string', Rule::in([
+                'Alexandria', 'Assiut', 'Aswan',
+                'Beheira', 'Bani Suef', 'Cairo', 'Daqahliya', 'Damietta', 'Fayyoum',
+                'Gharbiya', 'Giza', 'Helwan', 'Ismailia', 'Kafr El Sheikh', 'Luxor',
+                'Marsa Matrouh', 'Minya', 'Monofiya', 'New Valley', 'North Sinai',
+                'Port Said', 'Qalioubiya', 'Qena', 'Red Sea', 'Sharqiya', 'Sohag',
+                'South Sinai', 'Suez', 'Tanta'
+            ])],
+            'address.regionCity'             => ['required', 'string'],
+            'address.street'                 => ['required', 'string'],
+            'address.buildingNumber'         => ['required', 'integer'],
+            'address.postalCode'             => ['required', 'integer'],
+            'address.additionalInformation' => ['nullable', 'string'],
+            'branchLogo'                    => ['nullable', 'image', 'max:1000']
         ]);
 
-		$item = Issuer::findOrFail($id);
-		$item->update($data);
-		$item2 = $item->address;
-		$item2->update($data['address']);
+        $item = Issuer::findOrFail($id);
+        $item->update($data);
+        $item2 = $item->address;
+        $item2->update($data['address']);
 
-        if($request->has('branchLogo')) {
+        if ($request->has('branchLogo')) {
 
             $imageDir = Storage::allFiles('public/uploads/branchesImages/' . $item->Id);
 
-            if(collect($imageDir)->count() > 0) {
+            if (collect($imageDir)->count() > 0) {
                 Storage::deleteDirectory('public/uploads/branchesImages/' . $item->Id);
             }
 
             // store branch logo in the file system
-        
+
             $logo = $request->file('branchLogo');
 
             $extension = $logo->getClientOriginalExtension();
 
-            $name = $item->Id . '.' . $extension; 
+            $name = $item->Id . '.' . $extension;
 
-            $logo->storeAs('public/uploads/branchesImages/' . $item->Id , $name);
-
+            $logo->storeAs('public/uploads/branchesImages/' . $item->Id, $name);
         }
-        
-		return $item;
+
+        return $item;
     }
 
     /**
@@ -234,28 +259,29 @@ class BranchController extends Controller
     public function destroy($id)
     {
         $branch = Issuer::findOrFail($id);
-		$address = $branch->address;
+        $address = $branch->address;
 
         $imageDir = Storage::allFiles('public/uploads/branchesImages/' . $branch->Id);
 
-        if(collect($imageDir)->count() > 0) {
+        if (collect($imageDir)->count() > 0) {
             Storage::deleteDirectory('public/uploads/branchesImages/' . $branch->Id);
         }
 
-		$branch->delete(); 
-		$address->delete();
+        $branch->delete();
+        $address->delete();
     }
 
-    public function getBranchesimages($branchesIds) {
-        
-        $ids = explode(',' , $branchesIds);
+    public function getBranchesimages($branchesIds)
+    {
+
+        $ids = explode(',', $branchesIds);
 
         $images = [];
 
-        foreach($ids as $id) {
-            
-            if(count($imageDir = Storage::allFiles('public/uploads/branchesImages/' . $id)) > 0) {
-                $images[$id] = Str::of($imageDir[0])->replaceFirst('public/' , '');
+        foreach ($ids as $id) {
+
+            if (count($imageDir = Storage::allFiles('public/uploads/branchesImages/' . $id)) > 0) {
+                $images[$id] = Str::of($imageDir[0])->replaceFirst('public/', '');
             } else {
                 $images[$id] = "N/A";
             }

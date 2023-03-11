@@ -3,61 +3,22 @@
     <app-layout>
         <edit-item-map ref="dlg2" :item_map="currentItem" />
         <confirm ref="dlg4" @confirmed="deleteItemMap2()">
-			<jet-label for="type"  :value="__('Are you sure you want to delete this item?')" />
-		</confirm>
-		<div class="py-4">
+            <jet-label for="type" :value="__('Are you sure you want to delete this item?')" />
+        </confirm>
+        <div class="py-4">
             <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-					<Table
-						:filters="queryBuilderProps.filters"
-						:search="queryBuilderProps.search"
-						:columns="queryBuilderProps.columns"
-						:on-update="setQueryBuilder"
-						:meta="items"
-				  	>
-						<template #head>
-						  	<tr>
-                                  <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
-                                      <th v-show="show(key)" 
-                                      v-if="notSortableCols.includes(key)">{{ col.label }}</th>
-                                      <th class="cursor-pointer" v-show="show(key)" @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
-                                  </template>
-								<th @click.prevent="">{{__('Actions')}}</th>
-							</tr>
-						</template>
+                    <Table :resource="items">
+                        <template #cell(actions)="{ item: item }">
+                            <jet-danger-button class="me-2 mt-2" @click="deleteItemMap(item)">
+                                {{ __("Delete") }}
+                            </jet-danger-button>
 
-						<template #body>
-					  		<tr v-for="item in items.data" :key="item.id" 
-                                :class="{ credit: item.documentType =='C', debit: item.documentType =='D' }"
-                            >
-									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
-										<div v-for="rowVals in nestedIndex(item, key).split(',')">
-											{{ rowVals }}
-                                        </div>
-									</td>
-									<td>
-                                        <div class="grid grid-cols-3 w-56">
-                                            <jet-danger-button
-                                                class="me-2 mt-2"
-                                                @click="deleteItemMap(item)" 
-                                                v-show="item.status!='Valid' && item.status!='approved'" 
-                                                >
-                                                {{ __("Delete") }}
-                                            </jet-danger-button>
-                                            
-                                            <jet-button
-                                            class="me-2 mt-2"
-                                                @click="editItemMap(item)" 
-                                                v-show="item.status!='Valid'"
-                                                >
-                                                {{ __("Edit") }}
-                                            </jet-button>
-                                        </div>
-										
-									</td>
-							  </tr>
-						</template>
-				 	</Table>
+                            <jet-button class="me-2 mt-2" @click="editItemMap(item)">
+                                {{ __("Edit") }}
+                            </jet-button>
+                        </template>
+                    </Table>
                 </div>
             </div>
         </div>
@@ -95,8 +56,8 @@ export default {
     },
     data() {
         return {
-            currentItem: { },
-            
+            currentItem: {},
+
             notSortableCols: [
             ],
         };
@@ -105,14 +66,14 @@ export default {
         editItemMap(item) {
             this.currentItem = item;
             this.$nextTick(() => this.$refs.dlg2.ShowDialog());
-        },        
+        },
         deleteItemMap(item) {
             this.currentItem = item;
             this.$refs.dlg4.ShowModal();
         },
         deleteItemMap2() {
             axios
-                .post(route("sb.items.map.delete"), {SBCode: this.currentItem.SBCode})
+                .post(route("sb.items.map.delete"), { SBCode: this.currentItem.SBCode })
                 .then((response) => {
                     this.$store.dispatch("setSuccessFlashMessage", true);
                     this.showDialog = false;
@@ -134,7 +95,7 @@ export default {
                 if (keys.length == 3)
                     return item[keys[0]][keys[1]][keys[2]].toString();
                 return "Unsupported Nested Index";
-            } catch (err) {}
+            } catch (err) { }
             return "N/A";
         },
         editItem: function (item_id) {
@@ -146,15 +107,18 @@ export default {
 <style scoped>
 :deep(table td) {
     text-align: start;
-	white-space: pre-line;
+    white-space: pre-line;
 }
+
 :deep(table th) {
     text-align: start;
-	white-space: pre-line;
+    white-space: pre-line;
 }
+
 .credit {
     background-color: lightgoldenrodyellow;
 }
+
 .debit {
     background-color: palegreen;
 }

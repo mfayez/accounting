@@ -359,7 +359,8 @@ class SalesBuzzController extends Controller
 			if ($invoiceline->total < 0)
 			{
 				$invoiceline->total = 0;
-				$discountBeforeTax = $invoiceline->netTotal;
+				$invoiceline->netTotal = 0;
+				$discountBeforeTax = $invoiceline->salesTotal;
 			}
 			$invoiceline->valueDifference = 0;//$mapItem->Val_Diff * $invoiceline->quantity;
 			$invoiceline->totalTaxableFees = 0;
@@ -500,12 +501,46 @@ class SalesBuzzController extends Controller
         return Inertia::render('SalesBuzz/IndexItemsMap', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->column([
-                'SBCode' 	=> __('SalesBuzz Code'),
-                'ETACode' 	=> __('ETA Code'),
-                'ItemNameA' => __('Arabic Name'),
-				'ItemNameE' => __('English Name')
-            ]);
+            $table->column(
+                key: 'SBCode',
+                label: __('SalesBuzz Code'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'ETACode',
+                label: __('ETA Code'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'ItemNameA',
+                label: __('Arabic Name'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'ItemNameE',
+                label: __('English Name'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+			)->column(
+                key: 'actions',
+                label: __('Actions')
+            )->searchInput(
+                key: 'SBCode',
+                label: __('SalesBuzz Code')
+            )->searchInput(
+                key: 'ETACode',
+                label: __('ETA Code')
+            )->searchInput(
+                key: 'ItemNameA',
+                label: __('Arabic Name')
+            )->searchInput(
+                key: 'ItemNameE',
+                label: __('English Name')
+			);
         });
 	}
 

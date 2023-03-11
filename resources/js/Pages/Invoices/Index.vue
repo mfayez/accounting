@@ -1,179 +1,97 @@
 <template>
-    <!-- prettier-ignore -->
     <app-layout>
-		<preview-invoice ref="dlg3" v-model="invItem" />
+        <preview-invoice ref="dlg3" v-model="invItem" />
         <credit-note ref="dlg5" v-model="invItem" />
         <debit-note ref="dlg6" v-model="invItem" />
         <confirm ref="dlg2" @confirmed="cancelInv2()">
-			<jet-label for="type"  :value="__('Select cancelation reason')" />
-			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
-			    <option :value="__('Wrong buyer details')">
-                    {{__("Wrong buyer details")}}
+            <jet-label for="type" :value="__('Select cancelation reason')" />
+            <select id="type" v-model="cancelReason" class="mt-1 block w-full">
+                <option :value="__('Wrong buyer details')">
+                    {{ __("Wrong buyer details") }}
                 </option>
-			    <option :value="__('Wrong invoice details')">
-                    {{__("Wrong invoice details")}}
+                <option :value="__('Wrong invoice details')">
+                    {{ __("Wrong invoice details") }}
                 </option>
-			</select>
-		</confirm>
-		<confirm ref="dlg4" @confirmed="deleteInv()">
-			<jet-label for="type"  value="Are you sure you want to delete this Invoice?" />
-		</confirm>
+            </select>
+        </confirm>
+        <confirm ref="dlg4" @confirmed="deleteInv()">
+            <jet-label for="type" value="Are you sure you want to delete this Invoice?" />
+        </confirm>
         <div class="py-4">
             <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-					<Table
-						:filters="queryBuilderProps.filters"
-						:search="queryBuilderProps.search"
-						:columns="queryBuilderProps.columns"
-						:on-update="setQueryBuilder"
-						:meta="items"
-				  	>
-						<template #head>
-						  	<tr>
-                                <th>
-                                    <input type="checkbox" v-model="allChecked" v-on:change="checkAll()"/>
-                                </th>
-                                <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
-                                    <th v-show="show(key)" 
-                                        v-if="notSortableCols.includes(key)">{{ col.label }}</th>
-                                    <th class="cursor-pointer" v-show="show(key)" @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
+                    <Table :resource="items">
+                        <template #tableReset>
+                            <jet-button class="me-2" @click="checkAll()">
+                                {{ allChecked ? __("Unselect All") : __("Select All") }}
+                            </jet-button>
+                            <dropdown :align="alignDropDown()" width="48" class="ms-3 lg:mb-0">
+                                <template #trigger>
+                                    <jet-button>
+                                        {{ __("Bulk Actions") }}
+                                    </jet-button>
                                 </template>
-								<!-- <th 
-									v-for="(col, key) in queryBuilderProps.columns" 
-									:key="key" v-show="show(key)" 
-                                    @click.prevent="sortBy(key)"
-								>
-									{{ col.label }}
-								</th> -->
-                                <th>
-                                    <dropdown
-                                        :align="alignDropDown()"
-                                        width="48"
-                                        class="ms-3 mb-3 lg:mb-0"
-                                    >
-                                        <template #trigger>
-                                            <jet-button>
-                                                {{ __("Bulk Actions") }}
-                                            </jet-button>
-                                            
-                                        </template>
-                                        <template #content>
-                                            <dropdown-link
-                                                as="a"
-                                                @click.prevent="ApproveSelected()"
-                                                href="#"
-                                            >
-                                                {{ __("Approve Selected") }}
-                                            </dropdown-link>
-                                        </template>
-                                    </dropdown>
-                                </th>
-							</tr>
-						</template>
+                                <template #content>
+                                    <dropdown-link as="a" @click.prevent="ApproveSelected()" href="#">
+                                        {{ __("Approve Selected") }}
+                                    </dropdown-link>
+                                </template>
+                            </dropdown>
+                        </template>
+                        <template #cell(select)="{ item: invoice }">
+                            <input type="checkbox" v-model="invoice.selected" :value="invoice.id" />
+                        </template>
+                        <template #cell(actions)="{ item: invoice }">
+                            <jet-danger-button class="me-2 mt-2" @click="cancelInvoice(invoice)"
+                                v-show="invoice.status == 'Valid'">
+                                {{ __("Cancel") }}
+                            </jet-danger-button>
 
-						<template #body>
-					  		<tr v-for="item in items.data" :key="item.id" 
-                                :class="{ credit: item.documentType =='C', debit: item.documentType =='D' }"
-                            >
-                                <td>
-                                    <input type="checkbox" v-model="item.selected" :value="item.id" />
-                                </td>
-                                <td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
-                                    <div v-for="rowVals in nestedIndex(item, key).split(',')">
-                                        {{ 
-                                            key == 'status' ? render_status(item, rowVals) :
-                                            (key == 'statusReason' ? __(rowVals) :
-                                            (key == 'dateTimeIssued' || key == 'dateTimeReceived' ? 
-                                                new Date(rowVals).toISOString().slice(0,10) : 
-                                                rowVals
-                                            )) 
-                                        }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="grid grid-cols-3 w-56">
-                                        <jet-danger-button
-                                            class="me-2 mt-2"
-                                            @click="cancelInvoice(item)" 
-                                            v-show="item.status=='Valid'"
-                                            >
-                                            {{ __("Cancel") }}
-                                        </jet-danger-button>
-                                        
-                                        <jet-danger-button
-                                            class="me-2 mt-2"
-                                            @click="deleteInvoice(item)" 
-                                            v-show="item.status!='Valid' && item.status!='approved' && item.status!='Submitted'"
-                                            >
-                                            {{ __("Delete") }}
-                                        </jet-danger-button>
-                                        
-                                        <jet-button
-                                        class="me-2 mt-2"
-                                            @click="editInvoice(item)" 
-                                            v-show="['in review', 'invalid', 'approved', 'rejected', 'cancelled'].indexOf(item.status.toLowerCase()) >= 0"
-                                            >
-                                            {{ __("Edit") }}
-                                        </jet-button>
-                                        
-                                        <secondary-button
-                                            class="me-2 mt-2"
-                                            @click="viewInvoice(item)"
-                                        >
-                                            {{ __("View") }}
-                                        </secondary-button>
+                            <jet-danger-button class="me-2 mt-2" @click="deleteInvoice(invoice)"
+                                v-show="invoice.status != 'Valid' && invoice.status != 'approved' && invoice.status != 'Submitted'">
+                                {{ __("Delete") }}
+                            </jet-danger-button>
 
-                                        <jet-button
-                                            class="me-2 mt-2"
-                                            @click="ApproveItem(item)"
-                                            v-show="item.status=='In Review'"
-                                        >
-                                            {{ __("Approve") }}
-                                        </jet-button>
-                                        
-                                        <jet-button
-                                            class="me-2 mt-2"
-                                            @click="downloadPDF(item)" 
-                                        >
-                                            {{ __("PDF") }}
-                                        </jet-button>
-                                        
-                                        <secondary-button
-                                            class="me-2 mt-2"
-                                            v-show="item.status=='Valid'"
-                                            @click="openExternal(item)"
-                                        >
-                                            {{ __("ETA1") }}
-                                        </secondary-button>
-                                        
-                                        <jet-button
-                                            class="me-2 mt-2"
-                                            v-show="item.status=='Valid'"
-                                            @click="openExternal2(item)">
-                                            {{ __("ETA2") }}
-                                        </jet-button>
+                            <jet-button class="me-2 mt-2" @click="editInvoice(invoice)"
+                                v-show="['in review', 'invalid', 'approved', 'rejected', 'cancelled'].indexOf(invoice.status.toLowerCase()) >= 0">
+                                {{ __("Edit") }}
+                            </jet-button>
 
-                                        <secondary-button
-                                            class="me-2 mt-2"
-                                            v-show="item.status=='Valid'"
-                                            @click="creditNoteUpdate(item)"
-                                        >
-                                            {{ __("Credit") }}
-                                        </secondary-button>
+                            <secondary-button class="me-2 mt-2" @click="viewInvoice(invoice)">
+                                {{ __("View") }}
+                            </secondary-button>
 
-                                        <jet-button
-                                            class="me-2 mt-2"
-                                            v-show="item.status=='Valid'"
-                                            @click="debitNoteUpdate(item)"
-                                        >
-                                            {{ __("Debit") }}
-                                        </jet-button>
-                                    </div>
-                                    
-                                </td>
-							</tr>
-						</template>
-				 	</Table>
+                            <jet-button class="me-2 mt-2" @click="ApproveItem(invoice)"
+                                v-show="invoice.status == 'In Review'">
+                                {{ __("Approve") }}
+                            </jet-button>
+
+                            <jet-button class="me-2 mt-2" @click="downloadPDF(invoice)">
+                                {{ __("PDF") }}
+                            </jet-button>
+
+                            <secondary-button class="me-2 mt-2" v-show="invoice.status == 'Valid'"
+                                @click="openExternal(invoice)">
+                                {{ __("ETA1") }}
+                            </secondary-button>
+
+                            <jet-button class="me-2 mt-2" v-show="invoice.status == 'Valid'"
+                                @click="openExternal2(invoice)">
+                                {{ __("ETA2") }}
+                            </jet-button>
+
+                            <secondary-button class="me-2 mt-2" v-show="invoice.status == 'Valid'"
+                                @click="creditNoteUpdate(invoice)">
+                                {{ __("Credit") }}
+                            </secondary-button>
+
+                            <jet-button class="me-2 mt-2" v-show="invoice.status == 'Valid'"
+                                @click="debitNoteUpdate(invoice)">
+                                {{ __("Debit") }}
+                            </jet-button>
+                        </template>
+
+                    </Table>
                 </div>
             </div>
         </div>
@@ -236,14 +154,14 @@ export default {
     },
     methods: {
         openExternal2(item) {
-            window.open(route('eta.invoice.download', {uuid: item.uuid}), '_blank');
+            window.open(route('eta.invoice.download', { uuid: item.uuid }), '_blank');
         },
         openExternal(item) {
             window.open(
-                this.$page.props.preview_url + 
-                    item.uuid +
-                    "/share/" +
-                    item.longId
+                this.$page.props.preview_url +
+                item.uuid +
+                "/share/" +
+                item.longId
             );
         },
         downloadPDF(item) {
@@ -268,27 +186,27 @@ export default {
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willApprove) => {
-                if (willApprove) {
-                    axios
-                        .post(route("eta.invoices.approve"), {
-                            Id: item.Id,
-                        })
-                        .then((response) => {
-                            swal(this.__("Invoice has been approved!"), {
-                                icon: "success",
-                            }).then(() => {
-                                location.reload();
+                .then((willApprove) => {
+                    if (willApprove) {
+                        axios
+                            .post(route("eta.invoices.approve"), {
+                                Id: item.Id,
+                            })
+                            .then((response) => {
+                                swal(this.__("Invoice has been approved!"), {
+                                    icon: "success",
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            })
+                            .catch((error) => {
+                                swal(error.response.data, {
+                                    icon: "error",
+                                });
                             });
-                        })
-                        .catch((error) => {
-                            swal(error.response.data, {
-                                icon: "error",
-                            });
-                        });
-                    
-                }
-            });
+
+                    }
+                });
         },
         creditNoteUpdate(item) {
             this.invItem = item;
@@ -341,13 +259,14 @@ export default {
         checkAll() {
             this.$nextTick(() => {
                 this.items.data.forEach((row) => {
-                    row.selected = this.allChecked;
+                    row.selected = !this.allChecked;
                 });
+                this.allChecked = !this.allChecked;
             });
         },
         ApproveSelected() {
             var temp = this.items.data.filter((row) => row.selected)
-                            .map((row) => row.Id);
+                .map((row) => row.Id);
             if (temp.length == 0) {
                 swal(this.__("Please select at least one invoice!"), {
                     icon: "error",
@@ -361,35 +280,35 @@ export default {
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willApprove) => {
-                if (willApprove) {
-                    axios
-                        .post(route("eta.invoices.approve"), {
-                            Id: this.items.data
-                                .filter((row) => row.selected)
-                                .map((row) => row.Id),
-                        })
-                        .then((response) => {
-                            swal(this.__("Invoices has been approved!"), {
-                                icon: "success",
-                            }).then(() => {
-                                location.reload();
+                .then((willApprove) => {
+                    if (willApprove) {
+                        axios
+                            .post(route("eta.invoices.approve"), {
+                                Id: this.items.data
+                                    .filter((row) => row.selected)
+                                    .map((row) => row.Id),
+                            })
+                            .then((response) => {
+                                swal(this.__("Invoices has been approved!"), {
+                                    icon: "success",
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            })
+                            .catch((error) => {
+                                swal(error.response.data, {
+                                    icon: "error",
+                                });
                             });
-                        })
-                        .catch((error) => {
-                            swal(error.response.data, {
-                                icon: "error",
-                            });
-                        });
-                    
-                }
-            });
+
+                    }
+                });
         },
         alignDropDown() {
             return this.$page.props.locale == "en" ? "left" : "right";
         },
-        render_status: function(item, status) {
-            if (item.cancelRequestDate && item.status != 'Cancelled') 
+        render_status: function (item, status) {
+            if (item.cancelRequestDate && item.status != 'Cancelled')
                 return this.__("Cancel Pending");
             if (item.rejectRequestDate && item.status != 'Rejected')
                 return this.__("Reject Pending");
@@ -403,7 +322,7 @@ export default {
                 if (keys.length == 3)
                     return item[keys[0]][keys[1]][keys[2]].toString();
                 return "Unsupported Nested Index";
-            } catch (err) {}
+            } catch (err) { }
             return "N/A";
         },
         editItem: function (item_id) {
@@ -415,15 +334,18 @@ export default {
 <style scoped>
 :deep(table td) {
     text-align: start;
-	white-space: pre-line;
+    white-space: pre-line;
 }
+
 :deep(table th) {
     text-align: start;
-	white-space: pre-line;
+    white-space: pre-line;
 }
+
 .credit {
     background-color: lightgoldenrodyellow;
 }
+
 .debit {
     background-color: palegreen;
 }

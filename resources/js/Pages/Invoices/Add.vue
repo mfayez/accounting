@@ -1,161 +1,68 @@
 <template>
     <app-layout>
         <div class="py-4">
-            <dialog-invoice-line
-                :invoice="invoice"
-                v-model="currentItem"
-                ref="dlg1"
-                @update:model-value="onClose"
-            />
+            <dialog-invoice-line :invoice="invoice" v-model="currentItem" ref="dlg1" @update:model-value="onClose" />
             <div class="mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 pb-4 pt-0"
-                >
-                    <div
-                        class="flex items-center ms-0 mb-4 border-b border-gray-200"
-                    >
-                        <jet-button
-                            @click="tab_idx = 1"
-                            :disabled="tab_idx == 1"
-                            :isRounded="false"
-                        >
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 pb-4 pt-0">
+                    <div class="flex items-center ms-0 mb-4 border-b border-gray-200">
+                        <jet-button @click="tab_idx = 1" :disabled="tab_idx == 1" :isRounded="false">
                             {{ getDocumentTitle() }}
                         </jet-button>
-                        <jet-button
-                            @click="tab_idx = 2"
-                            :disabled="tab_idx == 2"
-                            :isRounded="false"
-                        >
+                        <jet-button @click="tab_idx = 2" :disabled="tab_idx == 2" :isRounded="false">
                             {{ __("Optional Data (PO, SO)") }}
                         </jet-button>
-                        <jet-button
-                            @click="tab_idx = 3"
-                            :disabled="tab_idx == 3"
-                            :isRounded="false"
-                        >
+                        <jet-button @click="tab_idx = 3" :disabled="tab_idx == 3" :isRounded="false">
                             {{ __("Invoice Items") }}
                         </jet-button>
                     </div>
                     <!--First Tab-->
-                    <div
-                        v-show="tab_idx == 1"
-                        class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow"
-                    >
+                    <div v-show="tab_idx == 1" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
                         <div class="lg:col-span-2">
                             <jet-label :value="__('Branch')" />
-                            <multiselect
-                                v-model="form.issuer"
-                                label="name"
-                                :options="branches"
-                                placeholder="Select branch"
-                                :disabled="form.documentType != 'I'"
-                            />
+                            <multiselect v-model="form.issuer" label="name" :options="branches" placeholder="Select branch"
+                                :disabled="form.documentType != 'I'" />
                         </div>
                         <div class="lg:col-span-2">
                             <jet-label :value="__('Customer')" />
-                            <multiselect
-                                v-model="form.receiver"
-                                label="name"
-                                :options="customers"
-                                placeholder="Select customer"
-                                :disabled="form.documentType != 'I'"
-                                :custom-label="nameWithId"
-                                track-by="Id"
-                            />
+                            <multiselect v-model="form.receiver" label="name" :options="customers"
+                                placeholder="Select customer" :disabled="form.documentType != 'I'"
+                                :custom-label="nameWithId" track-by="Id" />
                         </div>
                         <div class="lg:col-span-2">
                             <jet-label :value="__('Branch Activity')" />
-                            <multiselect
-                                v-model="form.taxpayerActivityCode"
-                                label="Desc_ar"
-                                :options="activities"
-                                placeholder="Select activity"
-                                :disabled="form.documentType != 'I'"
-                            />
+                            <multiselect v-model="form.taxpayerActivityCode" label="Desc_ar" :options="activities"
+                                placeholder="Select activity" :disabled="form.documentType != 'I'" />
                         </div>
-                        <TextField
-                            v-model="form.dateTimeIssued"
-                            itemType="datetime-local"
-                            :itemLabel="__('Invoice Date')"
-                        />
-                        <TextField
-                            v-model="form.internalID"
-                            itemType="text"
-                            :itemLabel="__('Internal Invoice ID')"
-                            :active="$page.props.auto_inv_num ? false : form.documentType == 'I'"
-                        />
-                        <TextField
-                            v-model="form.totalSalesAmount"
-                            itemType="number"
-                            :itemLabel="__('Total Sales Amount')"
-                            :active="false"
-                        />
-                        <TextField
-                            v-model="form.totalDiscountAmount"
-                            itemType="number"
-                            :itemLabel="__('Total Discount Amount')"
-                            :active="false"
-                        />
-                        <TextField
-                            v-model="form.netAmount"
-                            itemType="number"
-                            :itemLabel="__('Net Amount')"
-                            :active="false"
-                        />
-                        <TextField
-                            v-model="form.totalAmount"
-                            itemType="number"
-                            :itemLabel="__('Total Amount')"
-                            :active="false"
-                        />
-                        <TextField
-                            v-model="form.extraDiscountAmount"
-                            itemType="number"
-                            :itemLabel="__('Extra Discount Amount')"
-                            @update:model-value="updateValues()"
-                        />
-                        <TextField
-                            v-model="form.totalItemsDiscountAmount"
-                            itemType="number"
-                            :itemLabel="__('Total Items Discount Amount')"
-                            :active="false"
-                        />
+                        <TextField v-model="form.dateTimeIssued" itemType="datetime-local"
+                            :itemLabel="__('Invoice Date')" />
+                        <TextField v-model="form.internalID" itemType="text" :itemLabel="__('Internal Invoice ID')"
+                            :active="$page.props.auto_inv_num ? false : form.documentType == 'I'" />
+                        <TextField v-model="form.totalSalesAmount" itemType="number" :itemLabel="__('Total Sales Amount')"
+                            :active="false" />
+                        <TextField v-model="form.totalDiscountAmount" itemType="number"
+                            :itemLabel="__('Total Discount Amount')" :active="false" />
+                        <TextField v-model="form.netAmount" itemType="number" :itemLabel="__('Net Amount')"
+                            :active="false" />
+                        <TextField v-model="form.totalAmount" itemType="number" :itemLabel="__('Total Amount')"
+                            :active="false" />
+                        <TextField v-model="form.extraDiscountAmount" itemType="number"
+                            :itemLabel="__('Extra Discount Amount')" @update:model-value="updateValues()" />
+                        <TextField v-model="form.totalItemsDiscountAmount" itemType="number"
+                            :itemLabel="__('Total Items Discount Amount')" :active="false" />
                     </div>
                     <!--second tab-->
-                    <div
-                        v-show="tab_idx == 2"
-                        class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow"
-                    >
-                        <TextField
-                            v-model="form.purchaseOrderReference"
-                            itemType="text"
-                            :itemLabel="__('Purchase Order')"
-                        />
-                        <TextField
-                            v-model="form.purchaseOrderDescription"
-                            itemType="text"
-                            :itemLabel="__('Purchase Order Description')"
-                        />
-                        <TextField
-                            v-model="form.salesOrderReference"
-                            itemType="text"
-                            :itemLabel="__('Sales Order')"
-                        />
-                        <TextField
-                            v-model="form.salesOrderDescription"
-                            itemType="text"
-                            :itemLabel="__('Sales Order Description')"
-                        />
-                        <TextField
-                            v-model="form.purchaseOrderReference"
-                            itemType="text"
-                            :itemLabel="__('Purchase Order Reference')"
-                        />
-                        <TextField
-                            v-model="form.proformaInvoiceNumber"
-                            itemType="text"
-                            :itemLabel="__('Proforma Invoice Number')"
-                        />
+                    <div v-show="tab_idx == 2" class="grid lg:grid-cols-4 gap-4 sm:grid-cols-1 h-1/2 overflow">
+                        <TextField v-model="form.purchaseOrderReference" itemType="text"
+                            :itemLabel="__('Purchase Order')" />
+                        <TextField v-model="form.purchaseOrderDescription" itemType="text"
+                            :itemLabel="__('Purchase Order Description')" />
+                        <TextField v-model="form.salesOrderReference" itemType="text" :itemLabel="__('Sales Order')" />
+                        <TextField v-model="form.salesOrderDescription" itemType="text"
+                            :itemLabel="__('Sales Order Description')" />
+                        <TextField v-model="form.purchaseOrderReference" itemType="text"
+                            :itemLabel="__('Purchase Order Reference')" />
+                        <TextField v-model="form.proformaInvoiceNumber" itemType="text"
+                            :itemLabel="__('Proforma Invoice Number')" />
                     </div>
                     <!--third tab-->
                     <div v-show="tab_idx == 3">
@@ -197,52 +104,32 @@
                                     item.netTotal
                                 }}</jet-label>
                                 <div class="grid grid-cols-2 gap-1">
-                                    <template
-                                        v-for="(taxitem, idx1) in item.taxItems"
-                                        :key="taxitem.key"
-                                    >
+                                    <template v-for="(taxitem, idx1) in item.taxItems" :key="taxitem.key">
                                         <jet-label class="mt-2 col-span-2">{{
                                             getTaxStr(taxitem)
                                         }}</jet-label>
-                                        <jet-label class="mt-2 col-span-2"
-                                            >{{ taxitem.value }}({{
-                                                taxitem.percentage
-                                            }}%)</jet-label
-                                        >
+                                        <jet-label class="mt-2 col-span-2">{{ taxitem.value }}({{
+                                            taxitem.percentage
+                                        }}%)</jet-label>
                                     </template>
                                 </div>
-                                <jet-secondary-button
-                                    @click="EditItem(item, idx1)"
-                                    class="h-12 mt-2 ms-2"
-                                >
+                                <jet-secondary-button @click="EditItem(item, idx1)" class="h-12 mt-2 ms-2">
                                     {{ __("Edit") }}
                                 </jet-secondary-button>
-                                <jet-danger-button
-                                    @click="DeleteItem(idx1)"
-                                    class="h-12 mt-2 ms-2"
-                                >
+                                <jet-danger-button @click="DeleteItem(idx1)" class="h-12 mt-2 ms-2">
                                     {{ __("Delete") }}
                                 </jet-danger-button>
                             </template>
-                            <jet-label
-                                class="col-span-8"
-                                v-if="!form.invoiceLines.length"
-                            >
+                            <jet-label class="col-span-8" v-if="!form.invoiceLines.length">
                                 {{ __("Please Add at least one item") }}
                             </jet-label>
                         </div>
                         <div class="flex items-center justify-end mt-4">
-                            <jet-button class="ms-2" 
-                                @click="AddItem()"
-                                v-if="form.documentType == 'I'"
-                            >
+                            <jet-button class="ms-2" @click="AddItem()" v-if="form.documentType == 'I'">
                                 {{ __("Add New Item") }}
                             </jet-button>
                         </div>
-                        <div
-                            v-for="(item, idx1) in form.invoiceLines"
-                            class="border border-black"
-                        >
+                        <div v-for="(item, idx1) in form.invoiceLines" class="border border-black">
                             <!--<pre>{{item}}</pre>-->
                         </div>
                     </div>
@@ -366,11 +253,11 @@ export default {
             this.form.extraDiscountAmount = Math.round(this.form.extraDiscountAmount * 100000) / 100000;
             this.form.netAmount = Math.round(this.form.netAmount * 100000) / 100000;
             this.form.totalAmount = this.form.totalAmount - this.form.extraDiscountAmount;
-            this.form.totalAmount = Math.round(this.form.totalAmount * 100000) / 100000;                
+            this.form.totalAmount = Math.round(this.form.totalAmount * 100000) / 100000;
             this.form.totalDiscountAmount = Math.round(this.form.totalDiscountAmount * 100000) / 100000;
             this.form.totalItemsDiscountAmount = Math.round(this.form.totalItemsDiscountAmount * 100000) / 100000;
             this.form.totalSalesAmount = Math.round(this.form.totalSalesAmount * 100000) / 100000;
-            
+
             for (let item of Object.keys(taxTotals))
                 this.form.taxTotals.push({
                     taxType: item,
@@ -382,7 +269,7 @@ export default {
             this.currentItem = {
                 quantity: 1,
                 totalTaxableFees: 0,
-                discount: { amount: 0, rate: 0},
+                discount: { amount: 0, rate: 0 },
                 itemsDiscount: 0,
                 valueDifference: 0,
                 unitValue: { amountEGP: 0, amountSold: 0, currencySold: "EGP", currencyExchangeRate: 1 },
@@ -399,7 +286,7 @@ export default {
         EditItem: function (item, idx) {
             this.addingNewLine = false;
             if (!item.discount)
-                item.discount = { amount: 0, rate: 0};
+                item.discount = { amount: 0, rate: 0 };
             this.currentItem = item;
             this.currentItemIdx = idx;
             this.$nextTick(() => {
@@ -408,11 +295,11 @@ export default {
             this.RecalculateTax();
         },
         onClose: function () {
-//            this.currentItem.description = this.currentItem.custom_desc;
-//            this.currentItem.description = 
-//                this.$page.props.locale == "ar"
-//                    ? this.currentItem.item.descriptionSecondaryLang
-//                    : this.currentItem.item.descriptionPrimaryLang;
+            //            this.currentItem.description = this.currentItem.custom_desc;
+            //            this.currentItem.description = 
+            //                this.$page.props.locale == "ar"
+            //                    ? this.currentItem.item.descriptionSecondaryLang
+            //                    : this.currentItem.item.descriptionPrimaryLang;
 
             this.currentItem.itemType = this.currentItem.item.codeTypeName;
             this.currentItem.itemCode = this.currentItem.item.itemCode;
@@ -470,13 +357,13 @@ export default {
                 );
             return taxitem.taxType + "(" + taxitem.subType + ")";
         },
-        getDocumentTitle: function() {
-            return this.form.documentType == 'I' ? this.__("Invoice Summary") : 
-                   this.form.documentType == 'C' ? this.__("Credit Note Summary") :
-                   this.form.documentType == 'D' ? this.__("Debit Note Summary") : 
-                   this.__("Error!!");
+        getDocumentTitle: function () {
+            return this.form.documentType == 'I' ? this.__("Invoice Summary") :
+                this.form.documentType == 'C' ? this.__("Credit Note Summary") :
+                    this.form.documentType == 'D' ? this.__("Debit Note Summary") :
+                        this.__("Error!!");
         },
-        nameWithId ({ name, receiver_id, Id}) {
+        nameWithId({ name, receiver_id, Id }) {
             return Id + ' - ' + receiver_id + ' - ' + name;
         },
         updateValues() {
@@ -493,7 +380,7 @@ export default {
                         (option) => option.Id === this.invoice.issuer_id
                     );
             })
-            .catch((error) => {});
+            .catch((error) => { });
         axios
             .get(route("json.customers"))
             .then((response) => {
@@ -503,7 +390,7 @@ export default {
                         (option) => option.Id === this.invoice.receiver_id
                     );
             })
-            .catch((error) => {});
+            .catch((error) => { });
         axios
             .get("/json/ActivityCodes.json")
             .then((response) => {
@@ -515,7 +402,7 @@ export default {
                     );
                 else this.form.taxpayerActivityCode = this.activities[0];
             })
-            .catch((error) => {});
+            .catch((error) => { });
         this.$nextTick(() => {
             if (this.invoice) {
                 this.form.receiver = this.customers.find(

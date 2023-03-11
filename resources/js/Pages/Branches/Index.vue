@@ -9,97 +9,36 @@
                 <div
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4"
                 >
-                    <Table
-                        :filters="queryBuilderProps.filters"
-                        :search="queryBuilderProps.search"
-                        :columns="queryBuilderProps.columns"
-                        :on-update="setQueryBuilder"
-                        :meta="branches"
-                    >
-                        <template #head>
-                            <tr>
-                                <th
-                                    v-show="show('Id')"
-                                    @click.prevent="sortBy('Id')"
-                                >
-                                    {{ __("ID") }}
-                                </th>
-                                <th
-                                    v-show="show('name')"
-                                    @click.prevent="sortBy('name')"
-                                >
-                                    {{ __("Name") }}
-                                </th>
-                                <th
-                                    v-show="show('receiver_id')"
-                                    @click.prevent="sortBy('receiver_id')"
-                                >
-                                    {{ __("Registration Number") }}
-                                </th>
-
-                                <th
-                                    v-show="show('type')"
-                                    @click.prevent="sortBy('type')"
-                                >
-                                    {{ __("Type(B|P)") }}
-                                </th>
-                                <th style="text-align:center"   >
-                                    {{ __("Branch Logo") }}
-                                </th>
-                                <th @click.prevent="">{{ __("Actions") }}</th>
-                            </tr>
+                    <Table :resource="branches" >
+                        <template #cell(type)="{ item: branch }">
+                            {{
+                                branch.type == "B"
+                                    ? __("Business")
+                                    : branch.type == "P"
+                                    ? __("Person")
+                                    : __("Foreign Customer")
+                            }}
                         </template>
-
-                        <template #body>
-                            <tr
-                                v-for="branch in branches.data"
-                                :key="branch.id"
+                        <template #cell(logo)="{ item: branch }">
+                            <template v-if="images[branch.Id] != 'N/A'">
+                                <img :src="'/storage/' + images[branch.Id]" alt="Branch Image" class="object-cover"/>
+                            </template>
+                            <span v-else>{{ __("No Image") }}</span>
+                        </template>
+                        <template #cell(actions)="{ item: branch }">
+                            <secondary-button
+                                @click="editBranch(branch)"
                             >
-                                <td v-show="show('Id')">
-                                    {{ branch.Id }}
-                                </td>
-                                <td v-show="show('name')">
-                                    {{ branch.name }}
-                                </td>
-                                <td v-show="show('receiver_id')">
-                                    {{ branch.receiver_id }}
-                                </td>
-                                <td v-show="show('type')">
-                                    {{
-                                        branch.type == "B"
-                                            ? __("Business")
-                                            : __("Individual")
-                                    }}
-                                </td>
-                                <td v-if="Object.keys(images).length > 0">
-                                    <template v-if="images[branch.Id] != 'N/A'">
-                                        <img
-                                            :src="
-                                                '/storage/' +
-                                                images[branch.Id]
-                                            "
-                                            alt="Branch Image"
-                                            class="object-cover"
-                                        />
-                                    </template>
-                                    <span v-else>{{ __("No Image") }}</span>
-                                </td>
-                                <td>
-                                    <secondary-button
-                                        @click="editBranch(branch)"
-                                    >
-                                        <i class="fa fa-edit"></i>
-                                        {{ __("Edit") }}
-                                    </secondary-button>
-                                    <jet-button
-                                        class="ms-2"
-                                        @click="removeBranch(branch)"
-                                    >
-                                        <i class="fa fa-trash"></i>
-                                        {{ __("Delete") }}
-                                    </jet-button>
-                                </td>
-                            </tr>
+                                <i class="fa fa-edit"></i>
+                                {{ __("Edit") }}
+                            </secondary-button>
+                            <jet-button
+                                class="ms-2"
+                                @click="removeBranch(branch)"
+                            >
+                                <i class="fa fa-trash"></i>
+                                {{ __("Delete") }}
+                            </jet-button>
                         </template>
                     </Table>
                 </div>

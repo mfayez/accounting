@@ -68,23 +68,79 @@ class ReceivedInvoiceController extends Controller
         return Inertia::render('Invoices/IndexReceived', [
             'items' => $items,
         ])->table(function (InertiaTable $table) {
-            $table->searchInput([
-				'internalId'	=>	__('Internal ID'),
-				'status'		=>	__('Status'),
-				'receiver_id'	=>	__('Receiving Branch')
-			])->column([
-                'internalId'	=> __('Internal ID'),
-				'issuerName' => __('Issuer'),
-				'receiverId' => __('Receiver Registration Number'),
-				'branch.name' => __('Receiving Branch'),
-				'dateTimeIssued' => __('Issued At'),
-				'dateTimeReceived' => __('Received At'),
-				'totalSales' => __('Sales'),
-				'totalDiscount' => __('Discount'),
-				'netAmount' => __('Net'),
-				'total' => __('Total'),
-				'status' => __('Status'),
-            ]);
+            $table->column(
+                key: 'internalId',
+                label: __('Internal ID'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'issuerName',
+                label: __('Issuer'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'receiverId',
+                label: __('Receiver Registration Number'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: false
+            )->column(
+                key: 'branch.name',
+                label: __('Receiving Branch'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'dateTimeIssued',
+                label: __('Issued At'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'dateTimeReceived',
+                label: __('Received At'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'totalSales',
+                label: __('Sales'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'totalDiscount',
+                label: __('Discount'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'netAmount',
+                label: __('Net'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'total',
+                label: __('Total'),
+                canBeHidden: true,
+                hidden: false,
+                sortable: true
+            )->column(
+                key: 'actions',
+                label: __('Actions')
+            )->searchInput(
+                key: 'internalId',
+                label: __('Internal ID')
+            )->searchInput(
+                key: 'status',
+                label: __('Status')
+            )->searchInput(
+                key: 'receiver_id',
+                label: __('Receiving Branch')
+            );
         });
     }
 

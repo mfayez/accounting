@@ -1,86 +1,47 @@
 <template>
     <!-- prettier-ignore -->
     <app-layout>
-		<update-received ref="dlg6" v-model="invItem" />
+        <update-received ref="dlg6" v-model="invItem" />
         <confirm ref="dlg1" @confirmed="rejectInv2()">
-			<jet-label for="type"  value="Select rejection reason:" />
-			<select id="type" v-model="cancelReason" class="mt-1 block w-full">
-				  <option value="Wrong invoice details">Wrong invoice details</option>
-			</select>
-		</confirm>
+            <jet-label for="type" value="Select rejection reason:" />
+            <select id="type" v-model="cancelReason" class="mt-1 block w-full">
+                <option value="Wrong invoice details">Wrong invoice details</option>
+            </select>
+        </confirm>
         <div class="py-4">
             <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-					<Table
-						:filters="queryBuilderProps.filters"
-						:search="queryBuilderProps.search"
-						:columns="queryBuilderProps.columns"
-						:on-update="setQueryBuilder"
-						:meta="items"
-				  	>
-						<template #head>
-						  	<tr>
-                                  <template v-for="(col, key) in queryBuilderProps.columns" :key="key">
-                                      <th v-show="show(key)" 
-                                      v-if="notSortableCols.includes(key)">{{ col.label }}</th>
-                                      <th class="cursor-pointer" v-show="show(key)" @click.prevent="sortBy(key)" v-else>{{ col.label }}</th>
-                                  </template>
-								<th @click.prevent="">{{__('Actions')}}</th>
-							</tr>
-						</template>
+                    <Table :resource="items">
+                        <template #cell(status)="{ item: item }">
+                            {{ __(item.status) }}
+                        </template>
+                        <template #cell(statusReason)="{ item: item }">
+                            {{ __(item.statusReason) }}
+                        </template>
+                        <template #cell(dateTimeIssued)="{ item: item }">
+                            {{ new Date(item.dateTimeIssued).toLocaleDateString() }}
+                        </template>
+                        <template #cell(dateTimeReceived)="{ item: item }">
+                            {{ new Date(item.dateTimeReceived).toLocaleDateString() }}
+                        </template>
+                        <template #cell(actions)="{ item: item }">
+                            <jet-danger-button class="me-2 mt-2" @click="rejectInvoice(item)"
+                                v-show="item.status == 'Valid'">
+                                {{ __("Reject") }}
+                            </jet-danger-button>
+                            <jet-button class="me-2 mt-2" @click="updateReceived(item)" v-show="item.status == 'Valid'">
+                                {{ __("Direction") }}
+                            </jet-button>
 
-						<template #body>
-					  		<tr v-for="item in items.data" :key="item.id" 
-                                :class="{ credit: item.typeName =='c' }"
-                            >
-									<td v-for="(col, key) in queryBuilderProps.columns" :key="key" v-show="show(key)">
-										<div v-for="rowVals in nestedIndex(item, key).split(',')">
-											{{ 
-                                                key == 'status' || key == 'statusReason' ? __(rowVals) :
-                                               (key == 'dateTimeIssued' || key == 'dateTimeReceived' ? 
-                                                    new Date(rowVals).toLocaleDateString() : 
-                                                    rowVals
-                                               ) 
-                                            }}
-                                        </div>
-									</td>
-									<td>
-                                        <div class="grid grid-cols-3 w-56">
-                                            <jet-danger-button
-                                                class="me-2 mt-2"
-                                                @click="rejectInvoice(item)" 
-                                                v-show="item.status =='Valid'"
-                                                >
-                                                {{ __("Reject") }}
-                                            </jet-danger-button>
-                                            <jet-button
-                                                class="me-2 mt-2"
-                                                @click="updateReceived(item)" 
-                                                v-show="item.status =='Valid'"
-                                                >
-                                                {{ __("Direction") }}
-                                            </jet-button>
-                                            
-                                            <secondary-button
-                                                class="me-2 mt-2"
-                                                v-show="item.status=='Valid'"
-                                                @click="openExternal(item)"
-                                            >
-                                                {{ __("ETA1") }}
-                                            </secondary-button>
-                                            
-                                            <jet-button
-                                            class="me-2 mt-2"
-                                            v-show="item.status=='Valid'"
-                                                @click="openExternal2(item)">
-                                                {{ __("ETA2") }}
-                                            </jet-button>  
-                                        </div>
-										
-									</td>
-							  </tr>
-						</template>
-				 	</Table>
+                            <secondary-button class="me-2 mt-2" v-show="item.status == 'Valid'" @click="openExternal(item)">
+                                {{ __("ETA1") }}
+                            </secondary-button>
+
+                            <jet-button class="me-2 mt-2" v-show="item.status == 'Valid'" @click="openExternal2(item)">
+                                {{ __("ETA2") }}
+                            </jet-button>
+                        </template>
+                    </Table>
                 </div>
             </div>
         </div>
@@ -138,14 +99,14 @@ export default {
     },
     methods: {
         openExternal2(item) {
-            window.open(route('eta.invoice.download', {uuid: item.uuid}), '_blank');
+            window.open(route('eta.invoice.download', { uuid: item.uuid }), '_blank');
         },
         openExternal(item) {
             window.open(
-                this.$page.props.preview_url + 
-                    item.uuid +
-                    "/share/" +
-                    item.longId
+                this.$page.props.preview_url +
+                item.uuid +
+                "/share/" +
+                item.longId
             );
         },
         updateReceived(item) {
@@ -181,7 +142,7 @@ export default {
                 if (keys.length == 3)
                     return item[keys[0]][keys[1]][keys[2]].toString();
                 return "Unsupported Nested Index";
-            } catch (err) {}
+            } catch (err) { }
             return "N/A";
         },
     },
@@ -190,12 +151,14 @@ export default {
 <style scoped>
 :deep(table td) {
     text-align: start;
-	white-space: pre-line;
+    white-space: pre-line;
 }
+
 :deep(table th) {
     text-align: start;
-	white-space: pre-line;
+    white-space: pre-line;
 }
+
 .credit {
     background-color: lightgoldenrodyellow;
 }
