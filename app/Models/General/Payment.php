@@ -17,6 +17,6 @@ class Payment extends \Illuminate\Database\Eloquent\Model
 
     public function invoice()
     {
-        return $this->hasMany('App\Models\Invoice', 'payment_id', 'Id');
+        return $this->hasMany('App\Models\ETA\Invoice', 'payment_id', 'Id');
     }
 }

@@ -16,7 +16,7 @@ class POS extends Model
 
     public function issuer()
     {
-        return $this->belongsTo('App\Models\Issuer', 'issuer_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Issuer', 'issuer_id', 'Id');
     }
 
 }

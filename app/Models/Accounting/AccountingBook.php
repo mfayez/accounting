@@ -4,7 +4,7 @@ namespace App\Models\Accounting;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use AccountingBookData;
+use App\Models\Accounting\AccountingBookData;
 
 class AccountingBook extends Model
 {

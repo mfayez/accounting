@@ -4,7 +4,7 @@ namespace App\Models\ETA;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ReceiptTaxTotal;
+use App\Models\ETA\ReceiptTaxTotal;
 use Illuminate\Support\Carbon;
 
 class Receipt extends Model
@@ -85,15 +85,15 @@ class Receipt extends Model
 
     public function seller()
     {
-        return $this->belongsTo('App\Models\POS', 'pos_id', 'id');
+        return $this->belongsTo('App\Models\ETA\POS', 'pos_id', 'id');
     }
     public function receiptItems()
     {
-        return $this->hasMany('App\Models\ReceiptItem', 'receipt_id', 'id');
+        return $this->hasMany('App\Models\ETA\ReceiptItem', 'receipt_id', 'id');
     }
 
     public function taxTotals()
     {
-        return $this->hasMany('App\Models\ReceiptTaxTotal', 'receipt_id', 'id');
+        return $this->hasMany('App\Models\ETA\ReceiptTaxTotal', 'receipt_id', 'id');
     }
 }

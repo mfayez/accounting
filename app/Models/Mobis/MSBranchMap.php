@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Mobis;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SBBranchMap extends Model
+class MSBranchMap extends Model
 {
     use HasFactory;
 
-    protected $table = 'sb_branches_map';
+    protected $table = 'ms_branches_map';
     protected $primaryKey = 'branch_id';
     public $incrementing = false;
     
     protected $fillable = [
         'branch_id',
-        'sb_url',
-        'sb_bu',
+        'ms_url',
     ];
 }

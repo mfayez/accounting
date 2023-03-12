@@ -81,32 +81,32 @@ class Invoice extends \Illuminate\Database\Eloquent\Model
 
     public function delivery()
     {
-        return $this->belongsTo('App\Models\Delivery', 'delivery_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Delivery', 'delivery_id', 'Id');
     }
 
     public function issuer()
     {
-        return $this->belongsTo('App\Models\Issuer', 'issuer_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Issuer', 'issuer_id', 'Id');
     }
 
     public function payment()
     {
-        return $this->belongsTo('App\Models\Payment', 'payment_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Payment', 'payment_id', 'Id');
     }
 
     public function receiver()
     {
-        return $this->belongsTo('App\Models\Receiver', 'receiver_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Receiver', 'receiver_id', 'Id');
     }
 
     public function invoiceLines()
     {
-        return $this->hasMany('App\Models\InvoiceLine', 'invoice_id', 'Id');
+        return $this->hasMany('App\Models\ETA\InvoiceLine', 'invoice_id', 'Id');
     }
 
     public function taxTotals()
     {
-        return $this->hasMany('App\Models\TaxTotal', 'invoice_id', 'Id');
+        return $this->hasMany('App\Models\ETA\TaxTotal', 'invoice_id', 'Id');
     }
 
     public function getDashboardStatisticsByDate($from, $to)

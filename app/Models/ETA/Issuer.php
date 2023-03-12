@@ -17,11 +17,11 @@ class Issuer extends \Illuminate\Database\Eloquent\Model
 
     public function address()
     {
-        return $this->belongsTo('App\Models\Address', 'address_id', 'Id');
+        return $this->belongsTo('App\Models\General\Address', 'address_id', 'Id');
     }
 
     public function invoice()
     {
-        return $this->hasMany('App\Models\Invoice', 'issuer_id', 'Id');
+        return $this->hasMany('App\Models\ETA\Invoice', 'issuer_id', 'Id');
     }
 }

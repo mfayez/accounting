@@ -27,6 +27,6 @@ class ETAInvoice extends \Illuminate\Database\Eloquent\Model
     
     public function branch()
     {
-        return $this->belongsTo('App\Models\Issuer', 'receiver_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Issuer', 'receiver_id', 'Id');
     }
 }

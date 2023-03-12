@@ -17,6 +17,6 @@ class TaxableItem extends \Illuminate\Database\Eloquent\Model
 
     public function invoiceLine()
     {
-        return $this->belongsTo('App\Models\InvoiceLine', 'invoiceline_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\InvoiceLine', 'invoiceline_id', 'Id');
     }
 }

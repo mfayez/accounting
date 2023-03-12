@@ -31,16 +31,16 @@ class ReceiptItem extends \Illuminate\Database\Eloquent\Model
 
     public function item()
     {
-        return $this->belongsTo('App\Models\ETAItem', 'itemCode', 'itemCode');
+        return $this->belongsTo('App\Models\ETA\ETAItem', 'itemCode', 'itemCode');
     }
 
     public function receipt()
     {
-        return $this->belongsTo('App\Models\Receipt', 'receipt_id', 'id');
+        return $this->belongsTo('App\Models\ETA\Receipt', 'receipt_id', 'id');
     }
 
     public function taxableItems()
     {
-        return $this->hasMany('App\Models\ReceiptTaxableItem', 'receiptItem_id', 'id');
+        return $this->hasMany('App\Models\ETA\ReceiptTaxableItem', 'receiptItem_id', 'id');
     }
 }

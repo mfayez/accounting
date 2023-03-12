@@ -20,8 +20,8 @@ class AccountingBookData extends Migration
             $table->string('reference_code');
             $table->foreignId('accounting_book_id')->constrained('accounting_book');
             $table->dateTime('transaction_date');
-            $table->decimal('debit');
-            $table->decimal('credit');
+            $table->decimal('debit', 11, 3);
+            $table->decimal('credit', 11, 3);
             $table->string('approved_by')->nullable();
             $table->string('accepted_by')->nullable();
             $table->string('rejected_by')->nullable();

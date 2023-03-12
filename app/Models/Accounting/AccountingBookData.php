@@ -2,12 +2,11 @@
 
 namespace App\Models\Accounting;
 
-use AccountingBookDataDetails;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\AccountingBook;
-use App\Models\AccountingBookDataDetails;
+use App\Models\Accounting\AccountingBook;
+use App\Models\Accounting\AccountingBookDataDetails;
 
 class AccountingBookData extends Model
 {

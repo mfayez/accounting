@@ -15,11 +15,11 @@ class Archive extends Model
 
     public function issuer()
     {
-        return $this->belongsTo('App\Models\Issuer', 'issuer_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Issuer', 'issuer_id', 'Id');
     }
 
     public function receiver()
     {
-        return $this->belongsTo('App\Models\Receiver', 'receiver_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Receiver', 'receiver_id', 'Id');
     }
 }

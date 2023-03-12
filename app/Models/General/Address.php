@@ -20,11 +20,11 @@ class Address extends \Illuminate\Database\Eloquent\Model
 
     public function issuer()
     {
-        return $this->hasMany('App\Models\Issuer', 'address_id', 'Id');
+        return $this->hasMany('App\Models\ETA\ssuer', 'address_id', 'Id');
     }
 
     public function receiver()
     {
-        return $this->hasMany('App\Models\Receiver', 'address_id', 'Id');
+        return $this->hasMany('App\Models\ETA\Receiver', 'address_id', 'Id');
     }
 }

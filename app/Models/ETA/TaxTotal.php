@@ -17,6 +17,6 @@ class TaxTotal extends \Illuminate\Database\Eloquent\Model
 
     public function invoice()
     {
-        return $this->belongsTo('App\Models\Invoice', 'invoice_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Invoice', 'invoice_id', 'Id');
     }
 }

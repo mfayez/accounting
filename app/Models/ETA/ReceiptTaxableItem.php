@@ -22,6 +22,6 @@ class ReceiptTaxableItem extends \Illuminate\Database\Eloquent\Model
 
     public function receiptItem()
     {
-        return $this->belongsTo('App\Models\ReceiptItem', 'receiptItem_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\ReceiptItem', 'receiptItem_id', 'Id');
     }
 }

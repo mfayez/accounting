@@ -23,29 +23,29 @@ class InvoiceLine extends \Illuminate\Database\Eloquent\Model
 
     public function discount()
     {
-        return $this->belongsTo('App\Models\Discount', 'discount_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Discount', 'discount_id', 'Id');
     }
 
     //public function getItemAttribute()
     public function item()
     {
         //return Item::firstWhere('itemCode', $this->itemCode);
-        return $this->belongsTo('App\Models\ETAItem', 'itemCode', 'itemCode');
+        return $this->belongsTo('App\Models\ETA\ETAItem', 'itemCode', 'itemCode');
     }
 
     public function invoice()
     {
-        return $this->belongsTo('App\Models\Invoice', 'invoice_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Invoice', 'invoice_id', 'Id');
     }
 
     public function unitValue()
     {
-        return $this->belongsTo('App\Models\Value', 'unitValue_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Value', 'unitValue_id', 'Id');
     }
 
     public function taxableItems()
     {
-        return $this->hasMany('App\Models\TaxableItem', 'invoiceline_id', 'Id');
+        return $this->hasMany('App\Models\ETA\TaxableItem', 'invoiceline_id', 'Id');
     }
 
     public function topItemsStats($hasFilter = false)

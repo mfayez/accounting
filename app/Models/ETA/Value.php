@@ -17,6 +17,6 @@ class Value extends \Illuminate\Database\Eloquent\Model
 
     public function invoiceLine()
     {
-        return $this->hasMany('App\Models\InvoiceLine', 'unitValue_id', 'Id');
+        return $this->hasMany('App\Models\ETA\InvoiceLine', 'unitValue_id', 'Id');
     }
 }

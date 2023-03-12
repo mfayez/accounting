@@ -15,6 +15,7 @@ class Inventories extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
             $table->string('description');
             $table->string('address');

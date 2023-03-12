@@ -21,7 +21,7 @@ class Upload extends Model
 
 	public function invoices()
     {
-        return $this->hasMany('App\Models\Invoice', 'upload_id', 'Id');
+        return $this->hasMany('App\Models\ETA\Invoice', 'upload_id', 'Id');
     }
 
     public function user()

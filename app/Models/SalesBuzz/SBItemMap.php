@@ -4,6 +4,7 @@ namespace App\Models\SalesBuzz;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SalesBuzz\SBItemTax;
 
 class SBItemMap extends Model
 {
@@ -19,5 +20,15 @@ class SBItemMap extends Model
         'ItemNameA',
         'ItemNameE',
         'ETACode',
+        'Val_Diff',
     ];
+
+    protected $casts = [
+        'Val_Diff' => 'decimal:2'
+    ];
+
+    public function itemTax()
+    {
+        return $this->hasMany(SBItemTax::class, 'SBCode', 'SBCode');
+    }
 }

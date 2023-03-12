@@ -21,6 +21,6 @@ class ReceiptTaxTotal extends \Illuminate\Database\Eloquent\Model
 
     public function receipt()
     {
-        return $this->belongsTo('App\Models\Receipt', 'receipt_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Receipt', 'receipt_id', 'Id');
     }
 }

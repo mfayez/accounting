@@ -14,7 +14,7 @@ class AddValDiffSbItemMap extends Migration
     public function up()
     {
         Schema::table('sb_items_map', function (Blueprint $table) {
-            $table->decimal('Val_Diff')->default(0);
+            $table->decimal('Val_Diff', 11, 3)->default(0);
         });
     }
 

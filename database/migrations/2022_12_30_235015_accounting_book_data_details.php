@@ -17,8 +17,8 @@ class AccountingBookDataDetails extends Migration
             $table->id();
             $table->foreignId('accounting_book_data_id');
             $table->foreignId('accounting_chart_id');
-            $table->decimal('debit');
-            $table->decimal('credit');
+            $table->decimal('debit', 11, 3);
+            $table->decimal('credit', 11, 3);
             $table->timestamps();
         });
     }
