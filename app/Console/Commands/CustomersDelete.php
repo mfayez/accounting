@@ -3,19 +3,19 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Address;
-use App\Models\ETAItem;
-use App\Models\ETAInvoice;
-use App\Models\Invoice;
-use App\Models\InvoiceLine;
-use App\Models\TaxableItem;
-use App\Models\TaxTotal;
-use App\Models\Value;
-use App\Models\Discount;
-use App\Models\Receiver;
-use App\Models\Issuer;
-use App\Models\Upload;
-use App\Models\Settings;
+use App\Models\ETA\Address;
+use App\Models\ETA\ETAItem;
+use App\Models\ETA\ETAInvoice;
+use App\Models\ETA\Invoice;
+use App\Models\ETA\InvoiceLine;
+use App\Models\ETA\TaxableItem;
+use App\Models\ETA\TaxTotal;
+use App\Models\ETA\Value;
+use App\Models\ETA\Discount;
+use App\Models\ETA\Receiver;
+use App\Models\ETA\Issuer;
+use App\Models\ETA\Upload;
+use App\Models\General\Settings;
 
 class CustomersDelete extends Command
 {

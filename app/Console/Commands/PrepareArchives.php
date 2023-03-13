@@ -5,35 +5,12 @@ namespace App\Console\Commands;
 use File;
 
 use Illuminate\Console\Command;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use ZipArchive;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Address;
-use App\Models\Delivery;
-use App\Models\Discount;
-use App\Models\InvoiceLine;
-use App\Models\Invoice;
-use App\Models\Issuer;
-use App\Models\Membership;
-use App\Models\Payment;
-use App\Models\Receiver;
-use App\Models\TaxableItem;
-use App\Models\TaxTotal;
-use App\Models\TeamInvitation;
-use App\Models\Team;
-use App\Models\User;
-use App\Models\Value;
-use App\Models\Archive;
+use App\Models\General\Archive;
 
 use App\Http\Traits\ETAAuthenticator;
 

@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File; 
 
-use App\Models\Settings;
+use App\Models\General\Settings;
 
 
 

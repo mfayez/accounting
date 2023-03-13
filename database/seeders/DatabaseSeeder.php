@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\General\Address;
+use App\Models\ETA\Address;
 use App\Models\ETA\Delivery;
 use App\Models\ETA\Discount;
 use App\Models\ETA\InvoiceLine;

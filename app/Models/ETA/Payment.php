@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\General;
+namespace App\Models\ETA;
 
 /**
  * Eloquent class to describe the Payment table.

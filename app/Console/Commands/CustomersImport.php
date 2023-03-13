@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Address;
-use App\Models\Receiver;
+use App\Models\ETA\Address;
+use App\Models\ETA\Receiver;
 
 use App\Http\Traits\ExcelWrapper;
 

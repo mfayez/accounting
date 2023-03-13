@@ -9,10 +9,10 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 use App\Models\Customer;
-use App\Models\Invoice;
+use App\Models\ETA\Invoice;
 use App\Models\Item;
-use App\Models\InvoiceTaxItem;
-use App\Models\InvoiceItem;
+use App\Models\ETA\InvoiceTaxItem;
+use App\Models\ETA\InvoiceItem;
 use App\Models\User;
 
 class ItemController extends Controller

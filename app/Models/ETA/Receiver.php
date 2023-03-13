@@ -19,7 +19,7 @@ class Receiver extends \Illuminate\Database\Eloquent\Model
 
     public function address()
     {
-        return $this->belongsTo('App\Models\General\Address', 'address_id', 'Id');
+        return $this->belongsTo('App\Models\ETA\Address', 'address_id', 'Id');
     }
 
     public function invoice()
